@@ -393,7 +393,7 @@ try {
                 SELECT id, username, email, full_name, phone, specialty, workshop_name, experience_years, rating 
                 FROM users 
                 WHERE user_type = 'mecanico' AND is_active = 1 
-                ORDER BY rating DESC, full_name ASC
+                ORDER BY full_name ASC
             ");
             $stmt->execute();
             echo json_encode(['success' => true, 'mechanics' => $stmt->fetchAll()]);
@@ -443,7 +443,7 @@ try {
                 SELECT id, username, email, full_name, phone, specialty, workshop_name, experience_years, rating 
                 FROM users 
                 WHERE user_type = 'mecanico' AND is_active = 1 
-                ORDER BY rating DESC, full_name ASC
+                ORDER BY full_name ASC
             ");
             $stmt->execute();
             echo json_encode(['success' => true, 'mechanics' => $stmt->fetchAll()]);
