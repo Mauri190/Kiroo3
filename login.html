@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiroo - Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+<div class="login-wrapper">
+    <a href="inicio.html" class="back-home">
+        <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+    </a>
+
+    <div class="login-header">
+        <div class="logo">KI<span>R</span>OO</div>
+        <h5>Tu copiloto de confianza</h5>
+    </div>
+
+    <!-- Selector de tipo de cuenta estilo pestañas -->
+    <div class="account-tabs">
+        <button class="account-tab active" data-type="cliente">
+            <i class="fa-solid fa-user"></i> Cliente
+        </button>
+        <button class="account-tab" data-type="mecanico">
+            <i class="fa-solid fa-wrench"></i> Mecánico
+        </button>
+    </div>
+
+    <div class="login-card">
+        <div class="text-center mb-3">
+            <i class="fa-solid fa-car fa-2x" style="color: var(--kiroo-red);"></i>
+            <h4 class="mt-2" id="formTitle">Iniciar Sesión como Cliente</h4>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
+            <span id="errorText"></span>
+        </div>
+
+        <div class="warning-message" id="warningMessage">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            <span id="warningText"></span>
+        </div>
+
+        <form id="loginForm">
+            <div class="mb-3">
+                <input type="text" class="form-control" id="username" placeholder="Usuario o Email" required>
+            </div>
+            <div class="mb-3">
+                <input type="password" class="form-control" id="password" placeholder="Contraseña" required>
+            </div>
+            <button type="submit" class="btn-login">
+                <i class="fa-solid fa-right-to-bracket me-2"></i> Ingresar
+            </button>
+        </form>
+
+        <div class="account-badge mx-auto" style="width: fit-content;" id="accountHint">
+            <i class="fa-regular fa-building"></i> <span id="badgeText">Acceso clientes: citas, historial, diagnósticos</span>
+        </div>
+
+        <div class="register-link">
+            ¿No tienes cuenta?
+            <a href="#" id="registerClientLink">Regístrate como Cliente</a> |
+            <a href="#" id="registerMechanicLink">Regístrate como Mecánico</a>
+        </div>
+    </div>
+</div>
+
+<script src="js/login.js"></script>
+
+</body>
+</html>

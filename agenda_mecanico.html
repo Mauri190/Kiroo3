@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kiroo - Agenda | Gestión de Eventos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/agenda.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-kiroo sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index_cliente.html">
+                <i class="bi bi-car-front-fill"></i> Kiroo
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index_mecanico.html"><i class="bi bi-house-door"></i> Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="agenda_mecanico.html"><i class="bi bi-calendar-check"></i> Agenda</a></li>
+                    <li class="nav-item"><a class="nav-link" href="vehiculos_mecanico.html"><i class="bi bi-car-front"></i> Mis Vehículos</a></li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="user-welcome" id="userWelcome"><i class="bi bi-person-circle"></i> Cargando...</span>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear-fill"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom">
+                            <li><a class="dropdown-item" href="index_cliente.html"><i class="bi bi-house"></i> Ir al inicio</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4">
+        <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+            <a href="index_cliente.html" class="btn btn-outline-red">
+                <i class="bi bi-arrow-left"></i> Volver al inicio
+            </a>
+            <h2 class="mb-0 fw-semibold"><i class="bi bi-calendar-week text-danger"></i> Mi Agenda</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="content-card">
+                    <div class="card-header-custom">
+                        <span><i class="bi bi-calendar3"></i> Calendario</span>
+                        <div>
+                            <button class="btn btn-sm btn-outline-red me-2" id="prevMonthBtn"><i class="bi bi-chevron-left"></i></button>
+                            <button class="btn btn-sm btn-outline-red" id="nextMonthBtn"><i class="bi bi-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="p-3 p-md-4">
+                        <div id="monthYearDisplay" class="text-center fs-5 fw-semibold mb-3"></div>
+                        <div id="calendarRoot"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="content-card h-100">
+                    <div class="card-header-custom">
+                        <span><i class="bi bi-star-fill text-warning"></i> Próximos eventos</span>
+                        <button class="btn btn-red btn-sm" id="openAddEventBtn"><i class="bi bi-plus-lg"></i> Agregar</button>
+                    </div>
+                    <div class="p-3" id="upcomingEventsContainer">
+                        <div class="loading-spinner"><i class="bi bi-hourglass-split"></i> Cargando eventos...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AGREGAR/EDITAR EVENTO -->
+    <div class="modal fade" id="eventModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle"><i class="bi bi-calendar-plus"></i> Nuevo evento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="eventFormModal">
+                        <div class="mb-3">
+                            <label class="form-label">Título del evento *</label>
+                            <input type="text" class="form-control" id="eventTitle" placeholder="Ej: Revisión de frenos" required>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Fecha *</label>
+                                <input type="date" class="form-control" id="eventDate" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Hora *</label>
+                                <input type="time" class="form-control" id="eventTime" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Vehículo *</label>
+                            <select class="form-select" id="eventVehicle" required>
+                                <option value="" disabled selected>Seleccionar vehículo...</option>
+                            </select>
+                            <div id="vehicleWarning" class="no-vehicles-warning" style="display:none;">
+                                ⚠️ No tienes vehículos registrados. <a href="vehiculos.html" class="text-danger fw-bold">Agregar en Mis Vehículos →</a>
+                            </div>
+                            <div id="vehicleDetails" class="vehicle-detail-mini" style="display:none;"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de evento *</label>
+                            <select class="form-select" id="eventType" required>
+                                <option value="" disabled selected>Seleccionar tipo</option>
+                                <option value="mantenimiento">🔧 Mantenimiento</option>
+                                <option value="reparacion">⚙️ Reparación</option>
+                                <option value="inspeccion">📋 Inspección</option>
+                                <option value="lavado">🧼 Lavado</option>
+                                <option value="cita_mecanico">🧑‍🔧 Cita con mecánico</option>
+                                <option value="otro">📌 Otro</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Descripción (opcional)</label>
+                            <textarea class="form-control" id="eventDescription" rows="2" placeholder="Detalles del evento..."></textarea>
+                        </div>
+                        <input type="hidden" id="editEventId" value="">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-red" id="saveEventBtn">Guardar evento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de notificación -->
+    <div class="toast-notification">
+        <div id="liveToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="3000">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage">
+                    Mensaje
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-white py-4 mt-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-car-front-fill"></i> Kiroo</h5>
+                    <p class="text-muted">Gestión inteligente para tu vehículo.</p>
+                </div>
+                <div class="col-md-3">
+                    <h6>Enlaces rápidos</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="agenda_mecanico.html" class="text-white-50 text-decoration-none">Agenda</a></li>
+                        <li><a href="vehiculos_mecanico.html" class="text-white-50 text-decoration-none">Vehículos</a></li>
+                        <li><a href="index_mecanico.html" class="text-white-50 text-decoration-none">Inicio</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6>Contacto</h6>
+                    <p class="text-muted"><i class="bi bi-envelope"></i> soporte@kiroo.com</p>
+                </div>
+            </div>
+            <hr class="bg-secondary">
+            <div class="text-center text-muted small">&copy; 2025 Kiroo — Todos los derechos reservados.</div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/agenda.js"></script>
+</body>
+</html>
