@@ -1,0 +1,241 @@
+        :root {
+            --kiroo-red: #d32f2f;
+            --bg-dark: #0a0a0a;
+            --bg-card: #1a1a1a;
+            --text-light: #ffffff;
+            --text-muted: #b0b0b0;
+            --client-blue: #2196f3;
+            --mech-orange: #ff9800;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(ellipse at top, rgba(211, 47, 47, 0.08) 0%, transparent 60%),
+                        var(--bg-dark);
+            padding: 2rem;
+        }
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--kiroo-red);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .back-home:hover {
+            opacity: 0.8;
+            color: var(--kiroo-red);
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .register-header .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .register-header .logo span {
+            color: var(--kiroo-red);
+        }
+
+        .register-header h5 {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Tabs estilo selector de cuenta */
+        .account-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .account-tab {
+            background: transparent;
+            border: none;
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: 40px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .account-tab i {
+            margin-right: 8px;
+        }
+
+        .account-tab.active {
+            background: rgba(211, 47, 47, 0.15);
+            color: var(--kiroo-red);
+        }
+
+        .account-tab:not(.active):hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+        }
+
+        /* Tarjeta de registro */
+        .register-card {
+            background: var(--bg-card);
+            border-radius: 30px;
+            padding: 2rem 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-label {
+            color: #ccc;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .form-control, .form-select {
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            color: #fff;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: #333;
+            color: #fff;
+        }
+
+        .form-control::placeholder {
+            color: #666;
+        }
+
+        .form-select option {
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        /* Estilos específicos por tipo de cuenta */
+        .client-focus .form-control:focus {
+            border-color: var(--client-blue);
+            box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.15);
+        }
+
+        .mechanic-focus .form-control:focus,
+        .mechanic-focus .form-select:focus {
+            border-color: var(--mech-orange);
+            box-shadow: 0 0 0 0.2rem rgba(255, 152, 0, 0.15);
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, var(--kiroo-red), #b71c1c);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(211, 47, 47, 0.3);
+        }
+
+        .error-message {
+            background: rgba(244, 67, 54, 0.15);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #ef5350;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .login-link a {
+            color: var(--kiroo-red);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .account-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(211, 47, 47, 0.1);
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .info-box {
+            background: rgba(211, 47, 47, 0.08);
+            border: 1px dashed rgba(211, 47, 47, 0.3);
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin-top: 1rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 576px) {
+            .register-wrapper {
+                padding: 0.5rem;
+            }
+            .register-card {
+                padding: 1.5rem;
+            }
+            .account-tab {
+                padding: 8px 18px;
+                font-size: 0.9rem;
+            }
+        }
