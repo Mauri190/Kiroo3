@@ -69,17 +69,13 @@ $full_name = getCurrentUserFullName();
         .modal-content { background-color: var(--bg-card); color: white; }
         .form-control, .form-select { background-color: #2c2c2c; border-color: #444; color: white; }
         .form-control:focus, .form-select:focus { background-color: #333; border-color: var(--primary-red); color: white; box-shadow: none; }
-        .rating-stars { color: #ffc107; cursor: pointer; font-size: 1.5rem; }
+        .rating-stars { cursor: pointer; font-size: 1.5rem; }
+        .rating-stars i { color: #555; transition: color 0.15s, transform 0.1s; }
+        .rating-stars i:hover { transform: scale(1.15); }
         .vehicle-badge { background: #333; border-radius: 10px; padding: 3px 10px; font-size: 0.75rem; }
         .toast-notification { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
         .empty-state { text-align: center; padding: 2rem; color: #aaa; }
         .empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
-
-        .mechanic-rating-stars {
-            color: #ffc107;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-        }
 
         @media (max-width: 600px) {
             .chat-sidebar { width: 180px; min-width: 140px; }
@@ -521,13 +517,13 @@ $full_name = getCurrentUserFullName();
                     </div>
 
                     <div class="mt-3">
-                        ${!d.rated ?
-                            `<button class="btn btn-sm btn-warning" onclick="openRatingModal(${d.id}, '${escapeHtml(d.mechanic_name || 'Mecánico')}')">
-                                <i class="fa-solid fa-star"></i> Calificar este diagnóstico
+                        ${(d.rated == 0 || d.rated === '0' || !d.rated) ?
+                            `<button class="btn btn-sm btn-warning px-3 py-2" onclick="openRatingModal(${d.id}, '${escapeHtml(d.mechanic_name || 'Mecánico')}')">
+                                <i class="fa-solid fa-star me-1"></i> Calificar este diagnóstico
                             </button>` :
                             `<div class="d-flex align-items-center gap-2 flex-wrap">
-                                <span class="badge bg-success">✓ Calificado</span>
-                                <span class="text-warning">${'★'.repeat(d.rating || 0)}${'☆'.repeat(5 - (d.rating || 0))}</span>
+                                <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i>Calificado</span>
+                                <span class="text-warning" style="font-size:1.1rem;">${'★'.repeat(parseInt(d.rating) || 0)}${'☆'.repeat(5 - (parseInt(d.rating) || 0))}</span>
                                 ${d.rating_comment ? `<small class="text-muted fst-italic">"${escapeHtml(d.rating_comment)}"</small>` : ''}
                             </div>`
                         }
@@ -547,12 +543,17 @@ $full_name = getCurrentUserFullName();
         }
     }
 
+    function renderStars(rating) {
+        document.querySelectorAll('#ratingStars i').forEach((star, index) => {
+            star.className = index < rating ? 'fa-solid fa-star fa-2x' : 'fa-regular fa-star fa-2x';
+            star.style.color = index < rating ? '#ffc107' : '#555';
+        });
+    }
+
     function setRating(rating) {
         currentRating = rating;
         document.getElementById('selectedRating').value = rating;
-        document.querySelectorAll('#ratingStars i').forEach((star, index) => {
-            star.className = index < rating ? 'fa-solid fa-star fa-2x' : 'fa-regular fa-star fa-2x';
-        });
+        renderStars(rating);
     }
 
     function openRatingModal(diagnosticId, mechanicName) {
@@ -561,7 +562,13 @@ $full_name = getCurrentUserFullName();
         document.getElementById('ratingComment').value = '';
         currentRating = 0;
         document.getElementById('selectedRating').value = '0';
-        document.querySelectorAll('#ratingStars i').forEach(s => s.className = 'fa-regular fa-star fa-2x');
+        renderStars(0);
+        const stars = document.querySelectorAll('#ratingStars i');
+        stars.forEach((star, index) => {
+            star.onmouseover = () => renderStars(index + 1);
+            star.onmouseout  = () => renderStars(currentRating);
+            star.onclick     = () => setRating(index + 1);
+        });
         ratingModalInstance.show();
     }
 
@@ -639,7 +646,7 @@ $full_name = getCurrentUserFullName();
         mechanicSelect.innerHTML = '<option value="">Seleccionar mecánico...</option>';
         if (mechanicsResult.success && mechanicsResult.mechanics) {
             mechanicsResult.mechanics.forEach(m => {
-                mechanicSelect.innerHTML += `<option value="${m.id}">${escapeHtml(m.full_name)}${m.specialty ? ' - ' + escapeHtml(m.specialty) : ''}${m.workshop_name ? ' | ' + escapeHtml(m.workshop_name) : ''} ${m.rating > 0 ? '★ ' + parseFloat(m.rating).toFixed(1) : ''}</option>`;
+                mechanicSelect.innerHTML += `<option value="${m.id}">${escapeHtml(m.full_name)}${m.specialty ? ' - ' + escapeHtml(m.specialty) : ''}${m.workshop_name ? ' | ' + escapeHtml(m.workshop_name) : ''}</option>`;
             });
         }
         const vehiclesResult = await apiCall('get_vehicles');
@@ -865,11 +872,7 @@ $full_name = getCurrentUserFullName();
 
         if (result.success && result.mechanics && result.mechanics.length > 0) {
             container.innerHTML = result.mechanics.map(m => {
-                const rating = parseFloat(m.rating) || 0;
-                const starsHtml = rating > 0 
-                    ? `<span class="mechanic-rating-stars">${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))}</span> <small class="text-muted">(${rating.toFixed(1)})</small>`
-                    : '<small class="text-muted">Sin calificaciones aún</small>';
-
+                const stars = m.rating > 0 ? '★'.repeat(Math.round(parseFloat(m.rating))) + '☆'.repeat(5 - Math.round(parseFloat(m.rating))) : 'Sin calificaciones';
                 return `
                 <div class="diagnostic-card">
                     <div class="d-flex justify-content-between align-items-start">
@@ -879,7 +882,7 @@ $full_name = getCurrentUserFullName();
                             <div class="small mt-1">🔧 <strong>${escapeHtml(m.specialty || 'Mecánica general')}</strong></div>
                             ${m.workshop_name ? `<div class="small">🏪 ${escapeHtml(m.workshop_name)}</div>` : ''}
                             ${m.experience_years ? `<div class="small">📅 ${m.experience_years} años de experiencia</div>` : ''}
-                            <div class="small mt-1">${starsHtml}</div>
+                            <div class="small mt-1 text-warning">${stars}</div>
                         </div>
                         <div class="d-flex flex-column gap-2">
                             <button class="btn btn-sm btn-red" onclick="quickAppointment(${m.id})">
@@ -956,7 +959,7 @@ $full_name = getCurrentUserFullName();
                 <div class="d-flex align-items-center justify-content-between p-2 mb-1" style="background:#2a2a2a; border-radius:10px;">
                     <div>
                         <div style="font-size:0.88rem; font-weight:600;">${escapeHtml(m.full_name)}</div>
-                        <div style="font-size:0.75rem; color:#888;">${escapeHtml(m.specialty || 'Mecánica general')}${m.workshop_name ? ' — ' + escapeHtml(m.workshop_name) : ''} ${m.rating > 0 ? '★ ' + parseFloat(m.rating).toFixed(1) : ''}</div>
+                        <div style="font-size:0.75rem; color:#888;">${escapeHtml(m.specialty || 'Mecánica general')}${m.workshop_name ? ' — ' + escapeHtml(m.workshop_name) : ''}</div>
                     </div>
                     <button class="btn btn-sm btn-red" onclick="selectMechanicForChat(${m.id}, '${escapeHtml(m.full_name)}')">
                         <i class="fa-solid fa-comment"></i> Chatear
