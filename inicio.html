@@ -6,25 +6,43 @@
     <title>Kiroo · Tu copiloto de seguridad vial</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/inicio.css">
 </head>
 <body>
 
-    <!-- HEADER PARA VISITANTES (sin user-badge) -->
+    <div class="blob-decor blob-1"></div>
+    <div class="blob-decor blob-2"></div>
+
     <header class="main-header">
         <div class="brand-name">KI<span>R</span>OO</div>
-        
+        <nav class="header-nav">
+            <a href="perfiles.html" class="btn-profile-access">
+                <i class="fa-solid fa-circle-user"></i> Mi Perfil
+            </a>
+        </nav>
     </header>
 
     <main>
         <section class="hero-section">
-            <h1 class="hero-title">El futuro de tu seguridad vial comienza aquí</h1>
-            <p class="hero-subtitle">
-                Plataforma interactiva diseñada para enseñar a conductores primerizos el cuidado básico y mantenimiento de su vehículo de forma sencilla.
-            </p>
-            <div class="cta-container">
-                <a href="login.html" class="btn-login">Iniciar sesión</a>
-                <a href="register.html" class="btn-sign-up">Regístrate</a>
+            <div class="hero-content-wrapper">
+                
+                <div class="glass-panel">
+                    <p class="hero-tagline">PLATAFORMA INTERACTIVA + SEGURIDAD</p>
+                    <h1 class="hero-title">El futuro de tu <span>seguridad vial</span> comienza aquí</h1>
+                    <p class="hero-subtitle">
+                        Enseñamos a conductores primerizos el cuidado básico y mantenimiento de su vehículo de forma sencilla y eficiente.
+                    </p>
+                    <div class="cta-container">
+                        <a href="login.html" class="btn-main">Iniciar sesión</a>
+                        <a href="register.html" class="btn-secondary">Regístrate</a>
+                    </div>
+                </div>
+
+                <div class="hero-mockup">
+                    <img src="img/mockup-tablet-kiroo.png" alt="Kiroo App Interface" class="floating-img">
+                </div>
+
             </div>
         </section>
 
@@ -32,23 +50,22 @@
             <div class="benefit-item">
                 <span class="benefit-icon">🛡️</span>
                 <h3>Reduce Riesgos</h3>
-                <p>Aprende a identificar fallas antes de que pongan en peligro tu vida y la de tus pasajeros.</p>
+                <p>Aprende a identificar fallas antes de que pongan en peligro tu vida.</p>
             </div>
             <div class="benefit-item">
                 <span class="benefit-icon">💰</span>
                 <h3>Ahorra Dinero</h3>
-                <p>Evita gastos excesivos en mecánicos mediante el mantenimiento preventivo y conocimientos claros.</p>
+                <p>Evita gastos excesivos mediante el mantenimiento preventivo.</p>
             </div>
             <div class="benefit-item">
                 <span class="benefit-icon">📱</span>
                 <h3>Todo en uno</h3>
-                <p>Manuales, videos tutoriales, escáner inteligente y gamificación en una sola plataforma.</p>
+                <p>Manuales, videos, escáner inteligente y gamificación.</p>
             </div>
         </section>
 
         <section class="info-section">
             <h2>Más que una app, tu copiloto de confianza</h2>
-            <p>Todo lo que necesitas para mantener tu vehículo en óptimas condiciones</p>
             <div class="features-highlight">
                 <div class="highlight-card">
                     <i class="fa-solid fa-stethoscope"></i>
@@ -58,51 +75,57 @@
                 <div class="highlight-card">
                     <i class="fa-solid fa-calendar-check"></i>
                     <h4>Agenda Predictiva</h4>
-                    <p>Recordatorios de mantenimiento según kilometraje</p>
+                    <p>Recordatorios según kilometraje</p>
                 </div>
                 <div class="highlight-card">
                     <i class="fa-solid fa-gamepad"></i>
                     <h4>Modo Gamificación</h4>
-                    <p>Gana insignias mientras aprendes mecánica básica</p>
+                    <p>Gana insignias mientras aprendes mecánica</p>
                 </div>
                 <div class="highlight-card">
                     <i class="fa-solid fa-phone-flip"></i>
                     <h4>Emergencias 24/7</h4>
-                    <p>Acceso rápido a grúas y asistencia vial</p>
+                    <p>Acceso rápido a grúas y asistencia</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="footer-kiroo">
-        <div class="footer-content">
-            <div class="footer-col">
-                <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
-                <p>Tu copiloto de seguridad vial. Aprendizaje, mantenimiento y asistencia en un solo lugar.</p>
+     <footer class="footer-kiroo">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-md-5">
+                    <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
+                    <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
+                    <div class="d-flex gap-3 mt-2">
+                        <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <h5>Explorar</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="vehiculos.html"><i class="fa-regular fa-circle-right me-2"></i>Registro vehicular</a></li>
+                        <li class="mb-2"><a href="agenda.html"><i class="fa-regular fa-circle-right me-2"></i>Agenda de servicios</a></li>
+                        <li class="mb-2"><a href="gamificacion.html"><i class="fa-regular fa-circle-right me-2"></i>Gamificación</a></li>
+                        <li class="mb-2"><a href="emergencias.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contacto</h5>
+                    <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
+                    <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
+                    <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
+                </div>
             </div>
-            <div class="footer-col">
-                <h5>Explorar</h5>
-                <a href="manual.html">Manual Técnico</a><br>
-                <a href="videos.html">Videos Tutoriales</a><br>
-                <a href="quiz.html">Quiz de Logros</a><br>
-                <a href="scaner.html">Escáner de Señales</a>
+            <hr class="mt-4 opacity-25">
+            <div class="text-center pt-2">
+                <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
             </div>
-            <div class="footer-col">
-                <h5>Soporte</h5>
-                <a href="emergencias.html">Emergencias</a><br>
-                <a href="contacto.html">Contacto</a><br>
-                <a href="faq.html">Preguntas Frecuentes</a>
-            </div>
-            <div class="footer-col">
-                <h5>Legal</h5>
-                <a href="#">Términos y Condiciones</a><br>
-                <a href="#">Política de Privacidad</a><br>
-                <p>© 2025 Kiroo</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 Kiroo — Your safety, our mission. Todos los derechos reservados.</p>
         </div>
     </footer>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
