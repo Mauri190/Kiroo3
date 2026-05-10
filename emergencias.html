@@ -49,78 +49,117 @@
             opacity: 0.8;
         }
 
-        .brand {
-            font-size: 14px;
-            letter-spacing: 3px;
-            font-weight: 300;
-        }
-
-        h1 {
-            font-size: clamp(2.5rem, 8vw, 4rem);
-            font-weight: 400;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-
-        .grid-container {
+ .emergencias-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            width: 100%;
-            max-width: 950px;
+            gap: 30px;
+            max-width: 900px;
+            margin: 40px auto;
         }
 
-        .card {
-            background: linear-gradient(145deg, #d30d0d 0%, #4d2323 100%);
-            border-radius: 35px;
-            padding: 45px 20px;
+        .card-emergencia {
+            background: linear-gradient(135deg, #ff0000 0%, #4a1a1a 100%);
+            border-radius: 40px;
+            padding: 40px;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
 
-        .card h2 {
-            font-size: 1.5rem;
-            font-weight: 400;
-            margin-bottom: 10px;
-        }
-
-        .card .number {
+        .card-emergencia h2 {
             font-size: 1.8rem;
-            font-weight: 300;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
 
-        .call-button {
-            background-color: #fff;
-            color: #000;
-            text-decoration: none;
-            padding: 14px 0;
-            border-radius: 50px;
-            font-weight: 500;
-            font-size: 1.1rem;
+        .numero-emergencia {
+            font-size: 2.5rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+               /* Estilos para la Infografía Minimalista */
+        .checklist-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #a51313;
+            border-radius: 35px;
+            padding: 40px;
+            margin: 50px auto;
+            max-width: 1000px;
+        }
+
+        .checklist-title {
+            color: #ff0000;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .steps-wrapper {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
+            position: relative;
+            gap: 20px;
+        }
+
+        /* Línea conectora entre pasos */
+        .steps-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 45px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            z-index: 0;
+        }
+
+        .step-card {
+            flex: 1;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .step-number {
+            width: 90px;
+            height: 90px;
+            background-color: #1a1a1a;
+            border: 3px solid #a51313;
+            color: white;
+            border-radius: 50%;
+            display: flex;
             align-items: center;
-            gap: 12px;
-            width: 80%;
-            max-width: 220px;
-            transition: opacity 0.2s;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 15px rgba(165, 19, 19, 0.4);
         }
 
-        .call-button:active {
-            opacity: 0.8;
+        .step-text h3 {
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
-        .icon-phone {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z'%3E%3C/path%3E%3C/svg%3E");
-            background-size: contain;
-            background-repeat: no-repeat;
+        .step-text p {
+            font-size: 0.75rem;
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        .emergency-numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .small-card-tel {
+            background: linear-gradient(135deg, #a51313 0%, #000 100%);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
         }
 
         @media (max-width: 700px) {
@@ -140,48 +179,62 @@
 </head>
 <body>
 
+
+ 
+
+     <main class="container">
+        <div class="banner-title"><h1>Asistencia Inmediata</h1></div>
     <div class="top-bar">
         <a href="index.html" class="btn-back">
             <i class="fa-solid fa-arrow-left"></i> Volver al inicio
         </a>
         <div class="brand">KIROO</div>
     </div>
-
-    <h1>Emergencias</h1>
-
-    <div class="grid-container">
-        <div class="card">
-            <h2>Policia Nacional civil</h2>
-            <div class="number">911</div>
-            <a href="tel:911" class="call-button">
-                <i class="icon-phone"></i> Llamar
-            </a>
+        <div class="emergency-numbers-grid">
+            <div class="small-card-tel"><h3>PNC</h3><p>911</p></div>
+            <div class="small-card-tel"><h3>SEM</h3><p>132</p></div>
+            <div class="small-card-tel"><h3>Cruz Verde</h3><p>2288-5792</p></div>
+            <div class="small-card-tel"><h3>Grúa</h3><p>2510-0199</p></div>
         </div>
 
-        <div class="card">
-            <h2>Sistemas de Emergencias Médicas</h2>
-            <div class="number">132</div>
-            <a href="tel:132" class="call-button">
-                <i class="icon-phone"></i> Llamar
-            </a>
-        </div>
+        <section class="checklist-container">
+            <h2 class="checklist-title">¿Tuviste un percance? Sigue estos pasos:</h2>
+            
+            <div class="steps-wrapper">
+                <div class="step-card">
+                    <div class="step-number">⚠️</div>
+                    <div class="step-text">
+                        <h3>Paso 1</h3>
+                        <p>Enciende luces de emergencia (estacionarias) inmediatamente.</p>
+                    </div>
+                </div>
 
-        <div class="card">
-            <h2>Cruz verde Salvadoreña</h2>
-            <div class="number">2288-5792</div>
-            <a href="tel:22885792" class="call-button">
-                <i class="icon-phone"></i> Llamar
-            </a>
-        </div>
+                <div class="step-card">
+                    <div class="step-number">📐</div>
+                    <div class="step-text">
+                        <h3>Paso 2</h3>
+                        <p>Coloca los triángulos reflectivos a 15-30 metros de distancia.</p>
+                    </div>
+                </div>
 
-        <div class="card">
-            <h2>Grúa de emergencia</h2>
-            <div class="number">2510-0199</div>
-            <a href="tel:25100199" class="call-button">
-                <i class="icon-phone"></i> Llamar
-            </a>
-        </div>
-    </div>
+                <div class="step-card">
+                    <div class="step-number">📸</div>
+                    <div class="step-text">
+                        <h3>Paso 3</h3>
+                        <p>Toma fotos de todos los ángulos y placas para el seguro.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">📞</div>
+                    <div class="step-text">
+                        <h3>Paso 4</h3>
+                        <p>Mantén la calma y llama a tu aseguradora o a emergencias.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
 </body>
 </html>
