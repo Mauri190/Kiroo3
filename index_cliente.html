@@ -4,146 +4,268 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kiroo - Panel de Cliente</title>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Fuente Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/index_clientes.css">
+    <style>
+        /* ===== USER MENU ===== */
+        .user-menu-wrapper { position: relative; }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 6px 14px 6px 6px;
+            border-radius: 30px;
+            background: rgba(211,47,47,0.85);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: background 0.2s;
+            user-select: none;
+        }
+        .user-badge:hover { background: rgba(211,47,47,1); }
+
+        .header-avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.5);
+            flex-shrink: 0;
+        }
+        .header-avatar-icon {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 700; color: white;
+            flex-shrink: 0; border: 2px solid rgba(255,255,255,0.4);
+        }
+        .user-name-header {
+            font-size: 0.78rem; font-weight: 600; color: white;
+            max-width: 110px; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Dropdown */
+        .user-dropdown {
+            position: absolute; top: calc(100% + 12px); right: 0;
+            background: #111; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px; min-width: 230px;
+            box-shadow: 0 12px 45px rgba(0,0,0,0.6);
+            z-index: 9999; overflow: hidden;
+            opacity: 0; pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        .dd-header {
+            padding: 16px;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .dd-avatar-lg {
+            width: 50px; height: 50px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #d32f2f; flex-shrink: 0;
+        }
+        .dd-avatar-icon-lg {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: linear-gradient(135deg, #a51313, #d32f2f);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0;
+        }
+        .dd-info .dd-name { font-weight: 700; font-size: 0.9rem; color: white; }
+        .dd-info .dd-role {
+            font-size: 0.7rem; color: #ff6b6b; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .dd-info .dd-user { font-size: 0.72rem; color: #777; margin-top: 1px; }
+
+        .dd-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 18px; color: #ccc; text-decoration: none;
+            font-size: 0.83rem; font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer; border: none; background: none;
+            width: 100%; text-align: left;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .dd-item:hover { background: rgba(255,255,255,0.06); color: white; }
+        .dd-item i { width: 18px; text-align: center; color: #888; }
+        .dd-item:hover i { color: #d32f2f; }
+        .dd-sep { height: 1px; background: rgba(255,255,255,0.07); margin: 4px 0; }
+        .dd-item.logout { color: #ff5252; }
+        .dd-item.logout i { color: #ff5252; }
+        .dd-item.logout:hover { background: rgba(255,82,82,0.1); color: #ff6b6b; }
+    </style>
 </head>
 <body>
 
-    <!-- HEADER PARA CLIENTES -->
-    <header class="main-header">
-        <div class="brand-name">KI<span>R</span>OO </div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="index_cliente.html">HOME</a></li>
-                <li class="dropdown">
-                    <button class="dropbtn">APRENDER ▾</button>
-                    <div class="dropdown-content">
-                        <a href="manual.html">📘 Manual Técnico</a>
-                        <a href="videos.html">🎥 Videos Tutoriales</a>
-                        <a href="quiz.html">📝 Quiz de Logros</a>
-                        <a href="card-album.html">🃏 Card Album</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <button class="dropbtn">HERRAMIENTAS ▾</button>
-                    <div class="dropdown-content">
-                        <a href="scaner.html">🔍 Escáner de Señales</a>
-                        <a href="vehiculos.html">🚗 Mis Vehículos</a>
-                        <a href="agenda.html">📅 Agenda de Mantenimiento</a>
-                        <a href="gamificacion.html">🎮 Gamificación</a>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <button class="dropbtn">AYUDA ▾</button>
-                    <div class="dropdown-content">
-                        <a href="emergencias.html">🚨 Números de Emergencia</a>
-                    </div>
-                </li>
-                <span class="nav-separator">|</span>
-            </ul>
-        </nav>
-      
-        <div class="user-badge">
-            <i class="fa-solid fa-user"></i>
-            <span>Mi Cuenta</span>
-        </div>
-    </header>
-
-    <!-- Contenido principal para cliente -->
-    <main>
-        <div class="container main-container">
-            <div class="welcome-section">
-                <h2>Bienvenido a Kiroo</h2>
-                <p class="lead-custom">Tu asistente inteligente para el cuidado del vehículo y la seguridad vial</p>
-            </div>
-
-            <div class="custom-grid">
-                <a href="dashboard_cliente.php" class="menu-card-modern">
-                    <i class="fa-solid fa-user-gear"></i>
-                    <span>Panel Cliente</span>
-                    <small>Diagnósticos y citas</small>
-                </a>
-                <a href="vehiculos_cliente.html" class="menu-card-modern">
-                    <i class="fa-solid fa-clipboard-list"></i>
-                    <span>Registro</span>
-                    <small>Gestiona tu flota</small>
-                </a>
-                <a href="agenda_cliente.html" class="menu-card-modern">
-                    <i class="fa-regular fa-calendar-check"></i>
-                    <span>Agenda</span>
-                    <small>Mantenimiento al día</small>
-                </a>
-                <a href="gamificacion.html" class="menu-card-modern">
-                    <i class="fa-solid fa-gamepad"></i>
-                    <span>Gamificación</span>
-                    <small>Aprende jugando</small>
-                </a>
-                <a href="card-album.html" class="menu-card-modern">
-                    <i class="fa-solid fa-clone"></i>
-                    <span>Card Album</span>
-                    <small>Colección digital</small>
-                </a>
-                <a href="emergencias.html" class="menu-card-modern">
-                    <i class="fa-solid fa-phone-flip"></i>
-                    <span>Emergencias</span>
-                    <small>Asistencia 24/7</small>
-                </a>
-                <a href="scaner.html" class="menu-card-modern">
-                    <i class="fa-solid fa-qrcode"></i>
-                    <span>Scanner</span>
-                    <small>Escanea tu vehículo</small>
-                </a>
-                <a href="videos.html" class="menu-card-modern">
-                    <i class="fa-solid fa-circle-play"></i>
-                    <span>Videos</span>
-                    <small>Tutoriales y tips</small>
-                </a>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer para cliente -->
-    <footer class="footer-kiroo">
-        <div class="container">
-            <div class="row gy-4">
-                <div class="col-md-5">
-                    <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
-                    <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
-                    <div class="d-flex gap-3 mt-2">
-                        <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
-                        <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
-                        <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
-                    </div>
+<header class="main-header">
+    <div class="brand-name">KI<span>R</span>OO</div>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="index_cliente.html">HOME</a></li>
+            <li class="dropdown">
+                <button class="dropbtn">APRENDER ▾</button>
+                <div class="dropdown-content">
+                    <a href="manual.html">📘 Manual Técnico</a>
+                    <a href="videos.html">🎥 Videos Tutoriales</a>
+                    <a href="quiz.html">📝 Quiz de Logros</a>
+                    <a href="card-album.html">🃏 Card Album</a>
                 </div>
-                <div class="col-md-3">
-                    <h5>Explorar</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="vehiculos.html"><i class="fa-regular fa-circle-right me-2"></i>Registro vehicular</a></li>
-                        <li class="mb-2"><a href="agenda.html"><i class="fa-regular fa-circle-right me-2"></i>Agenda de servicios</a></li>
-                        <li class="mb-2"><a href="gamificacion.html"><i class="fa-regular fa-circle-right me-2"></i>Gamificación</a></li>
-                        <li class="mb-2"><a href="emergencias.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
-                    </ul>
+            </li>
+            <li class="dropdown">
+                <button class="dropbtn">HERRAMIENTAS ▾</button>
+                <div class="dropdown-content">
+                    <a href="scaner.html">🔍 Escáner de Señales</a>
+                    <a href="vehiculos_cliente.html">🚗 Mis Vehículos</a>
+                    <a href="agenda_cliente.html">📅 Agenda de Mantenimiento</a>
+                    <a href="gamificacion.html">🎮 Gamificación</a>
                 </div>
-                <div class="col-md-4">
-                    <h5>Contacto</h5>
-                    <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
-                    <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
-                    <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
+            </li>
+            <li class="dropdown">
+                <button class="dropbtn">AYUDA ▾</button>
+                <div class="dropdown-content">
+                    <a href="emergencias_cliente.html">🚨 Números de Emergencia</a>
+                </div>
+            </li>
+            <span class="nav-separator">|</span>
+        </ul>
+    </nav>
+    <div class="search-container">
+        <input type="text" placeholder="BUSCAR">
+        <i class="fa-solid fa-search"></i>
+    </div>
+
+    <!-- USER MENU -->
+    <div class="user-menu-wrapper" id="userMenuWrapper">
+        <div class="user-badge" id="userBadge" onclick="toggleUserMenu(event)">
+            <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+            <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
+            <span class="user-name-header" id="headerUserName">Cargando...</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:rgba(255,255,255,0.7); margin-left:2px;"></i>
+        </div>
+
+        <div class="user-dropdown" id="userDropdown">
+            <!-- Header del dropdown -->
+            <div class="dd-header">
+                <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg" style="display:none;">
+                <div class="dd-info">
+                    <div class="dd-name" id="ddName">...</div>
+                    <div class="dd-role">Cliente</div>
+                    <div class="dd-user" id="ddUsername">@...</div>
                 </div>
             </div>
-            <hr class="mt-4 opacity-25">
-            <div class="text-center pt-2">
-                <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
+            <!-- Opciones -->
+            <a href="perfil_cliente.html" class="dd-item">
+                <i class="fa-solid fa-user-circle"></i> Mi Perfil
+            </a>
+            <a href="dashboard_cliente.php" class="dd-item">
+                <i class="fa-solid fa-tachometer-alt"></i> Panel Cliente
+            </a>
+            <a href="dashboard_cliente.php?tab=appointments" class="dd-item">
+                <i class="fa-solid fa-calendar-check"></i> Mis Citas
+            </a>
+            <div class="dd-sep"></div>
+            <button class="dd-item logout" onclick="logout()">
+                <i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container main-container">
+        <div class="welcome-section">
+            <h2>Bienvenido, <span id="welcomeName">...</span> 👋</h2>
+            <p class="lead-custom">Tu asistente inteligente para el cuidado del vehículo y la seguridad vial</p>
+        </div>
+
+        <div class="custom-grid">
+            <a href="dashboard_cliente.php" class="menu-card-modern">
+                <i class="fa-solid fa-user-gear"></i>
+                <span>Panel Cliente</span>
+                <small>Diagnósticos y citas</small>
+            </a>
+            <a href="vehiculos_cliente.html" class="menu-card-modern">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <span>Registro</span>
+                <small>Gestiona tu flota</small>
+            </a>
+            <a href="agenda_cliente.html" class="menu-card-modern">
+                <i class="fa-regular fa-calendar-check"></i>
+                <span>Agenda</span>
+                <small>Mantenimiento al día</small>
+            </a>
+            <a href="gamificacion.html" class="menu-card-modern">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>Gamificación</span>
+                <small>Aprende jugando</small>
+            </a>
+            <a href="card-album.html" class="menu-card-modern">
+                <i class="fa-solid fa-clone"></i>
+                <span>Card Album</span>
+                <small>Colección digital</small>
+            </a>
+            <a href="emergencias.html" class="menu-card-modern">
+                <i class="fa-solid fa-phone-flip"></i>
+                <span>Emergencias</span>
+                <small>Asistencia 24/7</small>
+            </a>
+            <a href="scaner.html" class="menu-card-modern">
+                <i class="fa-solid fa-qrcode"></i>
+                <span>Scanner</span>
+                <small>Escanea tu vehículo</small>
+            </a>
+            <a href="videos.html" class="menu-card-modern">
+                <i class="fa-solid fa-circle-play"></i>
+                <span>Videos</span>
+                <small>Tutoriales y tips</small>
+            </a>
+        </div>
+    </div>
+</main>
+
+<footer class="footer-kiroo">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-5">
+                <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
+                <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
+                <div class="d-flex gap-3 mt-2">
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <h5>Explorar</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="vehiculos.html"><i class="fa-regular fa-circle-right me-2"></i>Registro vehicular</a></li>
+                    <li class="mb-2"><a href="agenda.html"><i class="fa-regular fa-circle-right me-2"></i>Agenda de servicios</a></li>
+                    <li class="mb-2"><a href="gamificacion.html"><i class="fa-regular fa-circle-right me-2"></i>Gamificación</a></li>
+                    <li class="mb-2"><a href="emergencias.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contacto</h5>
+                <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
+                <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
+                <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
             </div>
         </div>
-    </footer>
+        <hr class="mt-4 opacity-25">
+        <div class="text-center pt-2">
+            <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/index.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>

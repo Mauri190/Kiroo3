@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiroo - Mi Perfil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/perfil.css">
+</head>
+<body>
+
+    <!-- ===== HEADER (igual que index) ===== -->
+    <header class="main-header">
+        <div class="brand-name">KI<span>R</span>OO</div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index_mecanico.html">HOME</a></li>
+                <li class="dropdown">
+                    <button class="dropbtn">APRENDER ▾</button>
+                    <div class="dropdown-content">
+                        <a href="manual.html">📘 Manual Técnico</a>
+                        <a href="videos.html">🎥 Videos Tutoriales</a>
+                        <a href="quiz.html">📝 Quiz de Logros</a>
+                        <a href="card-album.html">🃏 Card Album</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <button class="dropbtn">HERRAMIENTAS ▾</button>
+                    <div class="dropdown-content">
+                        <a href="scaner.html">🔍 Escáner de Señales</a>
+                        <a href="vehiculos_mecanico.html">🚗 Mis Vehículos</a>
+                        <a href="agenda_mecanico.html">📅 Agenda de Mantenimiento</a>
+                        <a href="gamificacion.html">🎮 Gamificación</a>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <button class="dropbtn">AYUDA ▾</button>
+                    <div class="dropdown-content">
+                        <a href="emergencias_mecanico.html">🚨 Números de Emergencia</a>
+                    </div>
+                </li>
+                <span class="nav-separator">|</span>
+            </ul>
+        </nav>
+        <div class="search-container">
+            <input type="text" placeholder="BUSCAR">
+            <i class="fa-solid fa-search"></i>
+        </div>
+
+        <!-- USER MENU -->
+        <div class="user-menu-wrapper" id="userMenuWrapper">
+            <div class="user-badge" id="userBadge" onclick="toggleUserMenu(event)">
+                <div class="header-avatar-icon" id="headerAvatarIcon">
+                    <span id="headerInitials">?</span>
+                </div>
+                <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
+                <span class="user-name-header" id="headerUserName">Cargando...</span>
+                <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:rgba(255,255,255,0.7); margin-left:2px;"></i>
+            </div>
+
+            <div class="user-dropdown" id="userDropdown">
+                <div class="dd-header">
+                    <div class="dd-avatar-icon-lg" id="ddAvatarIcon">
+                        <span id="ddInitials">?</span>
+                    </div>
+                    <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg" style="display:none;">
+                    <div class="dd-info">
+                        <div class="dd-name" id="ddName">...</div>
+                        <div class="dd-role" id="ddRoleText">Cliente</div>
+                        <div class="dd-user" id="ddUsername">@...</div>
+                    </div>
+                </div>
+                <a href="perfil.html" class="dd-item">
+                    <i class="fa-solid fa-user-circle"></i> Mi Perfil
+                </a>
+                <a href="#" class="dd-item" id="ddPanelLink">
+                    <i class="fa-solid fa-tachometer-alt" id="ddPanelIcon"></i>
+                    <span id="ddPanelText">Panel</span>
+                </a>
+                <a href="#" class="dd-item" id="ddAppointmentsLink">
+                    <i class="fa-solid fa-calendar-check"></i> Mis Citas
+                </a>
+                <div class="dd-sep"></div>
+                <button class="dd-item logout" onclick="logout()">
+                    <i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MAIN ===== -->
+    <main>
+        <div class="profile-container">
+
+            <!-- PROFILE CARD -->
+            <div class="profile-card" id="profileCard">
+                <div class="card-hero" id="cardHero">
+                    <div class="avatar-wrap">
+                        <div class="avatar-circle" onclick="document.getElementById('photoInput').click()" title="Cambiar foto">
+                            <span id="avatarInitials">?</span>
+                            <img src="" alt="Foto de perfil" id="avatarImg"
+                            style="display:none; position:absolute; inset:0; width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                            <div class="avatar-overlay">
+                                <i class="fa-solid fa-camera"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-change-hint">Toca para cambiar</div>
+                        <p class="upload-progress" id="uploadProgress">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Subiendo...
+                        </p>
+                        <input type="file" id="photoInput" accept="image/jpeg,image/png,image/gif,image/webp"
+                        onchange="uploadPhoto(this)">
+                    </div>
+                    <div class="hero-info">
+                        <h2 id="heroName">...</h2>
+                        <div class="hero-role" id="heroRole">Cargando...</div>
+                        <div class="hero-username" id="heroUsername">@...</div>
+                        <div id="heroRating" style="margin-top:8px; display:none;">
+                            <span class="rating-badge">
+                                <i class="fa-solid fa-star"></i>
+                                <span id="ratingValue">0.00</span>
+                                <span style="color:#888; font-size:0.75rem;">/ 5</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body-custom">
+                    <!-- Información personal -->
+                    <div class="info-section">
+                        <div class="info-section-title">Información Personal</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-solid fa-user me-1"></i> Nombre completo</div>
+                                <div class="item-value" id="infoFullName">—</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-solid fa-at me-1"></i> Usuario</div>
+                                <div class="item-value" id="infoUsername">—</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-regular fa-envelope me-1"></i> Email</div>
+                                <div class="item-value" id="infoEmail">—</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-solid fa-phone me-1"></i> Teléfono</div>
+                                <div class="item-value" id="infoPhone">—</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-solid fa-calendar me-1"></i> Miembro desde</div>
+                                <div class="item-value" id="infoSince">—</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-solid fa-id-badge me-1"></i> Tipo de cuenta</div>
+                                <div class="item-value" id="infoType">—</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info profesional (mecánico) -->
+                    <div class="info-section" id="mecanicoSection" style="display:none;">
+                        <div class="info-section-title">Información Profesional</div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-solid fa-wrench me-1"></i> Especialidad</div>
+                                <div class="item-value" id="infoSpecialty">—</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-solid fa-store me-1"></i> Taller</div>
+                                <div class="item-value" id="infoWorkshop">—</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-solid fa-clock me-1"></i> Años de experiencia</div>
+                                <div class="item-value" id="infoExperience">—</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="item-label"><i class="fa-solid fa-star me-1"></i> Calificación</div>
+                                <div class="item-value" id="infoRating">—</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDIT CARD -->
+            <div class="edit-card">
+                <div class="edit-card-header">
+                    <h3><i class="fa-solid fa-pen-to-square me-2" id="editIcon" style="color:#d32f2f;"></i> Editar Información</h3>
+                    <span style="font-size:0.75rem; color:#555;">Los cambios se guardan al pulsar el botón</span>
+                </div>
+                <div class="edit-card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label-custom">Nombre completo *</label>
+                            <input type="text" class="form-input" id="editFullName" placeholder="Tu nombre completo">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label-custom">Teléfono</label>
+                            <input type="tel" class="form-input" id="editPhone" placeholder="Número de teléfono">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label-custom">Usuario</label>
+                            <input type="text" class="form-input" id="editUsername" disabled placeholder="No editable" style="cursor:not-allowed;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label-custom">Email</label>
+                            <input type="email" class="form-input" id="editEmail" disabled placeholder="No editable" style="cursor:not-allowed;">
+                        </div>
+                    </div>
+
+                    <!-- Campos solo mecánico -->
+                    <div id="mecanicoFields" style="display:none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label-custom">Especialidad *</label>
+                                <select class="form-input" id="editSpecialty">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="motor">Motor</option>
+                                    <option value="frenos">Frenos</option>
+                                    <option value="electricidad">Electricidad</option>
+                                    <option value="transmision">Transmisión</option>
+                                    <option value="suspension">Suspensión</option>
+                                    <option value="carroceria">Carrocería</option>
+                                    <option value="diagnostico">Diagnóstico</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label-custom">Nombre del taller</label>
+                                <input type="text" class="form-input" id="editWorkshop" placeholder="Nombre de tu taller">
+                            </div>
+                        </div>
+                        <div class="form-row single">
+                            <div class="form-group">
+                                <label class="form-label-custom">Años de experiencia</label>
+                                <input type="number" class="form-input" id="editExperience" placeholder="0" min="0" max="60">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <button class="btn-save" id="btnSave" onclick="saveProfile()">
+                            <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer-kiroo">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-md-5">
+                    <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
+                    <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
+                    <div class="d-flex gap-3 mt-2">
+                        <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <h5>Explorar</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="vehiculos.html"><i class="fa-regular fa-circle-right me-2"></i>Registro vehicular</a></li>
+                        <li class="mb-2"><a href="agenda.html"><i class="fa-regular fa-circle-right me-2"></i>Agenda de servicios</a></li>
+                        <li class="mb-2"><a href="gamificacion.html"><i class="fa-regular fa-circle-right me-2"></i>Gamificación</a></li>
+                        <li class="mb-2"><a href="emergencias.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contacto</h5>
+                    <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
+                    <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
+                    <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
+                </div>
+            </div>
+            <hr class="mt-4 opacity-25">
+            <div class="text-center pt-2">
+                <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="toast-custom" id="toastMsg">
+        <i class="fa-solid fa-check-circle t-icon"></i>
+        <span id="toastText"></span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/perfil.js"></script>
+</body>
+</html>

@@ -451,7 +451,7 @@ try {
             
         // ===== PERFIL =====
         case 'get_profile':
-            $stmt = $pdo->prepare("SELECT id, username, email, full_name, phone, user_type, specialty, workshop_name, experience_years, rating, created_at FROM users WHERE id = ?");
+            $stmt = $pdo->prepare("SELECT id, username, email, full_name, phone, user_type, specialty, workshop_name, experience_years, rating, created_at, profile_picture FROM users WHERE id = ?");
             $stmt->execute([$user_id]);
             echo json_encode(['success' => true, 'profile' => $stmt->fetch()]);
             break;
@@ -468,8 +468,9 @@ try {
             if ($user_type === 'mecanico') {
                 $specialty = $_POST['specialty'] ?? '';
                 $workshop_name = $_POST['workshop_name'] ?? '';
-                $stmt = $pdo->prepare("UPDATE users SET full_name=?, phone=?, specialty=?, workshop_name=?, updated_at=NOW() WHERE id=?");
-                $stmt->execute([$full_name, $phone, $specialty, $workshop_name, $user_id]);
+                $experience_years = intval($_POST['experience_years'] ?? 0);
+                $stmt = $pdo->prepare("UPDATE users SET full_name=?, phone=?, specialty=?, workshop_name=?, experience_years=?, updated_at=NOW() WHERE id=?");
+                $stmt->execute([$full_name, $phone, $specialty, $workshop_name, $experience_years, $user_id]);
             } else {
                 $stmt = $pdo->prepare("UPDATE users SET full_name=?, phone=?, updated_at=NOW() WHERE id=?");
                 $stmt->execute([$full_name, $phone, $user_id]);
@@ -477,6 +478,56 @@ try {
             
             $_SESSION['full_name'] = $full_name;
             echo json_encode(['success' => true, 'message' => 'Perfil actualizado correctamente']);
+            break;
+
+        // ===== FOTO DE PERFIL =====
+        case 'upload_profile_picture':
+            if (!isset($_FILES['profile_picture']) || $_FILES['profile_picture']['error'] !== UPLOAD_ERR_OK) {
+                echo json_encode(['success' => false, 'message' => 'No se recibió ninguna imagen o hubo un error']);
+                exit;
+            }
+
+            $file = $_FILES['profile_picture'];
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mimeType = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+
+            if (!in_array($mimeType, $allowedTypes)) {
+                echo json_encode(['success' => false, 'message' => 'Solo se permiten imágenes JPG, PNG, GIF o WEBP']);
+                exit;
+            }
+
+            if ($file['size'] > 3 * 1024 * 1024) {
+                echo json_encode(['success' => false, 'message' => 'La imagen no puede superar 3MB']);
+                exit;
+            }
+
+            $uploadDir = 'uploads/profiles/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+
+            // Borrar foto anterior si existe
+            $prevStmt = $pdo->prepare("SELECT profile_picture FROM users WHERE id = ?");
+            $prevStmt->execute([$user_id]);
+            $prevUser = $prevStmt->fetch();
+            if ($prevUser && $prevUser['profile_picture'] && file_exists($prevUser['profile_picture'])) {
+                unlink($prevUser['profile_picture']);
+            }
+
+            $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $filename = $uploadDir . 'user_' . $user_id . '_' . time() . '.' . strtolower($ext);
+
+            if (!move_uploaded_file($file['tmp_name'], $filename)) {
+                echo json_encode(['success' => false, 'message' => 'Error al guardar la imagen']);
+                exit;
+            }
+
+            $stmt = $pdo->prepare("UPDATE users SET profile_picture=?, updated_at=NOW() WHERE id=?");
+            $stmt->execute([$filename, $user_id]);
+
+            echo json_encode(['success' => true, 'message' => 'Foto actualizada correctamente', 'photo_url' => $filename]);
             break;
             
         // ===== LOGOUT =====
