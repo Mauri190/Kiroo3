@@ -111,25 +111,6 @@
             margin: 0 5px;
             font-size: 0.75rem;
         }
-        .search-container {
-            background: rgba(255, 255, 255, 0.1); 
-            border-radius: 30px; 
-            padding: 8px 18px;
-            display: flex; 
-            align-items: center; 
-            gap: 8px;
-        }
-        .search-container input { 
-            background: transparent; 
-            border: none; 
-            outline: none; 
-            color: white; 
-            font-size: 0.7rem; 
-            width: 110px; 
-            font-family: 'Montserrat', sans-serif;
-        }
-        .search-container input::placeholder { color: rgba(255,255,255,0.5); }
-        .search-container i { color: rgba(255,255,255,0.6); font-size: 0.8rem; }
         .user-badge {
             background: rgba(211, 47, 47, 0.9);
             border-radius: 30px;
