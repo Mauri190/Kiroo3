@@ -1,14 +1,5 @@
         /* Paleta original del mecánico */
-        :root {
-            --kiroo-red: #d32f2f;
-            --kiroo-dark-red: #b71c1c;
-            --kiroo-accent: #f44336;
-            --kiroo-card: #1e1e1e;
-            --kiroo-black: #000000;
-            --kiroo-text: #ffffff;
-            --kiroo-light-text: #cccccc;
-            --kiroo-hover: #2a2a2a;
-        }
+
 
         * {
             margin: 0;
@@ -16,12 +7,16 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
-            background: linear-gradient(145deg, var(--kiroo-red) 0%, #9e1e1e 100%);
-            min-height: 100vh;
-            color: var(--kiroo-text);
-        }
+         body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #000000;
+    color: white;
+    min-height: 100vh;
+    /* Degradado base más profundo para resaltar el vidrio */
+    background: radial-gradient(circle at top right, #2a0505 0%, #000000 100%);
+    overflow-x: hidden;
+    position: relative;
+}
 
         /* NUEVO HEADER - Estilo inicio.html */
         .main-header {
@@ -276,11 +271,14 @@
 }
 
 .main-kiroo {
-    background-color: var(--dark-bg);
+     font-family: 'Montserrat', sans-serif;
+    background-color: #000000;
     color: white;
     min-height: 100vh;
-    padding: 60px 20px;
-    font-family: 'Segoe UI', sans-serif;
+    /* Degradado base más profundo para resaltar el vidrio */
+    background: radial-gradient(circle at top right, #2a0505 0%, #000000 100%);
+    overflow-x: hidden;
+    position: relative;
 }
 
 .glow-text {
