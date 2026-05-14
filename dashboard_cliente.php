@@ -1,19 +1,3 @@
-<?php
-require_once 'config.php';
-
-if (!isLoggedIn()) {
-    header('Location: login.html');
-    exit;
-}
-
-if (getCurrentUserType() !== 'cliente') {
-    header('Location: dashboard_mecanico.php');
-    exit;
-}
-
-$user_id = getCurrentUserId();
-$full_name = getCurrentUserFullName();
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,81 +6,558 @@ $full_name = getCurrentUserFullName();
     <title>Kiroo - Panel Cliente</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary-red: #d32f2f; --bg-dark: #121212; --bg-card: #1e1e1e; }
-        body { background-color: var(--bg-dark); color: white; font-family: 'Segoe UI', sans-serif; }
-        .navbar-kiroo { background: linear-gradient(135deg, var(--primary-red) 0%, #a12626 100%); padding: 0.8rem 2rem; }
-        .content-card { background: var(--bg-card); border-radius: 20px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 25px; overflow: hidden; }
-        .card-header-custom { background: rgba(0,0,0,0.3); padding: 1rem 1.5rem; border-bottom: 1px solid #2c2c2c; font-weight: 600; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-        .btn-red { background-color: var(--primary-red); border: none; color: white; border-radius: 30px; padding: 8px 20px; transition: 0.2s; }
-        .btn-red:hover { background-color: #b71c1c; color: white; }
-        .btn-outline-red { border: 1px solid var(--primary-red); color: var(--primary-red); background: transparent; border-radius: 30px; padding: 6px 18px; }
-        .btn-outline-red:hover { background-color: var(--primary-red); color: white; }
-        .diagnostic-card, .appointment-card, .event-card { background: #2a2a2a; border-radius: 16px; padding: 1.2rem; margin-bottom: 1rem; border-left: 4px solid var(--primary-red); transition: transform 0.2s; }
+        /* ===== ESTILOS PRINCIPALES (unificados con index_cliente y agenda) ===== */
+        :root {
+            --kiroo-red: #d32f2f;
+            --kiroo-dark-red: #b71c1c;
+            --kiroo-accent: #f44336;
+            --kiroo-card: #1e1e1e;
+            --kiroo-black: #000000;
+            --kiroo-text: #ffffff;
+            --kiroo-light-text: #cccccc;
+            --kiroo-hover: #2a2a2a;
+            --bg-dark: #121212;
+            --bg-elevated: #2a2a2a;
+            --border-dim: #2c2c2c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
+            background: linear-gradient(145deg, var(--kiroo-red) 0%, #9e1e1e 100%);
+            min-height: 100vh;
+            color: var(--kiroo-text);
+        }
+
+        /* ===== HEADER ESTILO INDEX_CLIENTE ===== */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: var(--kiroo-black);
+            width: 100%;
+            position: relative;
+            z-index: 100;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .brand-name { 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            letter-spacing: 3px; 
+            color: white; 
+            font-family: 'Montserrat', sans-serif;
+            text-decoration: none;
+        }
+        .brand-name:hover { color: white; text-decoration: none; }
+        .brand-name span { color: #a51313; }
+        .nav-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 8px; 
+            align-items: center; 
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links a {
+            color: white; 
+            text-decoration: none; 
+            font-size: 0.75rem; 
+            font-weight: 600;
+            text-transform: uppercase; 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .nav-links a:hover { background-color: rgba(165, 19, 19, 0.7); }
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn {
+            cursor: pointer; 
+            background: transparent; 
+            border: none; 
+            color: white;
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            text-transform: uppercase;
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            transition: all 0.3s; 
+            font-family: 'Montserrat', sans-serif;
+        }
+        .dropbtn:hover { background-color: rgba(165, 19, 19, 0.7); }
+        .dropdown-content {
+            display: none; 
+            position: absolute; 
+            background-color: #1a1a1a; 
+            min-width: 200px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.5); 
+            z-index: 1001; 
+            border-radius: 12px;
+            border: 1px solid #a51313; 
+            margin-top: 10px; 
+            overflow: hidden;
+        }
+        .dropdown-content a {
+            color: white; 
+            padding: 12px 18px; 
+            text-decoration: none; 
+            display: block;
+            font-size: 0.7rem; 
+            font-weight: 500; 
+            text-transform: none; 
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background-color: #a51313; }
+        .dropdown:hover .dropdown-content { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-separator { 
+            color: rgba(255, 255, 255, 0.3); 
+            margin: 0 5px;
+            font-size: 0.75rem;
+        }
+
+        /* ===== USER MENU ===== */
+        .user-menu-wrapper { position: relative; }
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 6px 14px 6px 6px;
+            border-radius: 30px;
+            background: rgba(211,47,47,0.85);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: background 0.2s;
+            user-select: none;
+        }
+        .user-badge:hover { background: rgba(211,47,47,1); }
+        .header-avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.5);
+            flex-shrink: 0;
+        }
+        .header-avatar-icon {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 700; color: white;
+            flex-shrink: 0; border: 2px solid rgba(255,255,255,0.4);
+        }
+        .user-name-header {
+            font-size: 0.78rem; font-weight: 600; color: white;
+            max-width: 110px; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .user-dropdown {
+            position: absolute; top: calc(100% + 12px); right: 0;
+            background: #111; border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px; min-width: 230px;
+            box-shadow: 0 12px 45px rgba(0,0,0,0.6);
+            z-index: 9999; overflow: hidden;
+            opacity: 0; pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+        .dd-header {
+            padding: 16px;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .dd-avatar-lg {
+            width: 50px; height: 50px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #d32f2f; flex-shrink: 0;
+        }
+        .dd-avatar-icon-lg {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: linear-gradient(135deg, #a51313, #d32f2f);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0;
+        }
+        .dd-info .dd-name { font-weight: 700; font-size: 0.9rem; color: white; }
+        .dd-info .dd-role {
+            font-size: 0.7rem; color: #ff6b6b; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .dd-info .dd-user { font-size: 0.72rem; color: #777; margin-top: 1px; }
+        .dd-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 18px; color: #ccc; text-decoration: none;
+            font-size: 0.83rem; font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer; border: none; background: none;
+            width: 100%; text-align: left;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .dd-item:hover { background: rgba(255,255,255,0.06); color: white; }
+        .dd-item i { width: 18px; text-align: center; color: #888; }
+        .dd-item:hover i { color: #d32f2f; }
+        .dd-sep { height: 1px; background: rgba(255,255,255,0.07); margin: 4px 0; }
+        .dd-item.logout { color: #ff5252; }
+        .dd-item.logout i { color: #ff5252; }
+        .dd-item.logout:hover { background: rgba(255,82,82,0.1); color: #ff6b6b; }
+
+        /* ===== ESTILOS DEL PANEL ===== */
+        .content-card {
+            background: var(--kiroo-card);
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.5);
+            margin-bottom: 28px;
+            overflow: hidden;
+        }
+        .card-header-custom {
+            background: rgba(0,0,0,0.35);
+            border-bottom: 1px solid var(--border-dim);
+            padding: 1rem 1.5rem;
+            border-radius: 28px 28px 0 0 !important;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .btn-red {
+            background-color: var(--kiroo-red);
+            border: none;
+            color: white;
+            border-radius: 40px;
+            padding: 6px 18px;
+            transition: 0.2s;
+        }
+        .btn-red:hover {
+            background-color: var(--kiroo-dark-red);
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(211,47,47,0.4);
+        }
+        .btn-outline-red {
+            border: 1px solid var(--kiroo-red);
+            color: var(--kiroo-red);
+            background: transparent;
+            border-radius: 40px;
+            padding: 6px 18px;
+        }
+        .btn-outline-red:hover {
+            background-color: var(--kiroo-red);
+            color: white;
+        }
+        .diagnostic-card, .appointment-card, .event-card {
+            background: var(--bg-elevated);
+            border-radius: 20px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--kiroo-red);
+            transition: transform 0.2s;
+        }
         .diagnostic-card:hover, .appointment-card:hover { transform: translateX(5px); }
-        .diagnostic-section { background: #1f1f1f; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.6rem; border-left: 3px solid #444; }
-        .diagnostic-section .section-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 4px; }
-        .diagnostic-section .section-value { font-size: 0.92rem; color: #eee; }
-        .badge-status { padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; }
+        .diagnostic-section {
+            background: #1f1f1f;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+            border-left: 3px solid #444;
+        }
+        .diagnostic-section .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        .diagnostic-section .section-value {
+            font-size: 0.92rem;
+            color: #eee;
+        }
+        .badge-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
         .status-completado { background: #4caf50; color: white; }
         .status-pendiente { background: #ff9800; color: #000; }
         .status-confirmada { background: #2196f3; color: white; }
         .status-cancelada { background: #dc3545; color: white; }
-        .tab-btn { background: transparent; border: none; color: #aaa; padding: 10px 20px; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; }
-        .tab-btn.active { color: white; border-bottom-color: var(--primary-red); }
 
-        /* ---- CHAT LAYOUT ---- */
+        /* TABS */
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        .tab-btn.active {
+            color: white;
+            border-bottom-color: var(--kiroo-red);
+        }
+
+        /* CHAT LAYOUT */
         .chat-layout { display: flex; height: 520px; gap: 0; }
-        .chat-sidebar { width: 260px; min-width: 220px; background: #161616; border-right: 1px solid #2c2c2c; display: flex; flex-direction: column; overflow: hidden; }
-        .chat-sidebar-header { padding: 12px 14px; background: rgba(0,0,0,0.3); border-bottom: 1px solid #2c2c2c; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; font-weight: 600; }
+        .chat-sidebar {
+            width: 260px;
+            min-width: 220px;
+            background: #161616;
+            border-right: 1px solid #2c2c2c;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-sidebar-header {
+            padding: 12px 14px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid #2c2c2c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
         .chat-contact-list { flex: 1; overflow-y: auto; }
-        .chat-contact-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; border-bottom: 1px solid #1e1e1e; transition: background 0.15s; }
+        .chat-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid #1e1e1e;
+            transition: background 0.15s;
+        }
         .chat-contact-item:hover, .chat-contact-item.active { background: #2a2a2a; }
-        .chat-contact-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary-red); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: bold; flex-shrink: 0; }
+        .chat-contact-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--kiroo-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
         .chat-contact-info { flex: 1; min-width: 0; }
-        .chat-contact-name { font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chat-contact-preview { font-size: 0.72rem; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chat-unread-badge { background: var(--primary-red); color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .chat-contact-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-contact-preview {
+            font-size: 0.72rem;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-unread-badge {
+            background: var(--kiroo-red);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
         .chat-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .chat-main-header { padding: 12px 16px; background: rgba(0,0,0,0.2); border-bottom: 1px solid #2c2c2c; font-weight: 600; font-size: 0.9rem; min-height: 48px; display: flex; align-items: center; gap: 10px; }
-        .chat-messages-area { flex: 1; overflow-y: auto; padding: 15px; background: #1a1a1a; display: flex; flex-direction: column; }
-        .chat-input-area { padding: 12px 14px; background: rgba(0,0,0,0.2); border-top: 1px solid #2c2c2c; }
-        .chat-bubble { padding: 10px 15px; border-radius: 20px; margin-bottom: 10px; max-width: 75%; word-wrap: break-word; }
-        .chat-sent { background: var(--primary-red); align-self: flex-end; }
-        .chat-received { background: #333; align-self: flex-start; }
-        .chat-empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 0.9rem; text-align: center; padding: 20px; }
+        .chat-main-header {
+            padding: 12px 16px;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid #2c2c2c;
+            font-weight: 600;
+            font-size: 0.9rem;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-input-area {
+            padding: 12px 14px;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid #2c2c2c;
+        }
+        .chat-bubble {
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+        .chat-sent {
+            background: var(--kiroo-red);
+            align-self: flex-end;
+        }
+        .chat-received {
+            background: #333;
+            align-self: flex-start;
+        }
+        .chat-empty-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 20px;
+        }
 
-        .modal-content { background-color: var(--bg-card); color: white; }
-        .form-control, .form-select { background-color: #2c2c2c; border-color: #444; color: white; }
-        .form-control:focus, .form-select:focus { background-color: #333; border-color: var(--primary-red); color: white; box-shadow: none; }
+        /* MODALES */
+        .modal-content {
+            background-color: var(--kiroo-card);
+            border-radius: 28px;
+            border: 1px solid #3a3a3a;
+            color: white;
+        }
+        .modal-header, .modal-footer { border-color: #2c2c2c; }
+        .form-control, .form-select {
+            background-color: #2c2c2c;
+            border-color: #444;
+            color: white;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #333;
+            border-color: var(--kiroo-red);
+            color: white;
+            box-shadow: none;
+        }
         .rating-stars { cursor: pointer; font-size: 1.5rem; }
         .rating-stars i { color: #555; transition: color 0.15s, transform 0.1s; }
         .rating-stars i:hover { transform: scale(1.15); }
-        .vehicle-badge { background: #333; border-radius: 10px; padding: 3px 10px; font-size: 0.75rem; }
-        .toast-notification { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
-        .empty-state { text-align: center; padding: 2rem; color: #aaa; }
-        .empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
 
-        @media (max-width: 600px) {
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #aaa;
+        }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        footer {
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-header { padding: 15px 20px; flex-direction: column; }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
             .chat-sidebar { width: 180px; min-width: 140px; }
+            .tab-btn { padding: 8px 12px; font-size: 0.75rem; }
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-dark navbar-kiroo">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="index_cliente.html"><i class="fa-solid fa-car"></i> Kiroo Cliente</a>
-        <div class="d-flex align-items-center gap-2">
-            <span class="me-2"><i class="fa-regular fa-user"></i> <?php echo htmlspecialchars($full_name); ?></span>
-            <a href="index_cliente.html" class="btn btn-sm btn-outline-light me-1"><i class="fa-solid fa-home"></i> Inicio</a>
-            <button class="btn btn-sm btn-outline-light" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Salir</button>
+<!-- HEADER IDÉNTICO A INDEX_CLIENTE Y AGENDA -->
+<header class="main-header">
+    <a href="index_cliente.html" class="brand-name" style="text-decoration: none;">KI<span>R</span>OO</a>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="index_cliente.html">HOME</a></li>
+            <li class="dropdown">
+                <button class="dropbtn">APRENDER ▾</button>
+                <div class="dropdown-content">
+                    <a href="manual.html">📘 Manual Técnico</a>
+                    <a href="videos.html">🎥 Videos Tutoriales</a>
+                    <a href="quiz.html">📝 Quiz de Logros</a>
+                    <a href="card-album.html">🃏 Card Album</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <button class="dropbtn">HERRAMIENTAS ▾</button>
+                <div class="dropdown-content">
+                    <a href="scaner.html">🔍 Escáner de Señales</a>
+                    <a href="vehiculos_cliente.html">🚗 Mis Vehículos</a>
+                    <a href="agenda_cliente.html">📅 Agenda de Mantenimiento</a>
+                    <a href="gamificacion.html">🎮 Gamificación</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <button class="dropbtn">AYUDA ▾</button>
+                <div class="dropdown-content">
+                    <a href="emergencias_cliente.html">🚨 Números de Emergencia</a>
+                </div>
+            </li>
+            <span class="nav-separator">|</span>
+        </ul>
+    </nav>
+
+    <!-- USER MENU -->
+    <div class="user-menu-wrapper" id="userMenuWrapper">
+        <div class="user-badge" id="userBadge" onclick="toggleUserMenu(event)">
+            <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+            <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
+            <span class="user-name-header" id="headerUserName">Cargando...</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:rgba(255,255,255,0.7); margin-left:2px;"></i>
+        </div>
+
+        <div class="user-dropdown" id="userDropdown">
+            <div class="dd-header">
+                <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg" style="display:none;">
+                <div class="dd-info">
+                    <div class="dd-name" id="ddName">...</div>
+                    <div class="dd-role">Cliente</div>
+                    <div class="dd-user" id="ddUsername">@...</div>
+                </div>
+            </div>
+            <a href="perfil_cliente.html" class="dd-item">
+                <i class="fa-solid fa-user-circle"></i> Mi Perfil
+            </a>
+            <a href="dashboard_cliente.html" class="dd-item">
+                <i class="fa-solid fa-tachometer-alt"></i> Panel Cliente
+            </a>
+            <a href="dashboard_cliente.html?tab=appointments" class="dd-item">
+                <i class="fa-solid fa-calendar-check"></i> Mis Citas
+            </a>
+            <div class="dd-sep"></div>
+            <button class="dd-item logout" onclick="logout()">
+                <i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
         </div>
     </div>
-</nav>
+</header>
 
+<!-- CONTENIDO PRINCIPAL -->
 <div class="container my-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <h2><i class="fa-solid fa-tachometer-alt me-2"></i>Panel de Control</h2>
         <a href="index_cliente.html" class="btn btn-outline-red">
             <i class="fa-solid fa-arrow-left me-1"></i> Volver al inicio
@@ -164,7 +625,7 @@ $full_name = getCurrentUserFullName();
         </div>
     </div>
 
-    <!-- TAB: MECÁNICOS DISPONIBLES -->
+    <!-- TAB: MECÁNICOS -->
     <div id="tab-mechanics" class="tab-content-panel" style="display:none;">
         <div class="content-card">
             <div class="card-header-custom">
@@ -187,7 +648,6 @@ $full_name = getCurrentUserFullName();
                 </button>
             </div>
             <div class="chat-layout">
-                <!-- Sidebar con lista de conversaciones -->
                 <div class="chat-sidebar">
                     <div class="chat-sidebar-header">
                         <span>Conversaciones</span>
@@ -201,7 +661,6 @@ $full_name = getCurrentUserFullName();
                         </div>
                     </div>
                 </div>
-                <!-- Área principal del chat -->
                 <div class="chat-main">
                     <div class="chat-main-header" id="chatMainHeader">
                         <i class="fa-solid fa-comment-slash text-muted"></i>
@@ -226,6 +685,32 @@ $full_name = getCurrentUserFullName();
     </div>
 </div>
 
+<footer class="text-white py-4 mt-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h5><i class="bi bi-car-front-fill"></i> Kiroo</h5>
+                <p class="text-muted">Gestión inteligente para tu vehículo.</p>
+            </div>
+            <div class="col-md-3">
+                <h6>Enlaces rápidos</h6>
+                <ul class="list-unstyled">
+                    <li><a href="agenda_cliente.html" class="text-white-50 text-decoration-none">Agenda</a></li>
+                    <li><a href="vehiculos_cliente.html" class="text-white-50 text-decoration-none">Vehículos</a></li>
+                    <li><a href="index_cliente.html" class="text-white-50 text-decoration-none">Inicio</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h6>Contacto</h6>
+                <p class="text-muted"><i class="bi bi-envelope"></i> soporte@kiroo.com</p>
+            </div>
+        </div>
+        <hr class="bg-secondary">
+        <div class="text-center text-muted small">&copy; 2025 Kiroo — Todos los derechos reservados.</div>
+    </div>
+</footer>
+
+<!-- MODALES -->
 <!-- Modal Vehículo -->
 <div class="modal fade" id="vehicleModal" tabindex="-1">
     <div class="modal-dialog">
@@ -337,7 +822,7 @@ $full_name = getCurrentUserFullName();
     </div>
 </div>
 
-<!-- Modal Agregar Mecánico al Chat -->
+<!-- Modal Agregar Mecánico -->
 <div class="modal fade" id="addMechanicModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -363,33 +848,63 @@ $full_name = getCurrentUserFullName();
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/a0e6d5d7d4.js" crossorigin="anonymous"></script>
 <script>
-    const CURRENT_USER_ID = <?php echo $user_id; ?>;
-
+    // ========== VARIABLES GLOBALES ==========
+    let CURRENT_USER_ID = null;
     let currentMechanicId = null;
     let currentMechanicName = '';
     let vehicleModalInstance, appointmentModalInstance, eventModalInstance, ratingModalInstance, addMechanicModalInstance;
     let refreshInterval = null;
     let currentRating = 0;
 
-    document.addEventListener('DOMContentLoaded', () => {
-        vehicleModalInstance = new bootstrap.Modal(document.getElementById('vehicleModal'));
-        appointmentModalInstance = new bootstrap.Modal(document.getElementById('appointmentModal'));
-        eventModalInstance = new bootstrap.Modal(document.getElementById('eventModal'));
-        ratingModalInstance = new bootstrap.Modal(document.getElementById('ratingModal'));
-        addMechanicModalInstance = new bootstrap.Modal(document.getElementById('addMechanicModal'));
+    // ========== VERIFICAR AUTENTICACIÓN ==========
+    async function checkAuth() {
+        try {
+            const formData = new FormData();
+            formData.append('action', 'check_auth');
+            const response = await fetch('auth.php', { method: 'POST', body: formData });
+            const data = await response.json();
+            
+            if (data.authenticated) {
+                CURRENT_USER_ID = data.id;
+                const firstName = (data.full_name || data.username || 'Usuario').split(' ')[0];
+                document.getElementById('headerUserName').textContent = firstName;
+                document.getElementById('ddName').textContent = data.full_name || data.username;
+                document.getElementById('ddUsername').textContent = '@' + (data.username || '');
+                const initials = (data.full_name || data.username || '?').charAt(0).toUpperCase();
+                document.getElementById('headerInitials').textContent = initials;
+                document.getElementById('ddInitials').textContent = initials;
+                loadProfilePicture();
+                return true;
+            } else {
+                window.location.href = 'login.html';
+                return false;
+            }
+        } catch (error) {
+            console.error('Error checking auth:', error);
+            window.location.href = 'login.html';
+            return false;
+        }
+    }
 
-        loadDiagnostics();
-
-        refreshInterval = setInterval(() => {
-            const activeTab = document.querySelector('.tab-btn.active')?.textContent.toLowerCase() || '';
-            if (activeTab.includes('diagnósticos')) loadDiagnostics();
-            else if (activeTab.includes('citas')) loadAppointments();
-            else if (activeTab.includes('chat') && currentMechanicId) loadChatMessages();
-        }, 15000);
-    });
-
-    window.addEventListener('beforeunload', () => { if (refreshInterval) clearInterval(refreshInterval); });
+    async function loadProfilePicture() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'get_profile');
+            const res = await fetch('api.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success && data.profile && data.profile.profile_picture) {
+                const url = data.profile.profile_picture;
+                document.getElementById('headerAvatarIcon').style.display = 'none';
+                const img = document.getElementById('headerAvatarImg');
+                img.src = url; img.style.display = 'block';
+                document.getElementById('ddAvatarIcon').style.display = 'none';
+                const ddImg = document.getElementById('ddAvatarImg');
+                ddImg.src = url; ddImg.style.display = 'block';
+            }
+        } catch(e) { /* sin foto */ }
+    }
 
     // ========== UTILIDADES ==========
     function showToast(message, isError = false) {
@@ -416,6 +931,14 @@ $full_name = getCurrentUserFullName();
         }
     }
 
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
+    }
+
+    // ========== TABS ==========
     function switchTab(tabName) {
         document.querySelectorAll('.tab-content-panel').forEach(t => t.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -432,13 +955,6 @@ $full_name = getCurrentUserFullName();
         }
     }
 
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = String(text);
-        return div.innerHTML;
-    }
-
     // ========== DIAGNÓSTICOS ==========
     async function loadDiagnostics() {
         const container = document.getElementById('diagnosticsList');
@@ -451,71 +967,30 @@ $full_name = getCurrentUserFullName();
                     excelente: 'bg-success', bueno: 'bg-info',
                     regular: 'bg-warning text-dark', malo: 'bg-danger', critico: 'bg-dark border border-secondary'
                 }[d.vehicle_condition] || 'bg-secondary';
-
                 const conditionIcon = { excelente:'✅', bueno:'👍', regular:'⚠️', malo:'❌', critico:'🚨' }[d.vehicle_condition] || '—';
-
                 const dateFormatted = new Date(d.created_at).toLocaleDateString('es-ES', {
                     year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
                 });
-
                 return `
                 <div class="diagnostic-card">
                     <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
                         <div>
                             <strong style="font-size:1rem;">🔧 Diagnóstico #${d.id}</strong>
-                            <div class="small text-muted mt-1">
-                                📅 ${dateFormatted}
-                            </div>
-                            <div class="small mt-1">
-                                👨‍🔧 <strong>${escapeHtml(d.mechanic_name || 'Mecánico')}</strong>
-                                ${d.mechanic_specialty ? `<span class="text-muted"> — ${escapeHtml(d.mechanic_specialty)}</span>` : ''}
-                                ${d.mechanic_workshop ? `<span class="text-muted"> | 🏪 ${escapeHtml(d.mechanic_workshop)}</span>` : ''}
-                            </div>
+                            <div class="small text-muted mt-1">📅 ${dateFormatted}</div>
+                            <div class="small mt-1">👨‍🔧 <strong>${escapeHtml(d.mechanic_name || 'Mecánico')}</strong>${d.mechanic_specialty ? ` — ${escapeHtml(d.mechanic_specialty)}` : ''}</div>
                         </div>
                         <span class="badge-status status-completado">Completado</span>
                     </div>
-
-                    ${d.vehicle_name ? `
-                    <div class="diagnostic-section">
-                        <div class="section-label">🚗 Vehículo</div>
-                        <div class="section-value">${escapeHtml(d.vehicle_name)}
-                            ${d.mileage ? `<span class="ms-2 text-muted small">📏 ${parseInt(d.mileage).toLocaleString()} km</span>` : ''}
-                        </div>
-                    </div>` : ''}
-
-                    ${d.symptoms ? `
-                    <div class="diagnostic-section">
-                        <div class="section-label">🩺 Síntomas Reportados</div>
-                        <div class="section-value">${escapeHtml(d.symptoms)}</div>
-                    </div>` : ''}
-
-                    <div class="diagnostic-section">
-                        <div class="section-label">📋 Diagnóstico</div>
-                        <div class="section-value">${escapeHtml(d.diagnosis)}</div>
-                    </div>
-
-                    <div class="diagnostic-section">
-                        <div class="section-label">💡 Recomendaciones</div>
-                        <div class="section-value">${escapeHtml(d.recommendation)}</div>
-                    </div>
-
-                    ${d.parts_needed ? `
-                    <div class="diagnostic-section">
-                        <div class="section-label">🔩 Piezas Necesarias</div>
-                        <div class="section-value">${escapeHtml(d.parts_needed)}</div>
-                    </div>` : ''}
-
-                    ${d.additional_notes ? `
-                    <div class="diagnostic-section">
-                        <div class="section-label">📝 Notas Adicionales</div>
-                        <div class="section-value">${escapeHtml(d.additional_notes)}</div>
-                    </div>` : ''}
-
+                    ${d.vehicle_name ? `<div class="diagnostic-section"><div class="section-label">🚗 Vehículo</div><div class="section-value">${escapeHtml(d.vehicle_name)}</div></div>` : ''}
+                    ${d.symptoms ? `<div class="diagnostic-section"><div class="section-label">🩺 Síntomas Reportados</div><div class="section-value">${escapeHtml(d.symptoms)}</div></div>` : ''}
+                    <div class="diagnostic-section"><div class="section-label">📋 Diagnóstico</div><div class="section-value">${escapeHtml(d.diagnosis)}</div></div>
+                    <div class="diagnostic-section"><div class="section-label">💡 Recomendaciones</div><div class="section-value">${escapeHtml(d.recommendation)}</div></div>
+                    ${d.parts_needed ? `<div class="diagnostic-section"><div class="section-label">🔩 Piezas Necesarias</div><div class="section-value">${escapeHtml(d.parts_needed)}</div></div>` : ''}
+                    ${d.additional_notes ? `<div class="diagnostic-section"><div class="section-label">📝 Notas Adicionales</div><div class="section-value">${escapeHtml(d.additional_notes)}</div></div>` : ''}
                     <div class="d-flex gap-2 flex-wrap mt-3 align-items-center">
                         ${d.vehicle_condition ? `<span class="badge ${conditionClass}">${conditionIcon} Estado: ${d.vehicle_condition}</span>` : ''}
                         ${d.estimated_cost ? `<span class="badge bg-info text-dark">💰 Costo estimado: $${parseFloat(d.estimated_cost).toFixed(2)}</span>` : ''}
                     </div>
-
                     <div class="mt-3">
                         ${(d.rated == 0 || d.rated === '0' || !d.rated) ?
                             `<button class="btn btn-sm btn-warning px-3 py-2" onclick="openRatingModal(${d.id}, '${escapeHtml(d.mechanic_name || 'Mecánico')}')">
@@ -531,15 +1006,7 @@ $full_name = getCurrentUserFullName();
                 </div>`;
             }).join('');
         } else {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fa-solid fa-clipboard-check"></i>
-                    <p>No has recibido ningún diagnóstico aún</p>
-                    <small class="text-muted">Cuando un mecánico realice un diagnóstico de tu vehículo, aparecerá aquí</small><br>
-                    <button class="btn btn-red btn-sm mt-2" onclick="switchTab('appointments')">
-                        <i class="fa-solid fa-calendar-check"></i> Solicitar una cita
-                    </button>
-                </div>`;
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-clipboard-check"></i><p>No has recibido ningún diagnóstico aún</p><small class="text-muted">Cuando un mecánico realice un diagnóstico, aparecerá aquí</small><br><button class="btn btn-red btn-sm mt-2" onclick="switchTab('appointments')"><i class="fa-solid fa-calendar-check"></i> Solicitar una cita</button></div>`;
         }
     }
 
@@ -599,11 +1066,9 @@ $full_name = getCurrentUserFullName();
                     pendiente: 'status-pendiente', confirmada: 'status-confirmada',
                     completado: 'status-completado', cancelada: 'status-cancelada'
                 }[a.status] || 'bg-secondary';
-
                 const dateFormatted = new Date(a.appointment_date + 'T12:00:00').toLocaleDateString('es-ES', {
                     year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
                 });
-
                 return `
                 <div class="appointment-card">
                     <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
@@ -615,28 +1080,12 @@ $full_name = getCurrentUserFullName();
                         </div>
                         <span class="badge-status ${statusClass}">${a.status}</span>
                     </div>
-                    ${a.diagnostic_id ?
-                        `<div class="mt-2 small text-success"><i class="fa-solid fa-check-circle"></i> Diagnóstico disponible — <a href="javascript:void(0)" onclick="switchTab('diagnostics')" class="text-info">Ver Diagnóstico</a></div>` :
-                        (a.status === 'completado' ? '<div class="mt-2 small text-warning"><i class="fa-solid fa-clock"></i> Esperando diagnóstico del mecánico</div>' : '')
-                    }
-                    ${(a.status === 'pendiente' || a.status === 'confirmada') ? `
-                        <div class="mt-2">
-                            <button class="btn btn-sm btn-outline-danger" onclick="cancelAppointment(${a.id})">
-                                <i class="fa-solid fa-ban"></i> Cancelar Cita
-                            </button>
-                        </div>` : ''
-                    }
+                    ${a.diagnostic_id ? `<div class="mt-2 small text-success"><i class="fa-solid fa-check-circle"></i> Diagnóstico disponible — <a href="javascript:void(0)" onclick="switchTab('diagnostics')" class="text-info">Ver Diagnóstico</a></div>` : (a.status === 'completado' ? '<div class="mt-2 small text-warning"><i class="fa-solid fa-clock"></i> Esperando diagnóstico del mecánico</div>' : '')}
+                    ${(a.status === 'pendiente' || a.status === 'confirmada') ? `<div class="mt-2"><button class="btn btn-sm btn-outline-danger" onclick="cancelAppointment(${a.id})"><i class="fa-solid fa-ban"></i> Cancelar Cita</button></div>` : ''}
                 </div>`;
             }).join('');
         } else {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fa-solid fa-calendar-xmark"></i>
-                    <p>No tienes citas programadas</p>
-                    <button class="btn btn-red btn-sm mt-2" onclick="showNewAppointmentModal()">
-                        <i class="fa-solid fa-plus"></i> Solicitar Cita
-                    </button>
-                </div>`;
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-calendar-xmark"></i><p>No tienes citas programadas</p><button class="btn btn-red btn-sm mt-2" onclick="showNewAppointmentModal()"><i class="fa-solid fa-plus"></i> Solicitar Cita</button></div>`;
         }
     }
 
@@ -905,19 +1354,9 @@ $full_name = getCurrentUserFullName();
         document.getElementById('appointmentMechanic').value = mechanicId;
     }
 
-    // Ir al chat con un mecánico específico (desde lista de mecánicos)
     function goToChat(mechanicId, mechanicName) {
-        // Cambiar a tab chat
-        document.querySelectorAll('.tab-content-panel').forEach(t => t.style.display = 'none');
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('tab-chat').style.display = 'block';
-        document.querySelectorAll('.tab-btn').forEach(b => {
-            if (b.textContent.includes('Chat')) b.classList.add('active');
-        });
-        // Cargar contactos y abrir chat con ese mecánico
-        loadChatContacts().then(() => {
-            openChat(mechanicId, mechanicName);
-        });
+        switchTab('chat');
+        openChat(mechanicId, mechanicName);
     }
 
     // ========== CHAT ==========
@@ -941,11 +1380,7 @@ $full_name = getCurrentUserFullName();
                 </div>`;
             }).join('');
         } else {
-            list.innerHTML = `
-                <div class="text-center p-3" style="font-size:0.78rem; color:#555;">
-                    <i class="fa-solid fa-comment-slash mb-2 d-block" style="font-size:1.4rem;"></i>
-                    Sin conversaciones aún.<br>Agrega un mecánico para empezar.
-                </div>`;
+            list.innerHTML = `<div class="text-center p-3" style="font-size:0.78rem; color:#555;"><i class="fa-solid fa-comment-slash mb-2 d-block" style="font-size:1.4rem;"></i>Sin conversaciones aún.<br>Agrega un mecánico para empezar.</div>`;
         }
     }
 
@@ -979,14 +1414,12 @@ $full_name = getCurrentUserFullName();
         currentMechanicId = mechanicId;
         currentMechanicName = mechanicName;
 
-        // Actualizar header
         const header = document.getElementById('chatMainHeader');
         const initials = (mechanicName || 'M').charAt(0).toUpperCase();
         header.innerHTML = `
-            <div style="width:32px;height:32px;border-radius:50%;background:var(--primary-red);display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">${initials}</div>
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--kiroo-red);display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">${initials}</div>
             <span>${escapeHtml(mechanicName)}</span>`;
 
-        // Marcar activo en sidebar
         document.querySelectorAll('.chat-contact-item').forEach(item => item.classList.remove('active'));
         const items = document.querySelectorAll('.chat-contact-item');
         items.forEach(item => {
@@ -1016,7 +1449,6 @@ $full_name = getCurrentUserFullName();
                 container.innerHTML = '<div class="chat-empty-state"><i class="fa-solid fa-comment-dots fa-lg mb-2" style="color:#333;"></i><div>Sin mensajes aún. ¡Envía el primero!</div></div>';
             }
             container.scrollTop = container.scrollHeight;
-            // Refrescar lista para actualizar previews y badges
             loadChatContacts();
         } else {
             container.innerHTML = '<div class="chat-empty-state text-danger">Error al cargar mensajes</div>';
@@ -1045,6 +1477,41 @@ $full_name = getCurrentUserFullName();
         } catch(e) {}
         window.location.href = 'login.html';
     }
+
+    // ========== TOGGLE MENU USUARIO ==========
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        document.getElementById('userDropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+        const wrapper = document.getElementById('userMenuWrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+            document.getElementById('userDropdown').classList.remove('open');
+        }
+    });
+
+    // ========== INICIALIZACIÓN ==========
+    document.addEventListener('DOMContentLoaded', async () => {
+        const isAuth = await checkAuth();
+        if (!isAuth) return;
+        
+        vehicleModalInstance = new bootstrap.Modal(document.getElementById('vehicleModal'));
+        appointmentModalInstance = new bootstrap.Modal(document.getElementById('appointmentModal'));
+        eventModalInstance = new bootstrap.Modal(document.getElementById('eventModal'));
+        ratingModalInstance = new bootstrap.Modal(document.getElementById('ratingModal'));
+        addMechanicModalInstance = new bootstrap.Modal(document.getElementById('addMechanicModal'));
+        
+        loadDiagnostics();
+        
+        refreshInterval = setInterval(() => {
+            const activeTab = document.querySelector('.tab-btn.active')?.textContent.toLowerCase() || '';
+            if (activeTab.includes('diagnósticos')) loadDiagnostics();
+            else if (activeTab.includes('citas')) loadAppointments();
+            else if (activeTab.includes('chat') && currentMechanicId) loadChatMessages();
+        }, 15000);
+    });
+    
+    window.addEventListener('beforeunload', () => { if (refreshInterval) clearInterval(refreshInterval); });
 </script>
 </body>
 </html>
