@@ -117,10 +117,7 @@
         .user-badge i { font-size: 0.9rem; }
         .user-badge span { font-size: 0.75rem; font-weight: 500; font-family: 'Montserrat', sans-serif; }
 
-        /* main container (original) */
-        .main-container {
-            padding: 3rem 1.5rem 4rem;
-        }
+
 
         /* Layout con Grid de Bootstrap para filas de 4 elementos */
         .custom-grid {
@@ -210,22 +207,7 @@
             margin-bottom: 1rem;
         }
 
-        /* bienvenida original */
-        .welcome-section {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
 
-        .welcome-section h2 {
-            font-weight: 700;
-            font-size: 2.2rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .lead-custom {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
 
         /* Responsive */
         @media (max-width: 768px) {
@@ -355,31 +337,4 @@
     color: #555;
     border-top: 1px solid #222;
     padding-top: 10px;
-}
-
-/* Botones */
-.action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 50px;
-}
-
-.btn-login {
-    background: var(--primary-red);
-    border: none;
-    color: white;
-    padding: 12px 30px;
-    border-radius: 25px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-register {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: white;
-    padding: 12px 30px;
-    border-radius: 25px;
-    cursor: pointer;
 }

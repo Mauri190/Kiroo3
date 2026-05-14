@@ -5,10 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emergencias - Kiroo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/emergencias.css">
+
 </head>
 <body>
+    <header class="main-header">
+    <div class="brand-name">KI<span>R</span>OO</div>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="index_cliente.html">HOME</a></li>
+            <li class="dropdown">
+                <button class="dropbtn">Gestiona ▾</button>
+                <div class="dropdown-content">
+                    <a href="dashboard_cliente.php"> Panel cliente</a>
+                    <a href="vehiculos_cliente.html"> Registro Vehiculos</a>
+                    <a href="agenda_cliente.html"> Agenda tus citas</a>
+                   
+                </div>
+            </li>
+            <li class="dropdown">
+                <button class="dropbtn">HERRAMIENTAS ▾</button>
+                <div class="dropdown-content">
+                    <a href="scaner.html"> Escáner de Señales</a>
+                    <a href="gamificacion.html"> Gamificación</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <button class="dropbtn">AYUDA ▾</button>
+                <div class="dropdown-content">
+                    <a href="emergencias_cliente.html"> Números de Emergencia</a>
+                </div>
+            </li>
+            <span class="nav-separator">|</span>
+        </ul>
+    </nav>
+ 
 
+ <!-- USER MENU -->
+    <div class="user-menu-wrapper" id="userMenuWrapper">
+        <div class="user-badge" id="userBadge" onclick="toggleUserMenu(event)">
+            <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+            <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
+            <span class="user-name-header" id="headerUserName">Cargando...</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:rgba(255,255,255,0.7); margin-left:2px;"></i>
+        </div>
+
+        <div class="user-dropdown" id="userDropdown">
+            <!-- Header del dropdown -->
+            <div class="dd-header">
+                <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg" style="display:none;">
+                <div class="dd-info">
+                    <div class="dd-name" id="ddName">...</div>
+                    <div class="dd-role">Cliente</div>
+                    <div class="dd-user" id="ddUsername">@...</div>
+                </div>
+            </div>
+            <!-- Opciones -->
+            <a href="perfil_cliente.html" class="dd-item">
+                <i class="fa-solid fa-user-circle"></i> Mi Perfil
+            </a>
+            <a href="dashboard_cliente.php" class="dd-item">
+                <i class="fa-solid fa-tachometer-alt"></i> Panel Cliente
+            </a>
+            <a href="dashboard_cliente.php?tab=appointments" class="dd-item">
+                <i class="fa-solid fa-calendar-check"></i> Mis Citas
+            </a>
+            <div class="dd-sep"></div>
+            <button class="dd-item logout" onclick="logout()">
+                <i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+    </div>
+</header>
     <div class="top-bar">
         <a href="index_cliente.html" class="btn-back">
             <i class="fa-solid fa-arrow-left"></i> Volver al inicio
@@ -21,7 +92,7 @@
         <div class="banner-title"><h1>Asistencia Inmediata</h1></div>
 
         <div class="emergency-numbers-grid">
-            <div class="small-card-tel"><h3>PNC</h3><p>911</p></div>
+            <div class="small-card-tel"> <img src="css/img/PNC-ESA.png" alt="logoPnc"><h3>PNC</h3><p>911</p></div>
             <div class="small-card-tel"><h3>SEM</h3><p>132</p></div>
             <div class="small-card-tel"><h3>Cruz Verde</h3><p>2288-5792</p></div>
             <div class="small-card-tel"><h3>Grúa</h3><p>2510-0199</p></div>
@@ -65,6 +136,43 @@
             </div>
         </section>
     </main>
+    <footer class="footer-kiroo">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-md-5">
+                <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
+                <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
+                <div class="d-flex gap-3 mt-2">
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+                </div>
+                </div>
+                <div class="col-md-3">
+                <h5>Explorar</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="vehiculos.html"><i class="fa-regular fa-circle-right me-2"></i>Registro vehicular</a></li>
+                    <li class="mb-2"><a href="agenda.html"><i class="fa-regular fa-circle-right me-2"></i>Agenda de servicios</a></li>
+                    <li class="mb-2"><a href="gamificacion.html"><i class="fa-regular fa-circle-right me-2"></i>Gamificación</a></li>
+                    <li class="mb-2"><a href="emergencias.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
+                </ul>
+                </div>
+                <div class="col-md-4">
+                <h5>Contacto</h5>
+                <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
+                <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
+                <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
+                </div>
+            </div>
+            <hr class="mt-4 opacity-25">
+            <div class="text-center pt-2">
+            <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/index.js"></script>
 
 </body>
 </html>

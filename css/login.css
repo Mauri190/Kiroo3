@@ -115,20 +115,20 @@
         }
 
         .form-control {
-            background: #2a2a2a;
+            background: #ffffff;
             border: 1px solid #3a3a3a;
-            color: #fff;
+            color: #684343;
             border-radius: 12px;
             padding: 14px 16px;
         }
 
         .form-control:focus {
-            background: #ffffff;
+            background: #333;
             border-color: var(--kiroo-red);
             box-shadow: 0 0 0 0.2rem rgba(211, 47, 47, 0.15);
             color: #fff;
-        }
-
+        } 
+        
         .btn-login {
             background: linear-gradient(135deg, var(--kiroo-red), #b71c1c);
             color: #fff;

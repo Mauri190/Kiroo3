@@ -17,6 +17,106 @@
             min-height: 100vh;
             padding: 20px;
         }
+        /* navbar */
+       .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: var(--kiroo-black);
+            width: 100%;
+            position: relative;
+            z-index: 100;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .brand-name { 
+            font-size: 1.8rem; 
+            font-weight: 800; 
+            letter-spacing: 3px; 
+            color: white; 
+            font-family: 'Montserrat', sans-serif;
+        }
+        .brand-name span { color: #a51313; }
+        .nav-links { 
+            display: flex; 
+            list-style: none; 
+            gap: 8px; 
+            align-items: center; 
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links a {
+            color: white; 
+            text-decoration: none; 
+            font-size: 0.75rem; 
+            font-weight: 600;
+            text-transform: uppercase; 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .nav-links a:hover { background-color: rgba(165, 19, 19, 0.7); }
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn {
+            cursor: pointer; 
+            background: transparent; 
+            border: none; 
+            color: white;
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            text-transform: uppercase;
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            transition: all 0.3s; 
+            font-family: 'Montserrat', sans-serif;
+        }
+        .dropbtn:hover { background-color: rgba(165, 19, 19, 0.7); }
+        .dropdown-content {
+            display: none; 
+            position: absolute; 
+            background-color: #1a1a1a; 
+            min-width: 200px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.5); 
+            z-index: 1001; 
+            border-radius: 12px;
+            border: 1px solid #a51313; 
+            margin-top: 10px; 
+            overflow: hidden;
+        }
+        .dropdown-content a {
+            color: white; 
+            padding: 12px 18px; 
+            text-decoration: none; 
+            display: block;
+            font-size: 0.7rem; 
+            font-weight: 500; 
+            text-transform: none; 
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background-color: #a51313; }
+        .dropdown:hover .dropdown-content { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-separator { 
+            color: rgba(255, 255, 255, 0.3); 
+            margin: 0 5px;
+            font-size: 0.75rem;
+        }
+        .user-badge {
+            background: rgba(211, 47, 47, 0.9);
+            border-radius: 30px;
+            padding: 6px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-badge i { font-size: 0.9rem; }
+        .user-badge span { font-size: 0.75rem; font-weight: 500; font-family: 'Montserrat', sans-serif; }
+
+ 
 
         .top-bar {
             position: absolute;
@@ -152,8 +252,12 @@
             padding: 20px;
             border-radius: 20px;
             text-align: center;
+            
         }
-
+        .small-card-tel img{
+            height: 100px;
+        }
+      
         @media (max-width: 700px) {
             .grid-container {
                 grid-template-columns: 1fr;
@@ -166,4 +270,26 @@
             body {
                 padding-top: 20px;
             }
+        }
+                /* Footer original */
+        .footer-kiroo {
+            background-color: #000000;
+            border-top: 1px solid #2c2c2c;
+            padding: 2rem 0 1rem;
+            margin-top: 2rem;
+        }
+
+        .footer-kiroo a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-kiroo a:hover {
+            color: var(--kiroo-accent);
+        }
+
+        .footer-kiroo h5 {
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
