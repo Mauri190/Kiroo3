@@ -79,10 +79,14 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, 'Roboto', sans-serif;
-            background: linear-gradient(145deg, var(--kiroo-red) 0%, #9e1e1e 100%);
-            min-height: 100vh;
-            color: var(--kiroo-text);
+             font-family: 'Montserrat', sans-serif;
+    background-color: #000000;
+    color: white;
+    min-height: 100vh;
+    /* Degradado base más profundo para resaltar el vidrio */
+    background: radial-gradient(circle at top right, #2a0505 0%, #000000 100%);
+    overflow-x: hidden;
+    position: relative;
         }
 
         /* ===== HEADER ESTILO INDEX_CLIENTE ===== */
