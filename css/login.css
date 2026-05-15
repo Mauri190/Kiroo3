@@ -123,10 +123,11 @@
         }
 
         .form-control:focus {
-            background: #333;
+            background: #ffffff;
             border-color: var(--kiroo-red);
             box-shadow: 0 0 0 0.2rem rgba(211, 47, 47, 0.15);
-            color: #fff;
+            color: #000000;
+            
         } 
         
         .btn-login {
