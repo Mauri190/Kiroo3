@@ -10,14 +10,14 @@ const noticias = [
         titulo: "La regla de los 2 segundos",
         descripcion: "El truco más simple para evitar sustos innecesarios en la carretera.",
         fecha: "",
-        imagen: "ruta/imagen2.jpg",
+        imagen: "css/img/regla2Segundos.jpg",
         url: "noticia-seguridad.html"
     },
     {
         titulo: "Psicología al volante",
         descripcion: "Por qué tu cerebro 'recorta' la carretera y cómo recuperar el control.",
         fecha: "",
-        imagen: "ruta/imagen3.jpg",
+        imagen: "css/img/psicologiaVolante.jpg",
         url: "noticia-psicologia.html"
     },
     {
