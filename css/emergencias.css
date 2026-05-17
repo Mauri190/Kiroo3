@@ -18,7 +18,7 @@
             padding: 20px;
         }
         /* navbar */
-       .main-header {
+.main-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -105,43 +105,8 @@
             margin: 0 5px;
             font-size: 0.75rem;
         }
-        .user-badge {
-            background: rgba(211, 47, 47, 0.9);
-            border-radius: 30px;
-            padding: 6px 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .user-badge i { font-size: 0.9rem; }
-        .user-badge span { font-size: 0.75rem; font-weight: 500; font-family: 'Montserrat', sans-serif; }
-
- 
-
-        .top-bar {
-            position: absolute;
-            top: 30px;
-            left: 40px;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .btn-back {
-            color: #ff1a1a;
-            text-decoration: none;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        .btn-back:hover {
-            opacity: 0.8;
-        }
-                /* ===== USER MENU ===== */
-        .user-menu-wrapper { position: relative; }
+         /* ===== USER MENU ===== */
+    .user-menu-wrapper { position: relative; }
 
         .user-badge {
             display: flex;
@@ -221,7 +186,11 @@
             cursor: pointer; border: none; background: none;
             width: 100%; text-align: left;
             font-family: 'Segoe UI', sans-serif;
-        }
+        } 
+
+      
+                /* ===== USER MENU ===== */
+        
         .dd-item:hover { background: rgba(255,255,255,0.06); color: white; }
         .dd-item i { width: 18px; text-align: center; color: #888; }
         .dd-item:hover i { color: #d32f2f; }

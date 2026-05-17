@@ -10,37 +10,71 @@
     <link rel="stylesheet" href="css/agenda.css">
 </head>
 <body>
+<header class="main-header">
+    <div class="brand-name">KI<span>R</span>OO</div>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="index_cliente.html">HOME</a></li>
+            <li class="dropdown">
+                <button class="dropbtn">Gestiona ▾</button>
+                <div class="dropdown-content">
+                    <a href="dashboard_cliente.html"> Panel cliente</a>
+                    <a href="vehiculos_cliente.html"> Registro Vehiculos</a>
+                    <a href="agenda_cliente.html"> Agenda tus citas</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <button class="dropbtn">HERRAMIENTAS ▾</button>
+                <div class="dropdown-content">
+                    <a href="scaner.html"> Escáner de Señales</a>
+                    <a href="gamificacion.html"> Gamificación</a>
+                </div>
+            </li>
+            <li class="dropdown">
+                <button class="dropbtn">AYUDA ▾</button>
+                <div class="dropdown-content">
+                    <a href="emergencias_cliente.html"> Números de Emergencia</a>
+                </div>
+            </li>
+            <span class="nav-separator">|</span>
+        </ul>
+    </nav>
 
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-kiroo sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="index_cliente.html">
-                <i class="bi bi-car-front-fill"></i> Kiroo
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarMain">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="index_cliente.html"><i class="bi bi-house-door"></i> Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="agenda_cliente.html"><i class="bi bi-calendar-check"></i> Agenda</a></li>
-                    <li class="nav-item"><a class="nav-link" href="vehiculos_cliente.html"><i class="bi bi-car-front"></i> Mis Vehículos</a></li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <span class="user-welcome" id="userWelcome"><i class="bi bi-person-circle"></i> Cargando...</span>
-                    <div class="dropdown">
-                        <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear-fill"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark-custom">
-                            <li><a class="dropdown-item" href="index_cliente.html"><i class="bi bi-house"></i> Ir al inicio</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a></li>
-                        </ul>
-                    </div>
+    <!-- USER MENU -->
+    <div class="user-menu-wrapper" id="userMenuWrapper">
+        <div class="user-badge" id="userBadge" onclick="toggleUserMenu(event)">
+            <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+            <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
+            <span class="user-name-header" id="headerUserName">Cargando...</span>
+            <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:rgba(255,255,255,0.7); margin-left:2px;"></i>
+        </div>
+
+        <div class="user-dropdown" id="userDropdown">
+            <div class="dd-header">
+                <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg" style="display:none;">
+                <div class="dd-info">
+                    <div class="dd-name" id="ddName">...</div>
+                    <div class="dd-role">Cliente</div>
+                    <div class="dd-user" id="ddUsername">@...</div>
                 </div>
             </div>
+            <a href="perfil_cliente.html" class="dd-item">
+                <i class="fa-solid fa-user-circle"></i> Mi Perfil
+            </a>
+            <a href="dashboard_cliente.php" class="dd-item">
+                <i class="fa-solid fa-tachometer-alt"></i> Panel Cliente
+            </a>
+            <a href="dashboard_cliente.php?tab=appointments" class="dd-item">
+                <i class="fa-solid fa-calendar-check"></i> Mis Citas
+            </a>
+            <div class="dd-sep"></div>
+            <button class="dd-item logout" onclick="logout()">
+                <i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
         </div>
-    </nav>
+    </div>
+</header>
 
     <div class="container my-4">
         <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
