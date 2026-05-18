@@ -1,4 +1,4 @@
-        // Configuración
+// Configuración
         const API_URL = 'api.php';
         
         let eventsList = [];
@@ -19,24 +19,112 @@
                     method: 'POST',
                     body: formData
                 });
-                
-                const data = await response.json();
+
+                // Leer la respuesta como texto primero para detectar errores de PHP
+                const rawText = await response.text();
+
+                let data;
+                try {
+                    // Buscar JSON válido aunque PHP haya emitido warnings antes
+                    const jsonStart = rawText.indexOf('{');
+                    const jsonEnd = rawText.lastIndexOf('}');
+                    if (jsonStart === -1 || jsonEnd === -1) {
+                        throw new Error('No se encontró JSON en la respuesta');
+                    }
+                    data = JSON.parse(rawText.substring(jsonStart, jsonEnd + 1));
+                } catch (parseError) {
+                    console.error('Error parseando respuesta auth.php:', rawText);
+                    // No redirigir automáticamente si es un error de parseo;
+                    // mostrar un aviso en lugar de rebotar al usuario al login
+                    showAuthError('Error de servidor al verificar sesión. Recarga la página.');
+                    return false;
+                }
+
                 console.log('Auth check:', data);
                 
                 if (data.authenticated) {
                     currentUser = data;
-                    document.getElementById('userWelcome').innerHTML = `<i class="bi bi-person-circle"></i> Hola, ${data.full_name || data.username}`;
+                    // Actualizar UI del usuario
+                    const firstName = (data.full_name || data.username || 'Usuario').split(' ')[0];
+                    document.getElementById('headerUserName').textContent = firstName;
+                    document.getElementById('ddName').textContent = data.full_name || data.username;
+                    document.getElementById('ddUsername').textContent = '@' + (data.username || '');
+                    
+                    const initials = (data.full_name || data.username || '?').charAt(0).toUpperCase();
+                    document.getElementById('headerInitials').textContent = initials;
+                    document.getElementById('ddInitials').textContent = initials;
+                    
+                    // Cargar foto de perfil
+                    await loadProfilePicture();
+                    
                     return true;
                 } else {
-                    // No autenticado, redirigir al login
+                    // No autenticado → redirigir al login
                     window.location.href = 'login.html';
                     return false;
                 }
             } catch (error) {
-                console.error('Error checking auth:', error);
-                window.location.href = 'login.html';
+                // Error de red real (servidor caído, CORS, etc.)
+                console.error('Error de red al verificar autenticación:', error);
+                showAuthError('No se pudo conectar con el servidor. Verifica tu conexión.');
                 return false;
             }
+        }
+
+        // Muestra un mensaje de error en la página en lugar de redirigir
+        function showAuthError(msg) {
+            document.body.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:#1a1a1a;color:#fff;font-family:sans-serif;gap:1rem;">
+                    <div style="font-size:3rem;">⚠️</div>
+                    <div style="font-size:1.1rem;color:#ff6b6b;">${msg}</div>
+                    <div style="display:flex;gap:1rem;margin-top:1rem;">
+                        <button onclick="location.reload()" style="padding:0.6rem 1.4rem;background:#c62828;border:none;color:#fff;border-radius:6px;cursor:pointer;font-size:1rem;">Reintentar</button>
+                        <a href="login.html" style="padding:0.6rem 1.4rem;background:#333;border:none;color:#fff;border-radius:6px;cursor:pointer;font-size:1rem;text-decoration:none;">Ir al Login</a>
+                    </div>
+                </div>`;
+        }
+
+        // ========== CARGAR FOTO DE PERFIL ==========
+        async function loadProfilePicture() {
+            try {
+                const fd = new FormData();
+                fd.append('action', 'get_profile');
+                const res = await fetch('api.php', { method: 'POST', body: fd });
+                const data = await res.json();
+
+                if (data.success && data.profile && data.profile.profile_picture) {
+                    const url = data.profile.profile_picture;
+                    document.getElementById('headerAvatarIcon').style.display = 'none';
+                    const img = document.getElementById('headerAvatarImg');
+                    img.src = url; img.style.display = 'block';
+                    document.getElementById('ddAvatarIcon').style.display = 'none';
+                    const ddImg = document.getElementById('ddAvatarImg');
+                    ddImg.src = url; ddImg.style.display = 'block';
+                }
+            } catch(e) { /* sin foto */ }
+        }
+
+        // ========== TOGGLE MENU ==========
+        function toggleUserMenu(e) {
+            e.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('open');
+        }
+
+        document.addEventListener('click', function(e) {
+            const wrapper = document.getElementById('userMenuWrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                document.getElementById('userDropdown').classList.remove('open');
+            }
+        });
+
+        // ========== LOGOUT ==========
+        async function logout() {
+            try {
+                const fd = new FormData();
+                fd.append('action', 'logout');
+                await fetch('auth.php', { method: 'POST', body: fd });
+            } catch(e) {}
+            window.location.href = 'login.html';
         }
 
         // ========== FUNCIONES DE API ==========
@@ -147,23 +235,6 @@
             }
         }
 
-        async function logout() {
-            try {
-                const formData = new FormData();
-                formData.append('action', 'logout');
-                
-                const response = await fetch('auth.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                window.location.href = 'login.html';
-            } catch (error) {
-                console.error('Error logging out:', error);
-                window.location.href = 'login.html';
-            }
-        }
-
         // ========== HELPERS ==========
         function showToast(message, isError = false) {
             const toastElement = document.getElementById('liveToast');
@@ -211,16 +282,6 @@
             const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
-        }
-
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString + 'T12:00:00');
-            return date.toLocaleDateString('es-ES', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
         }
 
         function formatShortDate(dateString) {
@@ -283,7 +344,8 @@
             const year = currentDisplayDate.getFullYear();
             const month = currentDisplayDate.getMonth();
             const firstDayOfMonth = new Date(year, month, 1);
-            const startWeekday = firstDayOfMonth.getDay();
+            let startWeekday = firstDayOfMonth.getDay();
+            startWeekday = startWeekday === 0 ? 6 : startWeekday - 1;
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const today = new Date();
             const todayYMD = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
@@ -292,7 +354,7 @@
             document.getElementById('monthYearDisplay').innerHTML = `${monthNames[month]} ${year}`;
 
             let html = `<div class="calendar-grid">`;
-            ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'].forEach(d => { html += `<div class="cal-weekday">${d}</div>`; });
+            ['LUN','MAR','MIÉ','JUE','VIE','SÁB','DOM'].forEach(d => { html += `<div class="cal-weekday">${d}</div>`; });
 
             for (let i = 0; i < startWeekday; i++) {
                 html += `<div class="cal-day" style="background:transparent;cursor:default;"></div>`;
@@ -477,5 +539,4 @@
             });
 
             document.getElementById('saveEventBtn').addEventListener('click', saveEventHandler);
-            document.getElementById('logoutBtn').addEventListener('click', logout);
         });

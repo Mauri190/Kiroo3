@@ -1,5 +1,12 @@
 <?php
+// Capturar cualquier output previo (warnings, notices de PHP)
+// para que no contaminen el JSON de respuesta
+ob_start();
+
 require_once 'config.php';
+
+// Limpiar cualquier output que haya emitido config.php o el sistema
+ob_clean();
 
 header('Content-Type: application/json');
 
@@ -25,6 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         default:
             echo json_encode(['success' => false, 'message' => 'Acción no válida']);
     }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Método no permitido']);
 }
 
 function handleRegisterCliente() {
@@ -78,7 +87,6 @@ function handleRegisterCliente() {
         
         // Si se proporcionó información del vehículo, crear vehículo
         if (!empty($vehicleInfo)) {
-            // Parsear información del vehículo (formato simple)
             $parts = explode(' ', $vehicleInfo, 3);
             $brand = $parts[0] ?? '';
             $model = $parts[1] ?? '';
@@ -172,7 +180,7 @@ function handleRegisterMecanico() {
 function handleLogin() {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
-    $user_type_requested = trim($_POST['user_type'] ?? ''); // 'cliente' o 'mecanico'
+    $user_type_requested = trim($_POST['user_type'] ?? '');
     
     if (empty($username) || empty($password)) {
         echo json_encode(['success' => false, 'message' => 'Usuario y contraseña son obligatorios']);
@@ -189,9 +197,7 @@ function handleLogin() {
         if ($user && password_verify($password, $user['password_hash'])) {
             // VERIFICACIÓN DEL TIPO DE USUARIO
             if (!empty($user_type_requested) && $user['user_type'] !== $user_type_requested) {
-                // El usuario existe pero está intentando iniciar sesión con el tipo equivocado
                 $tipo_real = $user['user_type'] === 'cliente' ? 'Cliente' : 'Mecánico';
-                $tipo_intentado = $user_type_requested === 'cliente' ? 'Cliente' : 'Mecánico';
                 echo json_encode([
                     'success' => false, 
                     'message' => "Tu cuenta es de tipo {$tipo_real}. Por favor selecciona la opción {$tipo_real} para iniciar sesión."
@@ -208,7 +214,6 @@ function handleLogin() {
             $_SESSION['user_type'] = $user['user_type'];
             $_SESSION['full_name'] = $user['full_name'];
             
-            // REDIRECCIÓN A LOS NUEVOS INDEX SEGÚN TIPO
             $redirect = $user['user_type'] === 'cliente' ? 'index_cliente.html' : 'index_mecanico.html';
             
             echo json_encode([
