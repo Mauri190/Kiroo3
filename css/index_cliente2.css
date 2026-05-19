@@ -10,7 +10,7 @@
     background-color: #000000;
     color: white;
     min-height: 100vh;
-    /* Degradado base más profundo para resaltar el vidrio */
+    /* Degradado */
     background: radial-gradient(circle at top right, #2a0505 0%, #000000 100%);
     overflow-x: hidden;
     position: relative;
