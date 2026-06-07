@@ -7,104 +7,651 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/dashboard_cliente.css">
+    <style>
+        /* =============================================
+           RESET & BASE — Mismo estilo que index_cliente
+        ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red: #d94343;
+            --red-dark: #a51313;
+            --red-glow: rgba(255, 61, 61, 0.3);
+            --bg: #0d0000;
+            --bg-grad: linear-gradient(135deg, #140000 0%, #3a0000 100%);
+            --nav-bg: #250000;
+            --card-bg: #111;
+            --card-border: rgba(255,255,255,0.08);
+            --text-muted: #bdbdbd;
+        }
+
+        body {
+            background: var(--bg-grad);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* =============================================
+           NAVBAR — Mismo estilo que index_cliente
+        ============================================= */
+        .navbar {
+            width: 100%;
+            height: 80px;
+            background: var(--nav-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: white;
+            text-decoration: none;
+        }
+        .logo span { color: #ff3d3d; }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links > li > a,
+        .nav-links > li > button.dropbtn {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+        }
+        .nav-links > li > a:hover,
+        .nav-links > li > button.dropbtn:hover {
+            background: rgba(217, 67, 67, 0.25);
+            color: #ff6b6b;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background: #1a0000;
+            min-width: 220px;
+            border-radius: 12px;
+            border: 1px solid rgba(217,67,67,0.35);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .dropdown-content.open { display: block; animation: ddFadeIn 0.2s ease; }
+
+        @keyframes ddFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 13px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.18s, color 0.18s;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background: rgba(217,67,67,0.2); color: #ff6b6b; }
+
+        /* Profile badge */
+        .profile {
+            background: var(--red);
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.2s;
+        }
+        .profile:hover { background: #c03636; }
+
+        .header-avatar-icon {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(0,0,0,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.78rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
+        }
+        .header-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.4);
+            display: none;
+        }
+        .user-name-header {
+            font-size: 0.82rem; font-weight: 600;
+            max-width: 120px; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        /* User dropdown */
+        .user-dropdown {
+            position: absolute; top: calc(100% + 14px); right: 0;
+            background: #140000;
+            border: 1px solid rgba(217,67,67,0.3);
+            border-radius: 16px; min-width: 240px;
+            box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+            z-index: 9999; overflow: hidden;
+            opacity: 0; pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        .dd-header {
+            padding: 18px;
+            background: linear-gradient(135deg, #1e0000, #300000);
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .dd-avatar-icon-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, #a51313, #d94343);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0;
+        }
+        .dd-avatar-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #d94343; flex-shrink: 0;
+            display: none;
+        }
+        .dd-info .dd-name { font-weight: 700; font-size: 0.92rem; color: white; }
+        .dd-info .dd-role { font-size: 0.68rem; color: #ff6b6b; font-weight: 600; text-transform: uppercase; }
+        .dd-info .dd-user { font-size: 0.72rem; color: #666; margin-top: 2px; }
+
+        .dd-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 18px; color: #ccc; text-decoration: none;
+            font-size: 0.83rem; font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer; border: none; background: none;
+            width: 100%; text-align: left;
+        }
+        .dd-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .dd-item i { width: 18px; text-align: center; color: #666; }
+        .dd-item:hover i { color: var(--red); }
+        .dd-sep { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+        .dd-item.logout { color: #ff5252; }
+        .dd-item.logout i { color: #ff5252; }
+        .dd-item.logout:hover { background: rgba(255,82,82,0.08); }
+
+        /* =============================================
+           CONTENIDO PRINCIPAL
+        ============================================= */
+        .container-main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto 60px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .page-header h1 i {
+            color: var(--red);
+            margin-right: 10px;
+        }
+        .btn-outline-red {
+            border: 1px solid var(--red);
+            color: var(--red);
+            background: transparent;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-outline-red:hover {
+            background-color: var(--red);
+            color: white;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 5px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .tab-btn i { margin-right: 8px; }
+        .tab-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        .tab-btn.active {
+            color: white;
+            background: var(--red);
+        }
+
+        /* Cards */
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+        .card-header-custom {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-red {
+            background-color: var(--red);
+            border: none;
+            color: white;
+            border-radius: 30px;
+            padding: 6px 18px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn-red:hover {
+            background-color: var(--red-dark);
+            transform: scale(1.02);
+        }
+
+        .diagnostic-card, .appointment-card, .event-card, .mechanic-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--red);
+            transition: transform 0.2s;
+        }
+        .diagnostic-card:hover, .appointment-card:hover, .mechanic-card:hover {
+            transform: translateX(5px);
+        }
+        .diagnostic-section {
+            background: #0f0f0f;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+            border-left: 3px solid #444;
+        }
+        .diagnostic-section .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        .diagnostic-section .section-value {
+            font-size: 0.9rem;
+            color: #eee;
+        }
+        .badge-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+        }
+        .status-completado { background: #4caf50; color: white; }
+        .status-pendiente { background: #ff9800; color: #000; }
+        .status-confirmada { background: #2196f3; color: white; }
+        .status-cancelada { background: #dc3545; color: white; }
+
+        /* Rating Stars */
+        .rating-stars {
+            display: inline-flex;
+            gap: 3px;
+        }
+        .rating-stars i {
+            font-size: 0.9rem;
+            color: #ffc107;
+        }
+        .rating-stars i.far {
+            color: #555;
+        }
+
+        /* Chat layout */
+        .chat-layout {
+            display: flex;
+            height: 500px;
+        }
+        .chat-sidebar {
+            width: 260px;
+            background: #0a0a0a;
+            border-right: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-sidebar-header {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-contact-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .chat-contact-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.15s;
+        }
+        .chat-contact-item:hover, .chat-contact-item.active {
+            background: rgba(217,67,67,0.15);
+        }
+        .chat-contact-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .chat-contact-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .chat-contact-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-contact-preview {
+            font-size: 0.72rem;
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-unread-badge {
+            background: var(--red);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-main-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-messages-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #0f0f0f;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-input-area {
+            padding: 12px 14px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .chat-bubble {
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+        .chat-sent {
+            background: var(--red);
+            align-self: flex-end;
+        }
+        .chat-received {
+            background: #2a2a2a;
+            align-self: flex-start;
+        }
+        .chat-empty-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            text-align: center;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #888;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Modal */
+        .modal-content {
+            background: #111;
+            border-radius: 20px;
+            border: 1px solid rgba(217,67,67,0.3);
+            color: white;
+        }
+        .modal-header, .modal-footer {
+            border-color: rgba(255,255,255,0.08);
+        }
+        .form-control, .form-select {
+            background-color: #1a1a1a;
+            border-color: #333;
+            color: white;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #222;
+            border-color: var(--red);
+            color: white;
+            box-shadow: none;
+        }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        /* Footer */
+        .footer-kiroo {
+            background: #0a0000;
+            border-top: 1px solid #2c0000;
+            padding: 3rem 0 1.5rem;
+            margin-top: 2rem;
+        }
+        .footer-kiroo a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-kiroo a:hover { color: #ff4a4a; }
+        .footer-kiroo h5 { font-weight: 700; margin-bottom: 1rem; }
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: auto;
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
+            .container-main { width: 95%; }
+            .tab-btn { padding: 8px 16px; font-size: 0.75rem; }
+            .chat-sidebar { width: 200px; }
+        }
+    </style>
 </head>
 <body>
 
-<header class="main-header">
-    <div class="brand-name">KI<span>R</span>OO</div>
-    <nav>
-        <ul class="nav-links">
-            <li><a href="index_cliente.html">HOME</a></li>
-            <li class="dropdown">
-                <button class="dropbtn">Gestiona ▾</button>
-                <div class="dropdown-content">
-                    <a href="dashboard_cliente.php"> Panel cliente</a>
-                    <a href="vehiculos_cliente.html"> Registro Vehiculos</a>
-                    <a href="agenda_cliente.html"> Agenda tus citas</a>
-                   
-                </div>
-            </li>
-            <li class="dropdown">
-                <button class="dropbtn">HERRAMIENTAS ▾</button>
-                <div class="dropdown-content">
-                    <a href="scaner.html"> Escáner de Señales</a>
-                    <a href="gamificacion.html"> Gamificación</a>
-                </div>
-            </li>
-            <li class="dropdown">
-                <button class="dropbtn">AYUDA ▾</button>
-                <div class="dropdown-content">
-                    <a href="emergencias_cliente.html"> Números de Emergencia</a>
-                </div>
-            </li>
-            <span class="nav-separator">|</span>
-        </ul>
-    </nav>
- 
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar">
+    <a class="logo" href="index_cliente.html">KI<span>R</span>OO</a>
 
- <!-- USER MENU -->
-    <div class="user-menu-wrapper" id="userMenuWrapper">
-        <div class="user-badge" id="userBadge" onclick="toggleUserMenu(event)">
-            <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
-            <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
-            <span class="user-name-header" id="headerUserName">Cargando...</span>
-            <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:rgba(255,255,255,0.7); margin-left:2px;"></i>
-        </div>
+    <ul class="nav-links">
+        <li><a href="index_cliente.html">HOME</a></li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">GESTIONA ▾</button>
+            <div class="dropdown-content">
+                <a href="dashboard_cliente.html"><i class="fa-solid fa-gauge-high"></i> Panel Cliente</a>
+                <a href="vehiculos_cliente.html"><i class="fa-solid fa-car"></i> Registro Vehículos</a>
+                <a href="agenda_cliente.html"><i class="fa-solid fa-calendar-days"></i> Agenda tus citas</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">HERRAMIENTAS ▾</button>
+            <div class="dropdown-content">
+                <a href="scaner.html"><i class="fa-solid fa-magnifying-glass"></i> Escáner de Señales</a>
+                <a href="gamificacion.html"><i class="fa-solid fa-gamepad"></i> Gamificación</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">AYUDA ▾</button>
+            <div class="dropdown-content">
+                <a href="emergencias_cliente.html"><i class="fa-solid fa-phone-volume"></i> Números de Emergencia</a>
+            </div>
+        </li>
+    </ul>
 
-        <div class="user-dropdown" id="userDropdown">
-            <!-- Header del dropdown -->
+    <!-- USER BADGE -->
+    <div class="profile" id="userMenuWrapper" onclick="toggleUserMenu(event)">
+        <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+        <img src="" alt="" class="header-avatar" id="headerAvatarImg">
+        <span class="user-name-header" id="headerUserName">Cargando...</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.55rem; opacity:0.7;"></i>
+
+        <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
             <div class="dd-header">
                 <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
-                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg" style="display:none;">
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg">
                 <div class="dd-info">
                     <div class="dd-name" id="ddName">...</div>
                     <div class="dd-role">Cliente</div>
                     <div class="dd-user" id="ddUsername">@...</div>
                 </div>
             </div>
-            <!-- Opciones -->
-            <a href="perfil_cliente.html" class="dd-item">
-                <i class="fa-solid fa-user-circle"></i> Mi Perfil
-            </a>
-            <a href="dashboard_cliente.php" class="dd-item">
-                <i class="fa-solid fa-tachometer-alt"></i> Panel Cliente
-            </a>
-            <a href="dashboard_cliente.php?tab=appointments" class="dd-item">
-                <i class="fa-solid fa-calendar-check"></i> Mis Citas
-            </a>
+            <a href="perfil_cliente.html" class="dd-item"><i class="fa-solid fa-user-circle"></i> Mi Perfil</a>
+            <a href="dashboard_cliente.html" class="dd-item"><i class="fa-solid fa-tachometer-alt"></i> Panel Cliente</a>
+            <a href="dashboard_cliente.html?tab=appointments" class="dd-item"><i class="fa-solid fa-calendar-check"></i> Mis Citas</a>
             <div class="dd-sep"></div>
-            <button class="dd-item logout" onclick="logout()">
-                <i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión
-            </button>
+            <button class="dd-item logout" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión</button>
         </div>
     </div>
-</header>
+</nav>
 
-<!-- CONTENIDO PRINCIPAL -->
-<div class="container my-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-        <h2><i class="fa-solid fa-tachometer-alt me-2"></i>Panel de Control</h2>
-        <a href="index_cliente.html" class="btn btn-outline-red">
-            <i class="fa-solid fa-arrow-left me-1"></i> Volver al inicio
-        </a>
+<!-- ===================== MAIN CONTENT ===================== -->
+<div class="container-main">
+    
+    <div class="page-header">
+        <h1><i class="fa-solid fa-tachometer-alt"></i> Panel de Control</h1>
+        <a href="index_cliente.html" class="btn-outline-red"><i class="fa-solid fa-arrow-left"></i> Volver al inicio</a>
     </div>
 
-    <ul class="nav nav-tabs border-0 mb-4" id="dashboardTabs">
-        <li class="nav-item"><button class="tab-btn active" onclick="switchTab('diagnostics')"><i class="fa-solid fa-clipboard-check me-1"></i>Diagnósticos</button></li>
-        <li class="nav-item"><button class="tab-btn" onclick="switchTab('appointments')"><i class="fa-solid fa-calendar-check me-1"></i>Mis Citas</button></li>
-        <li class="nav-item"><button class="tab-btn" onclick="switchTab('vehicles')"><i class="fa-solid fa-car me-1"></i>Mis Vehículos</button></li>
-        <li class="nav-item"><button class="tab-btn" onclick="switchTab('agenda')"><i class="fa-solid fa-calendar-alt me-1"></i>Mi Agenda</button></li>
-        <li class="nav-item"><button class="tab-btn" onclick="switchTab('mechanics')"><i class="fa-solid fa-users-gear me-1"></i>Mecánicos</button></li>
-        <li class="nav-item"><button class="tab-btn" onclick="switchTab('chat')"><i class="fa-solid fa-comments me-1"></i>Chat</button></li>
-    </ul>
+    <!-- TABS -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="switchTab('diagnostics')"><i class="fa-solid fa-clipboard-check"></i> Diagnósticos</button>
+        <button class="tab-btn" onclick="switchTab('appointments')"><i class="fa-solid fa-calendar-check"></i> Mis Citas</button>
+        <button class="tab-btn" onclick="switchTab('vehicles')"><i class="fa-solid fa-car"></i> Mis Vehículos</button>
+        <button class="tab-btn" onclick="switchTab('agenda')"><i class="fa-solid fa-calendar-alt"></i> Mi Agenda</button>
+        <button class="tab-btn" onclick="switchTab('mechanics')"><i class="fa-solid fa-users-gear"></i> Mecánicos</button>
+        <button class="tab-btn" onclick="switchTab('chat')"><i class="fa-solid fa-comments"></i> Chat</button>
+    </div>
 
     <!-- TAB: DIAGNÓSTICOS -->
     <div id="tab-diagnostics" class="tab-content-panel">
         <div class="content-card">
             <div class="card-header-custom">
                 <span><i class="fa-solid fa-clipboard-check"></i> Diagnósticos Recibidos</span>
-                <button class="btn btn-red btn-sm" onclick="loadDiagnostics()"><i class="fa-solid fa-refresh"></i> Actualizar</button>
+                <button class="btn-red btn-sm" onclick="loadDiagnostics()"><i class="fa-solid fa-refresh"></i> Actualizar</button>
             </div>
             <div class="p-3" id="diagnosticsList">
                 <div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando diagnósticos...</div>
@@ -117,7 +664,7 @@
         <div class="content-card">
             <div class="card-header-custom">
                 <span><i class="fa-solid fa-calendar-check"></i> Mis Citas</span>
-                <button class="btn btn-red btn-sm" onclick="showNewAppointmentModal()"><i class="fa-solid fa-plus"></i> Solicitar Cita</button>
+                <button class="btn-red btn-sm" onclick="showNewAppointmentModal()"><i class="fa-solid fa-plus"></i> Solicitar Cita</button>
             </div>
             <div class="p-3" id="appointmentsList">
                 <div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando citas...</div>
@@ -130,7 +677,7 @@
         <div class="content-card">
             <div class="card-header-custom">
                 <span><i class="fa-solid fa-car"></i> Mis Vehículos</span>
-                <button class="btn btn-red btn-sm" onclick="showVehicleModal()"><i class="fa-solid fa-plus"></i> Agregar Vehículo</button>
+                <button class="btn-red btn-sm" onclick="showVehicleModal()"><i class="fa-solid fa-plus"></i> Agregar Vehículo</button>
             </div>
             <div class="p-3" id="vehiclesList">
                 <div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando vehículos...</div>
@@ -143,7 +690,7 @@
         <div class="content-card">
             <div class="card-header-custom">
                 <span><i class="fa-solid fa-calendar-alt"></i> Mi Agenda Personal</span>
-                <button class="btn btn-red btn-sm" onclick="showEventModal()"><i class="fa-solid fa-plus"></i> Agregar Evento</button>
+                <button class="btn-red btn-sm" onclick="showEventModal()"><i class="fa-solid fa-plus"></i> Agregar Evento</button>
             </div>
             <div class="p-3" id="eventsList">
                 <div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando eventos...</div>
@@ -156,7 +703,7 @@
         <div class="content-card">
             <div class="card-header-custom">
                 <span><i class="fa-solid fa-users-gear"></i> Mecánicos Disponibles</span>
-                <button class="btn btn-red btn-sm" onclick="loadMechanics()"><i class="fa-solid fa-refresh"></i> Actualizar</button>
+                <button class="btn-red btn-sm" onclick="loadMechanics()"><i class="fa-solid fa-refresh"></i> Actualizar</button>
             </div>
             <div class="p-3" id="mechanicsList">
                 <div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando mecánicos...</div>
@@ -169,40 +716,33 @@
         <div class="content-card">
             <div class="card-header-custom">
                 <span><i class="fa-solid fa-comments"></i> Chat con Mecánicos</span>
-                <button class="btn btn-red btn-sm" onclick="openAddMechanicModal()">
-                    <i class="fa-solid fa-user-plus"></i> Agregar Mecánico
-                </button>
+                <button class="btn-red btn-sm" onclick="openAddMechanicModal()"><i class="fa-solid fa-user-plus"></i> Agregar Mecánico</button>
             </div>
             <div class="chat-layout">
                 <div class="chat-sidebar">
                     <div class="chat-sidebar-header">
                         <span>Conversaciones</span>
-                        <button class="btn btn-sm btn-red p-1 px-2" onclick="loadChatContacts()" title="Actualizar">
-                            <i class="fa-solid fa-refresh" style="font-size:0.75rem;"></i>
-                        </button>
+                        <button class="btn btn-sm btn-red p-1 px-2" onclick="loadChatContacts()"><i class="fa-solid fa-refresh"></i></button>
                     </div>
                     <div class="chat-contact-list" id="chatContactList">
-                        <div class="text-center text-muted p-3" style="font-size:0.8rem;">
-                            <i class="fa-solid fa-spinner fa-spin"></i>
-                        </div>
+                        <div class="text-center text-muted p-3"><i class="fa-solid fa-spinner fa-spin"></i></div>
                     </div>
                 </div>
                 <div class="chat-main">
                     <div class="chat-main-header" id="chatMainHeader">
-                        <i class="fa-solid fa-comment-slash text-muted"></i>
-                        <span class="text-muted" style="font-size:0.85rem;">Selecciona una conversación</span>
+                        <i class="fa-solid fa-comment-slash"></i>
+                        <span>Selecciona una conversación</span>
                     </div>
                     <div class="chat-messages-area" id="chatMessages">
                         <div class="chat-empty-state">
-                            <i class="fa-solid fa-comments fa-2x mb-3" style="color:#333;"></i>
+                            <i class="fa-solid fa-comments fa-2x mb-3"></i>
                             <div>Selecciona un mecánico para chatear</div>
-                            <div style="font-size:0.75rem; color:#444; margin-top:6px;">o agrega uno nuevo con el botón de arriba</div>
                         </div>
                     </div>
                     <div class="chat-input-area">
                         <div class="input-group">
                             <input type="text" class="form-control" id="chatInput" placeholder="Escribe tu mensaje..." onkeypress="if(event.key==='Enter') sendMessage()">
-                            <button class="btn btn-red" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                            <button class="btn-red" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
                         </div>
                     </div>
                 </div>
@@ -211,217 +751,104 @@
     </div>
 </div>
 
-
 <!-- MODALES -->
-<!-- Modal Vehículo -->
-<div class="modal fade" id="vehicleModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="vehicleModalTitle"><i class="fa-solid fa-car"></i> Agregar Vehículo</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="vehicleId">
-                <div class="mb-3"><label class="form-label">Marca *</label><input type="text" class="form-control" id="vehicleBrand" placeholder="Ej: Toyota"></div>
-                <div class="mb-3"><label class="form-label">Modelo *</label><input type="text" class="form-control" id="vehicleModel" placeholder="Ej: Corolla"></div>
-                <div class="mb-3"><label class="form-label">Número de Placa *</label><input type="text" class="form-control" id="vehiclePlate" placeholder="Ej: ABC-123"></div>
-                <div class="mb-3"><label class="form-label">Año</label><input type="number" class="form-control" id="vehicleYear" placeholder="Ej: 2024" min="1900" max="2030"></div>
-                <div class="mb-3"><label class="form-label">Kilometraje</label><input type="number" class="form-control" id="vehicleMileage" value="0"></div>
-                <div class="mb-3"><label class="form-label">Color</label><input type="text" class="form-control" id="vehicleColor" placeholder="Ej: Rojo"></div>
-                <div class="mb-3"><label class="form-label">Notas</label><textarea class="form-control" id="vehicleNotes" rows="2" placeholder="Notas adicionales..."></textarea></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-red" onclick="saveVehicle()"><i class="fa-solid fa-save"></i> Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="modal fade" id="vehicleModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title"><i class="fa-solid fa-car"></i> Agregar Vehículo</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="vehicleId"><div class="mb-3"><label class="form-label">Marca *</label><input type="text" class="form-control" id="vehicleBrand"></div><div class="mb-3"><label class="form-label">Modelo *</label><input type="text" class="form-control" id="vehicleModel"></div><div class="mb-3"><label class="form-label">Placa *</label><input type="text" class="form-control" id="vehiclePlate"></div><div class="mb-3"><label class="form-label">Año</label><input type="number" class="form-control" id="vehicleYear"></div><div class="mb-3"><label class="form-label">Kilometraje</label><input type="number" class="form-control" id="vehicleMileage" value="0"></div><div class="mb-3"><label class="form-label">Color</label><input type="text" class="form-control" id="vehicleColor"></div><div class="mb-3"><label class="form-label">Notas</label><textarea class="form-control" id="vehicleNotes" rows="2"></textarea></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn-red" onclick="saveVehicle()">Guardar</button></div></div></div></div>
 
-<!-- Modal Cita -->
-<div class="modal fade" id="appointmentModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fa-solid fa-calendar-plus"></i> Solicitar Cita</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="appointmentId">
-                <div class="mb-3"><label class="form-label">Mecánico *</label><select class="form-select" id="appointmentMechanic" required><option value="">Seleccionar mecánico...</option></select></div>
-                <div class="mb-3"><label class="form-label">Vehículo (opcional)</label><select class="form-select" id="appointmentVehicle"><option value="">Seleccionar vehículo...</option></select></div>
-                <div class="mb-3"><label class="form-label">Fecha *</label><input type="date" class="form-control" id="appointmentDate" required></div>
-                <div class="mb-3"><label class="form-label">Hora *</label><input type="time" class="form-control" id="appointmentTime" required></div>
-                <div class="mb-3"><label class="form-label">Motivo / Notas</label><textarea class="form-control" id="appointmentNotes" rows="2" placeholder="Describe el motivo de tu cita..."></textarea></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-red" onclick="saveAppointment()"><i class="fa-solid fa-paper-plane"></i> Solicitar</button>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="modal fade" id="appointmentModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Solicitar Cita</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="appointmentId"><div class="mb-3"><label class="form-label">Mecánico *</label><select class="form-select" id="appointmentMechanic"></select></div><div class="mb-3"><label class="form-label">Vehículo</label><select class="form-select" id="appointmentVehicle"></select></div><div class="mb-3"><label class="form-label">Fecha *</label><input type="date" class="form-control" id="appointmentDate"></div><div class="mb-3"><label class="form-label">Hora *</label><input type="time" class="form-control" id="appointmentTime"></div><div class="mb-3"><label class="form-label">Notas</label><textarea class="form-control" id="appointmentNotes" rows="2"></textarea></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn-red" onclick="saveAppointment()">Solicitar</button></div></div></div></div>
 
-<!-- Modal Evento -->
-<div class="modal fade" id="eventModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eventModalTitle"><i class="fa-solid fa-calendar-plus"></i> Agregar Evento</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="eventId">
-                <div class="mb-3"><label class="form-label">Título *</label><input type="text" class="form-control" id="eventTitle" placeholder="Ej: Cambio de aceite"></div>
-                <div class="mb-3"><label class="form-label">Fecha *</label><input type="date" class="form-control" id="eventDate"></div>
-                <div class="mb-3"><label class="form-label">Hora *</label><input type="time" class="form-control" id="eventTime"></div>
-                <div class="mb-3"><label class="form-label">Vehículo (opcional)</label><select class="form-select" id="eventVehicle"><option value="">Seleccionar vehículo...</option></select></div>
-                <div class="mb-3">
-                    <label class="form-label">Tipo de Evento</label>
-                    <select class="form-select" id="eventType">
-                        <option value="mantenimiento">🔧 Mantenimiento</option>
-                        <option value="reparacion">⚙️ Reparación</option>
-                        <option value="inspeccion">📋 Inspección</option>
-                        <option value="lavado">🧼 Lavado</option>
-                        <option value="cita_mecanico">🧑‍🔧 Cita con mecánico</option>
-                        <option value="otro">📌 Otro</option>
-                    </select>
-                </div>
-                <div class="mb-3"><label class="form-label">Descripción</label><textarea class="form-control" id="eventDescription" rows="2" placeholder="Detalles..."></textarea></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-red" onclick="saveEvent()"><i class="fa-solid fa-save"></i> Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="modal fade" id="eventModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Agregar Evento</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="eventId"><div class="mb-3"><label class="form-label">Título *</label><input type="text" class="form-control" id="eventTitle"></div><div class="mb-3"><label class="form-label">Fecha *</label><input type="date" class="form-control" id="eventDate"></div><div class="mb-3"><label class="form-label">Hora *</label><input type="time" class="form-control" id="eventTime"></div><div class="mb-3"><label class="form-label">Vehículo</label><select class="form-select" id="eventVehicle"></select></div><div class="mb-3"><label class="form-label">Tipo</label><select class="form-select" id="eventType"><option value="mantenimiento">Mantenimiento</option><option value="reparacion">Reparación</option><option value="inspeccion">Inspección</option><option value="lavado">Lavado</option><option value="cita_mecanico">Cita con mecánico</option><option value="otro">Otro</option></select></div><div class="mb-3"><label class="form-label">Descripción</label><textarea class="form-control" id="eventDescription" rows="2"></textarea></div></div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button type="button" class="btn-red" onclick="saveEvent()">Guardar</button></div></div></div></div>
 
-<!-- Modal Calificación -->
-<div class="modal fade" id="ratingModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fa-solid fa-star"></i> Calificar Diagnóstico</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body text-center">
-                <p>¿Qué te pareció el servicio de <strong id="ratingMechanicName"></strong>?</p>
-                <div class="rating-stars my-3" id="ratingStars">
-                    <i class="fa-regular fa-star fa-2x" onclick="setRating(1)"></i>
-                    <i class="fa-regular fa-star fa-2x" onclick="setRating(2)"></i>
-                    <i class="fa-regular fa-star fa-2x" onclick="setRating(3)"></i>
-                    <i class="fa-regular fa-star fa-2x" onclick="setRating(4)"></i>
-                    <i class="fa-regular fa-star fa-2x" onclick="setRating(5)"></i>
-                </div>
-                <textarea id="ratingComment" class="form-control mt-3" placeholder="Comentario (opcional)" rows="2"></textarea>
-                <input type="hidden" id="ratingDiagnosticId">
-                <input type="hidden" id="selectedRating" value="0">
-                <button class="btn btn-red mt-3 w-100" onclick="submitRating()"><i class="fa-solid fa-paper-plane"></i> Enviar Calificación</button>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="modal fade" id="ratingModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Calificar Diagnóstico</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body text-center"><p>Calificar a <strong id="ratingMechanicName"></strong></p><div class="rating-stars mb-3" id="ratingStars" style="cursor:pointer; font-size:1.8rem;"><i class="fa-regular fa-star" onclick="setRating(1)"></i><i class="fa-regular fa-star" onclick="setRating(2)"></i><i class="fa-regular fa-star" onclick="setRating(3)"></i><i class="fa-regular fa-star" onclick="setRating(4)"></i><i class="fa-regular fa-star" onclick="setRating(5)"></i></div><textarea id="ratingComment" class="form-control" placeholder="Comentario" rows="2"></textarea><input type="hidden" id="ratingDiagnosticId"><input type="hidden" id="selectedRating" value="0"><button class="btn-red mt-3 w-100" onclick="submitRating()">Enviar</button></div></div></div></div>
 
-<!-- Modal Agregar Mecánico -->
-<div class="modal fade" id="addMechanicModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fa-solid fa-user-plus"></i> Agregar Mecánico al Chat</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p class="text-muted small">Selecciona un mecánico para iniciar una conversación:</p>
-                <div id="addMechanicList">
-                    <div class="text-center text-muted p-3"><i class="fa-solid fa-spinner fa-spin"></i> Cargando mecánicos...</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<div class="modal fade" id="addMechanicModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Agregar Mecánico</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><div id="addMechanicList">Cargando...</div></div></div></div></div>
 
-<!-- Toast -->
-<div class="toast-notification" id="toastNotification" style="display: none;">
-    <div class="text-white p-3 rounded shadow">
-        <span id="toastMessage"></span>
-    </div>
-</div>
+<div class="toast-notification" id="toastNotification" style="display:none;"><div class="bg-success text-white p-3 rounded shadow"><span id="toastMessage"></span></div></div>
+
 <footer class="footer-kiroo">
     <div class="container">
         <div class="row gy-4">
-            <div class="col-md-5">
-                <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
-                <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
-                <div class="d-flex gap-3 mt-2">
-                    <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
-                    <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
-                    <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <h5>Explorar</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="vehiculos.html"><i class="fa-regular fa-circle-right me-2"></i>Registro vehicular</a></li>
-                    <li class="mb-2"><a href="agenda.html"><i class="fa-regular fa-circle-right me-2"></i>Agenda de servicios</a></li>
-                    <li class="mb-2"><a href="gamificacion.html"><i class="fa-regular fa-circle-right me-2"></i>Gamificación</a></li>
-                    <li class="mb-2"><a href="emergencias.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Contacto</h5>
-                <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
-                <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
-                <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
-            </div>
+            <div class="col-md-5"><h5><i class="fa-solid fa-car"></i> Kiroo</h5><p>La plataforma integral para conductores responsables.</p></div>
+            <div class="col-md-3"><h5>Explorar</h5><ul class="list-unstyled"><li><a href="vehiculos.html">Registro vehicular</a></li><li><a href="agenda.html">Agenda de servicios</a></li></ul></div>
+            <div class="col-md-4"><h5>Contacto</h5><p>soporte@kiroo.com</p><p>+34 900 123 456</p></div>
         </div>
-        <hr class="mt-4 opacity-25">
-        <div class="text-center pt-2">
-            <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
-        </div>
+        <hr><div class="text-center pt-2"><p class="mb-0 small">&copy; 2025 Kiroo - Todos los derechos reservados.</p></div>
     </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://kit.fontawesome.com/a0e6d5d7d4.js" crossorigin="anonymous"></script>
 <script>
     // ========== VARIABLES GLOBALES ==========
     let CURRENT_USER_ID = null;
     let currentMechanicId = null;
     let currentMechanicName = '';
-    let vehicleModalInstance, appointmentModalInstance, eventModalInstance, ratingModalInstance, addMechanicModalInstance;
+    let vehicleModal, appointmentModal, eventModal, ratingModal, addMechanicModal;
     let refreshInterval = null;
     let currentRating = 0;
 
-    // ========== VERIFICAR AUTENTICACIÓN ==========
+    // ========== FUNCIONES DE UI ==========
+    function showToast(msg, isError = false) {
+        const toast = document.getElementById('toastNotification');
+        const toastMsg = document.getElementById('toastMessage');
+        toastMsg.innerHTML = `<i class="fa-solid ${isError ? 'fa-circle-exclamation' : 'fa-check-circle'} me-2"></i>${msg}`;
+        toast.querySelector('div').className = isError ? 'bg-danger text-white p-3 rounded shadow' : 'bg-success text-white p-3 rounded shadow';
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 3000);
+    }
+
+    async function apiCall(action, data = {}) {
+        try {
+            const fd = new FormData();
+            fd.append('action', action);
+            Object.keys(data).forEach(k => { if (data[k] !== null && data[k] !== undefined) fd.append(k, data[k]); });
+            const res = await fetch('api.php', { method: 'POST', body: fd });
+            return await res.json();
+        } catch(e) { return { success: false, message: 'Error de conexión' }; }
+    }
+
+    function escapeHtml(t) { if (!t) return ''; const div = document.createElement('div'); div.textContent = t; return div.innerHTML; }
+
+    // ========== FUNCIONES DE AVATAR ==========
+    function setAvatarFromUrl(url) {
+        ['headerAvatarImg', 'ddAvatarImg'].forEach(id => {
+            const img = document.getElementById(id);
+            if (img) { img.src = url; img.style.display = 'block'; }
+        });
+        ['headerAvatarIcon', 'ddAvatarIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    function applyUserUI(name, username, avatarUrl) {
+        const firstName = (name || 'Cliente').split(' ')[0];
+        const initials = (name || '?').charAt(0).toUpperCase();
+
+        document.getElementById('headerUserName').textContent = firstName;
+        document.getElementById('headerInitials').textContent = initials;
+        document.getElementById('ddName').textContent = name || 'Cliente';
+        document.getElementById('ddInitials').textContent = initials;
+        document.getElementById('ddUsername').textContent = username ? '@' + username : '';
+
+        if (avatarUrl) setAvatarFromUrl(avatarUrl);
+    }
+
+    // ========== AUTENTICACIÓN ==========
     async function checkAuth() {
         try {
-            const formData = new FormData();
-            formData.append('action', 'check_auth');
-            const response = await fetch('auth.php', { method: 'POST', body: formData });
-            const data = await response.json();
+            const fd = new FormData();
+            fd.append('action', 'check_auth');
+            const res = await fetch('auth.php', { method: 'POST', body: fd });
+            const data = await res.json();
             
             if (data.authenticated) {
                 CURRENT_USER_ID = data.id;
-                const firstName = (data.full_name || data.username || 'Usuario').split(' ')[0];
-                document.getElementById('headerUserName').textContent = firstName;
-                document.getElementById('ddName').textContent = data.full_name || data.username;
-                document.getElementById('ddUsername').textContent = '@' + (data.username || '');
-                const initials = (data.full_name || data.username || '?').charAt(0).toUpperCase();
-                document.getElementById('headerInitials').textContent = initials;
-                document.getElementById('ddInitials').textContent = initials;
-                loadProfilePicture();
+                applyUserUI(data.full_name || data.username, data.username, null);
+                await loadProfilePicture();
                 return true;
-            } else {
-                window.location.href = 'login.html';
-                return false;
             }
-        } catch (error) {
-            console.error('Error checking auth:', error);
             window.location.href = 'login.html';
             return false;
-        }
+        } catch(e) { window.location.href = 'login.html'; return false; }
     }
 
     async function loadProfilePicture() {
@@ -431,623 +858,322 @@
             const res = await fetch('api.php', { method: 'POST', body: fd });
             const data = await res.json();
             if (data.success && data.profile && data.profile.profile_picture) {
-                const url = data.profile.profile_picture;
-                document.getElementById('headerAvatarIcon').style.display = 'none';
-                const img = document.getElementById('headerAvatarImg');
-                img.src = url; img.style.display = 'block';
-                document.getElementById('ddAvatarIcon').style.display = 'none';
-                const ddImg = document.getElementById('ddAvatarImg');
-                ddImg.src = url; ddImg.style.display = 'block';
+                setAvatarFromUrl(data.profile.profile_picture);
             }
         } catch(e) { /* sin foto */ }
     }
 
-    // ========== UTILIDADES ==========
-    function showToast(message, isError = false) {
-        const toast = document.getElementById('toastNotification');
-        document.getElementById('toastMessage').innerHTML = `<i class="fa-solid ${isError ? 'fa-circle-exclamation' : 'fa-check-circle'} me-2"></i>${message}`;
-        toast.style.backgroundColor = isError ? '#dc3545' : '#28a745';
-        toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 3500);
-    }
-
-    async function apiCall(action, data = {}) {
-        try {
-            const formData = new FormData();
-            formData.append('action', action);
-            Object.keys(data).forEach(key => {
-                if (data[key] !== null && data[key] !== undefined) formData.append(key, data[key]);
-            });
-            const response = await fetch('api.php', { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return await response.json();
-        } catch (error) {
-            console.error('API Error:', error);
-            return { success: false, message: 'Error de conexión: ' + error.message };
-        }
-    }
-
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = String(text);
-        return div.innerHTML;
+    // ========== FUNCIÓN PARA RENDERIZAR ESTRELLAS ==========
+    function renderStars(rating) {
+        if (!rating || rating === 0) return '<span class="text-muted">Sin calificaciones</span>';
+        let stars = '';
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = (rating % 1) >= 0.5;
+        for (let i = 0; i < fullStars; i++) stars += '<i class="fa-solid fa-star"></i>';
+        if (hasHalfStar) stars += '<i class="fa-solid fa-star-half-alt"></i>';
+        for (let i = stars.length; i < 5; i++) stars += '<i class="fa-regular fa-star"></i>';
+        return `<div class="rating-stars">${stars}</div>`;
     }
 
     // ========== TABS ==========
     function switchTab(tabName) {
         document.querySelectorAll('.tab-content-panel').forEach(t => t.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        const panel = document.getElementById('tab-' + tabName);
-        if (panel) panel.style.display = 'block';
-        if (event && event.target) event.target.classList.add('active');
-        switch(tabName) {
-            case 'diagnostics': loadDiagnostics(); break;
-            case 'appointments': loadAppointments(); break;
-            case 'vehicles': loadVehicles(); break;
-            case 'agenda': loadEvents(); break;
-            case 'mechanics': loadMechanics(); break;
-            case 'chat': loadChatContacts(); break;
-        }
+        document.getElementById('tab-' + tabName).style.display = 'block';
+        event.target.classList.add('active');
+        if (tabName === 'diagnostics') loadDiagnostics();
+        else if (tabName === 'appointments') loadAppointments();
+        else if (tabName === 'vehicles') loadVehicles();
+        else if (tabName === 'agenda') loadEvents();
+        else if (tabName === 'mechanics') loadMechanics();
+        else if (tabName === 'chat') loadChatContacts();
     }
 
     // ========== DIAGNÓSTICOS ==========
     async function loadDiagnostics() {
         const container = document.getElementById('diagnosticsList');
-        container.innerHTML = '<div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando diagnósticos...</div>';
-        const result = await apiCall('get_diagnostics');
-
-        if (result.success && result.diagnostics && result.diagnostics.length > 0) {
-            container.innerHTML = result.diagnostics.map(d => {
-                const conditionClass = {
-                    excelente: 'bg-success', bueno: 'bg-info',
-                    regular: 'bg-warning text-dark', malo: 'bg-danger', critico: 'bg-dark border border-secondary'
-                }[d.vehicle_condition] || 'bg-secondary';
-                const conditionIcon = { excelente:'✅', bueno:'👍', regular:'⚠️', malo:'❌', critico:'🚨' }[d.vehicle_condition] || '—';
-                const dateFormatted = new Date(d.created_at).toLocaleDateString('es-ES', {
-                    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
-                });
+        container.innerHTML = '<div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>';
+        const res = await apiCall('get_diagnostics');
+        if (res.success && res.diagnostics?.length) {
+            container.innerHTML = res.diagnostics.map(d => {
+                const rated = d.rated == 1 || d.rated === true;
                 return `
                 <div class="diagnostic-card">
-                    <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
-                        <div>
-                            <strong style="font-size:1rem;">🔧 Diagnóstico #${d.id}</strong>
-                            <div class="small text-muted mt-1">📅 ${dateFormatted}</div>
-                            <div class="small mt-1">👨‍🔧 <strong>${escapeHtml(d.mechanic_name || 'Mecánico')}</strong>${d.mechanic_specialty ? ` — ${escapeHtml(d.mechanic_specialty)}` : ''}</div>
-                        </div>
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                        <div><strong>🔧 Diagnóstico #${d.id}</strong><div class="small text-muted">📅 ${new Date(d.created_at).toLocaleDateString()}</div></div>
                         <span class="badge-status status-completado">Completado</span>
                     </div>
-                    ${d.vehicle_name ? `<div class="diagnostic-section"><div class="section-label">🚗 Vehículo</div><div class="section-value">${escapeHtml(d.vehicle_name)}</div></div>` : ''}
-                    ${d.symptoms ? `<div class="diagnostic-section"><div class="section-label">🩺 Síntomas Reportados</div><div class="section-value">${escapeHtml(d.symptoms)}</div></div>` : ''}
-                    <div class="diagnostic-section"><div class="section-label">📋 Diagnóstico</div><div class="section-value">${escapeHtml(d.diagnosis)}</div></div>
-                    <div class="diagnostic-section"><div class="section-label">💡 Recomendaciones</div><div class="section-value">${escapeHtml(d.recommendation)}</div></div>
-                    ${d.parts_needed ? `<div class="diagnostic-section"><div class="section-label">🔩 Piezas Necesarias</div><div class="section-value">${escapeHtml(d.parts_needed)}</div></div>` : ''}
-                    ${d.additional_notes ? `<div class="diagnostic-section"><div class="section-label">📝 Notas Adicionales</div><div class="section-value">${escapeHtml(d.additional_notes)}</div></div>` : ''}
-                    <div class="d-flex gap-2 flex-wrap mt-3 align-items-center">
-                        ${d.vehicle_condition ? `<span class="badge ${conditionClass}">${conditionIcon} Estado: ${d.vehicle_condition}</span>` : ''}
-                        ${d.estimated_cost ? `<span class="badge bg-info text-dark">💰 Costo estimado: $${parseFloat(d.estimated_cost).toFixed(2)}</span>` : ''}
-                    </div>
+                    <div class="mt-2 small"><strong>👨‍🔧 ${escapeHtml(d.mechanic_name || 'Mecánico')}</strong></div>
+                    ${d.diagnosis ? `<div class="diagnostic-section mt-2"><div class="section-label">Diagnóstico</div><div class="section-value">${escapeHtml(d.diagnosis)}</div></div>` : ''}
+                    ${d.recommendation ? `<div class="diagnostic-section"><div class="section-label">Recomendación</div><div class="section-value">${escapeHtml(d.recommendation)}</div></div>` : ''}
                     <div class="mt-3">
-                        ${(d.rated == 0 || d.rated === '0' || !d.rated) ?
-                            `<button class="btn btn-sm btn-warning px-3 py-2" onclick="openRatingModal(${d.id}, '${escapeHtml(d.mechanic_name || 'Mecánico')}')">
-                                <i class="fa-solid fa-star me-1"></i> Calificar este diagnóstico
-                            </button>` :
-                            `<div class="d-flex align-items-center gap-2 flex-wrap">
-                                <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i>Calificado</span>
-                                <span class="text-warning" style="font-size:1.1rem;">${'★'.repeat(parseInt(d.rating) || 0)}${'☆'.repeat(5 - (parseInt(d.rating) || 0))}</span>
-                                ${d.rating_comment ? `<small class="text-muted fst-italic">"${escapeHtml(d.rating_comment)}"</small>` : ''}
-                            </div>`
+                        ${!rated ? 
+                            `<button class="btn-red btn-sm" onclick='openRatingModal(${d.id}, "${escapeHtml(d.mechanic_name)}")'><i class="fa-solid fa-star"></i> Calificar este diagnóstico</button>` : 
+                            `<div class="d-flex align-items-center gap-2 flex-wrap"><span class="badge bg-success"><i class="fa-solid fa-check"></i> Calificado</span>${d.rating ? renderStars(parseFloat(d.rating)) : ''}</div>`
                         }
                     </div>
                 </div>`;
             }).join('');
         } else {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-clipboard-check"></i><p>No has recibido ningún diagnóstico aún</p><small class="text-muted">Cuando un mecánico realice un diagnóstico, aparecerá aquí</small><br><button class="btn btn-red btn-sm mt-2" onclick="switchTab('appointments')"><i class="fa-solid fa-calendar-check"></i> Solicitar una cita</button></div>`;
+            container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-clipboard-check"></i><p>No hay diagnósticos</p></div>';
         }
-    }
-
-    function renderStars(rating) {
-        document.querySelectorAll('#ratingStars i').forEach((star, index) => {
-            star.className = index < rating ? 'fa-solid fa-star fa-2x' : 'fa-regular fa-star fa-2x';
-            star.style.color = index < rating ? '#ffc107' : '#555';
-        });
-    }
-
-    function setRating(rating) {
-        currentRating = rating;
-        document.getElementById('selectedRating').value = rating;
-        renderStars(rating);
     }
 
     function openRatingModal(diagnosticId, mechanicName) {
         document.getElementById('ratingDiagnosticId').value = diagnosticId;
         document.getElementById('ratingMechanicName').textContent = mechanicName;
-        document.getElementById('ratingComment').value = '';
         currentRating = 0;
         document.getElementById('selectedRating').value = '0';
-        renderStars(0);
         const stars = document.querySelectorAll('#ratingStars i');
-        stars.forEach((star, index) => {
-            star.onmouseover = () => renderStars(index + 1);
-            star.onmouseout  = () => renderStars(currentRating);
-            star.onclick     = () => setRating(index + 1);
+        stars.forEach((star, i) => {
+            star.className = 'fa-regular fa-star';
+            star.style.fontSize = '1.8rem';
         });
-        ratingModalInstance.show();
+        ratingModal.show();
     }
-
+    
+    function setRating(r) {
+        currentRating = r;
+        document.getElementById('selectedRating').value = r;
+        const stars = document.querySelectorAll('#ratingStars i');
+        stars.forEach((star, i) => {
+            star.className = i < r ? 'fa-solid fa-star' : 'fa-regular fa-star';
+            star.style.fontSize = '1.8rem';
+        });
+    }
+    
     async function submitRating() {
-        const diagnosticId = document.getElementById('ratingDiagnosticId').value;
         const rating = parseInt(document.getElementById('selectedRating').value);
-        const comment = document.getElementById('ratingComment').value.trim();
-        if (rating === 0) { showToast('Por favor selecciona una calificación', true); return; }
-        const result = await apiCall('rate_diagnostic', { diagnostic_id: diagnosticId, rating, comment });
-        if (result.success) {
-            showToast('¡Gracias por tu calificación!');
-            ratingModalInstance.hide();
+        if (!rating) { showToast('Selecciona una calificación', true); return; }
+        const res = await apiCall('rate_diagnostic', { 
+            diagnostic_id: document.getElementById('ratingDiagnosticId').value, 
+            rating, 
+            comment: document.getElementById('ratingComment').value 
+        });
+        if (res.success) {
+            showToast('Gracias por calificar');
+            ratingModal.hide();
             loadDiagnostics();
-        } else {
-            showToast(result.message || 'Error al enviar calificación', true);
-        }
+        } else showToast(res.message || 'Error', true);
     }
 
     // ========== CITAS ==========
     async function loadAppointments() {
         const container = document.getElementById('appointmentsList');
-        container.innerHTML = '<div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando citas...</div>';
-        const result = await apiCall('get_appointments');
-
-        if (result.success && result.appointments && result.appointments.length > 0) {
-            container.innerHTML = result.appointments.map(a => {
-                const statusClass = {
-                    pendiente: 'status-pendiente', confirmada: 'status-confirmada',
-                    completado: 'status-completado', cancelada: 'status-cancelada'
-                }[a.status] || 'bg-secondary';
-                const dateFormatted = new Date(a.appointment_date + 'T12:00:00').toLocaleDateString('es-ES', {
-                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
-                });
-                return `
-                <div class="appointment-card">
-                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-                        <div>
-                            <strong>📅 ${dateFormatted} — ${a.appointment_time}</strong>
-                            <div class="small text-muted mt-1">👨‍🔧 Mecánico: <strong>${escapeHtml(a.mechanic_name || 'Por asignar')}</strong></div>
-                            ${a.vehicle_brand ? `<div class="small text-muted">🚗 ${escapeHtml(a.vehicle_brand)} ${escapeHtml(a.vehicle_model)} (${escapeHtml(a.vehicle_plate)})</div>` : ''}
-                            ${a.notes ? `<div class="small text-muted mt-1">📝 ${escapeHtml(a.notes)}</div>` : ''}
-                        </div>
-                        <span class="badge-status ${statusClass}">${a.status}</span>
-                    </div>
-                    ${a.diagnostic_id ? `<div class="mt-2 small text-success"><i class="fa-solid fa-check-circle"></i> Diagnóstico disponible — <a href="javascript:void(0)" onclick="switchTab('diagnostics')" class="text-info">Ver Diagnóstico</a></div>` : (a.status === 'completado' ? '<div class="mt-2 small text-warning"><i class="fa-solid fa-clock"></i> Esperando diagnóstico del mecánico</div>' : '')}
-                    ${(a.status === 'pendiente' || a.status === 'confirmada') ? `<div class="mt-2"><button class="btn btn-sm btn-outline-danger" onclick="cancelAppointment(${a.id})"><i class="fa-solid fa-ban"></i> Cancelar Cita</button></div>` : ''}
-                </div>`;
-            }).join('');
-        } else {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-calendar-xmark"></i><p>No tienes citas programadas</p><button class="btn btn-red btn-sm mt-2" onclick="showNewAppointmentModal()"><i class="fa-solid fa-plus"></i> Solicitar Cita</button></div>`;
-        }
+        container.innerHTML = '<div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>';
+        const res = await apiCall('get_appointments');
+        if (res.success && res.appointments?.length) {
+            container.innerHTML = res.appointments.map(a => `<div class="appointment-card"><div class="d-flex justify-content-between"><div><strong>📅 ${a.appointment_date} - ${a.appointment_time}</strong><div class="small">👨‍🔧 ${escapeHtml(a.mechanic_name)}</div></div><span class="badge-status status-${a.status}">${a.status}</span></div></div>`).join('');
+        } else { container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-calendar-xmark"></i><p>No hay citas</p><button class="btn-red btn-sm" onclick="showNewAppointmentModal()">Solicitar</button></div>'; }
     }
-
-    async function showNewAppointmentModal() {
-        const mechanicsResult = await apiCall('get_mechanics');
-        const mechanicSelect = document.getElementById('appointmentMechanic');
-        mechanicSelect.innerHTML = '<option value="">Seleccionar mecánico...</option>';
-        if (mechanicsResult.success && mechanicsResult.mechanics) {
-            mechanicsResult.mechanics.forEach(m => {
-                mechanicSelect.innerHTML += `<option value="${m.id}">${escapeHtml(m.full_name)}${m.specialty ? ' - ' + escapeHtml(m.specialty) : ''}${m.workshop_name ? ' | ' + escapeHtml(m.workshop_name) : ''}</option>`;
-            });
-        }
-        const vehiclesResult = await apiCall('get_vehicles');
-        const vehicleSelect = document.getElementById('appointmentVehicle');
-        vehicleSelect.innerHTML = '<option value="">Sin vehículo seleccionado...</option>';
-        if (vehiclesResult.success && vehiclesResult.vehicles) {
-            vehiclesResult.vehicles.forEach(v => {
-                vehicleSelect.innerHTML += `<option value="${v.id}">${escapeHtml(v.brand)} ${escapeHtml(v.model)} - ${escapeHtml(v.plate_number)}</option>`;
-            });
-        }
-        document.getElementById('appointmentId').value = '';
+    
+    async function showNewAppointmentModal() { 
+        const m = await apiCall('get_mechanics'); 
+        const sel = document.getElementById('appointmentMechanic'); 
+        sel.innerHTML = '<option value="">Seleccionar...</option>'; 
+        if(m.success && m.mechanics) m.mechanics.forEach(mec => sel.innerHTML += `<option value="${mec.id}">${escapeHtml(mec.full_name)}</option>`); 
+        const v = await apiCall('get_vehicles'); 
+        const vSel = document.getElementById('appointmentVehicle'); 
+        vSel.innerHTML = '<option value="">Sin vehículo</option>'; 
+        if(v.success && v.vehicles) v.vehicles.forEach(veh => vSel.innerHTML += `<option value="${veh.id}">${escapeHtml(veh.brand)} ${escapeHtml(veh.model)}</option>`); 
         document.getElementById('appointmentDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('appointmentTime').value = '09:00';
-        document.getElementById('appointmentNotes').value = '';
-        appointmentModalInstance.show();
+        appointmentModal.show(); 
     }
-
-    async function saveAppointment() {
-        const mechanicId = document.getElementById('appointmentMechanic').value;
-        const vehicleId = document.getElementById('appointmentVehicle').value;
-        const date = document.getElementById('appointmentDate').value;
-        const time = document.getElementById('appointmentTime').value;
-        const notes = document.getElementById('appointmentNotes').value.trim();
-        if (!mechanicId) { showToast('Por favor selecciona un mecánico', true); return; }
-        if (!date || !time) { showToast('Fecha y hora son obligatorias', true); return; }
-        const result = await apiCall('save_appointment', { mechanic_id: mechanicId, vehicle_id: vehicleId, appointment_date: date, appointment_time: time, notes });
-        if (result.success) {
-            showToast('¡Cita solicitada correctamente!');
-            appointmentModalInstance.hide();
-            loadAppointments();
-        } else {
-            showToast(result.message || 'Error al solicitar cita', true);
-        }
-    }
-
-    async function cancelAppointment(appointmentId) {
-        if (confirm('¿Estás seguro de cancelar esta cita?')) {
-            const result = await apiCall('cancel_appointment', { appointment_id: appointmentId });
-            if (result.success) {
-                showToast('Cita cancelada correctamente');
-                loadAppointments();
-            } else {
-                showToast(result.message || 'Error al cancelar', true);
-            }
-        }
+    
+    async function saveAppointment() { 
+        const res = await apiCall('save_appointment', { 
+            mechanic_id: document.getElementById('appointmentMechanic').value, 
+            vehicle_id: document.getElementById('appointmentVehicle').value, 
+            appointment_date: document.getElementById('appointmentDate').value, 
+            appointment_time: document.getElementById('appointmentTime').value, 
+            notes: document.getElementById('appointmentNotes').value 
+        }); 
+        if(res.success) { showToast('Cita solicitada'); appointmentModal.hide(); loadAppointments(); } 
+        else showToast(res.message || 'Error', true); 
     }
 
     // ========== VEHÍCULOS ==========
-    async function loadVehicles() {
-        const container = document.getElementById('vehiclesList');
-        container.innerHTML = '<div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>';
-        const result = await apiCall('get_vehicles');
-        if (result.success && result.vehicles && result.vehicles.length > 0) {
-            container.innerHTML = result.vehicles.map(v => `
-                <div class="diagnostic-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <strong>🚗 ${escapeHtml(v.brand)} ${escapeHtml(v.model)}</strong>
-                            <div class="small text-muted">📌 ${escapeHtml(v.plate_number)} | 📅 ${v.year || 'N/A'} | 📏 ${parseInt(v.mileage || 0).toLocaleString()} km</div>
-                            ${v.color ? `<div class="small">🎨 ${escapeHtml(v.color)}</div>` : ''}
-                            ${v.notes ? `<div class="small text-muted mt-1">📝 ${escapeHtml(v.notes)}</div>` : ''}
-                        </div>
-                        <div class="d-flex gap-1">
-                            <button class="btn btn-sm btn-outline-light" onclick="editVehicle(${v.id})"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle(${v.id})"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                </div>`).join('');
-        } else {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-car"></i><p>No tienes vehículos registrados</p><button class="btn btn-red btn-sm mt-2" onclick="showVehicleModal()"><i class="fa-solid fa-plus"></i> Agregar</button></div>`;
-        }
+    async function loadVehicles() { 
+        const res = await apiCall('get_vehicles'); 
+        const container = document.getElementById('vehiclesList'); 
+        if(res.success && res.vehicles?.length) { 
+            container.innerHTML = res.vehicles.map(v => `<div class="diagnostic-card"><div class="d-flex justify-content-between"><div><strong>${escapeHtml(v.brand)} ${escapeHtml(v.model)}</strong><div class="small">${escapeHtml(v.plate_number)}</div></div><button class="btn-red btn-sm" onclick="deleteVehicle(${v.id})"><i class="fa-solid fa-trash"></i></button></div></div>`).join(''); 
+        } else { container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-car"></i><p>Sin vehículos</p><button class="btn-red btn-sm" onclick="showVehicleModal()">Agregar</button></div>'; } 
     }
-
-    function showVehicleModal() {
-        ['vehicleId','vehicleBrand','vehicleModel','vehiclePlate','vehicleYear','vehicleColor','vehicleNotes'].forEach(id => document.getElementById(id).value = '');
+    
+    function showVehicleModal() { 
+        document.getElementById('vehicleId').value = ''; 
+        document.getElementById('vehicleBrand').value = ''; 
+        document.getElementById('vehicleModel').value = ''; 
+        document.getElementById('vehiclePlate').value = ''; 
+        document.getElementById('vehicleYear').value = '';
         document.getElementById('vehicleMileage').value = '0';
-        document.getElementById('vehicleModalTitle').innerHTML = '<i class="fa-solid fa-plus-circle"></i> Agregar Vehículo';
-        vehicleModalInstance.show();
+        document.getElementById('vehicleColor').value = '';
+        document.getElementById('vehicleNotes').value = '';
+        vehicleModal.show(); 
     }
-
-    async function editVehicle(vehicleId) {
-        const result = await apiCall('get_vehicles');
-        if (result.success && result.vehicles) {
-            const v = result.vehicles.find(x => x.id == vehicleId);
-            if (v) {
-                document.getElementById('vehicleId').value = v.id;
-                document.getElementById('vehicleBrand').value = v.brand || '';
-                document.getElementById('vehicleModel').value = v.model || '';
-                document.getElementById('vehiclePlate').value = v.plate_number || '';
-                document.getElementById('vehicleYear').value = v.year || '';
-                document.getElementById('vehicleMileage').value = v.mileage || '0';
-                document.getElementById('vehicleColor').value = v.color || '';
-                document.getElementById('vehicleNotes').value = v.notes || '';
-                document.getElementById('vehicleModalTitle').innerHTML = '<i class="fa-solid fa-edit"></i> Editar Vehículo';
-                vehicleModalInstance.show();
-            }
-        }
-    }
-
-    async function saveVehicle() {
-        const vehicleData = {
+    
+    async function saveVehicle() { 
+        const res = await apiCall('save_vehicle', { 
             vehicle_id: document.getElementById('vehicleId').value || null,
-            brand: document.getElementById('vehicleBrand').value.trim(),
-            model: document.getElementById('vehicleModel').value.trim(),
-            plate_number: document.getElementById('vehiclePlate').value.trim(),
-            year: document.getElementById('vehicleYear').value || null,
-            mileage: document.getElementById('vehicleMileage').value || '0',
-            color: document.getElementById('vehicleColor').value.trim(),
-            notes: document.getElementById('vehicleNotes').value.trim()
-        };
-        if (!vehicleData.brand || !vehicleData.model || !vehicleData.plate_number) {
-            showToast('Marca, modelo y placa son obligatorios', true); return;
-        }
-        const result = await apiCall('save_vehicle', vehicleData);
-        if (result.success) {
-            showToast(vehicleData.vehicle_id ? 'Vehículo actualizado' : 'Vehículo registrado');
-            vehicleModalInstance.hide();
-            loadVehicles();
-        } else {
-            showToast(result.message || 'Error al guardar', true);
-        }
+            brand: document.getElementById('vehicleBrand').value, 
+            model: document.getElementById('vehicleModel').value, 
+            plate_number: document.getElementById('vehiclePlate').value, 
+            year: document.getElementById('vehicleYear').value, 
+            mileage: document.getElementById('vehicleMileage').value, 
+            color: document.getElementById('vehicleColor').value,
+            notes: document.getElementById('vehicleNotes').value
+        }); 
+        if(res.success) { showToast('Vehículo guardado'); vehicleModal.hide(); loadVehicles(); } 
+        else showToast(res.message || 'Error', true); 
     }
-
-    async function deleteVehicle(vehicleId) {
-        if (confirm('¿Eliminar este vehículo?')) {
-            const result = await apiCall('delete_vehicle', { vehicle_id: vehicleId });
-            if (result.success) { showToast('Vehículo eliminado'); loadVehicles(); }
-            else showToast(result.message || 'Error al eliminar', true);
-        }
-    }
+    
+    async function deleteVehicle(id) { if(confirm('¿Eliminar?')) { const res = await apiCall('delete_vehicle', { vehicle_id: id }); if(res.success) { showToast('Eliminado'); loadVehicles(); } } }
 
     // ========== EVENTOS ==========
-    async function loadEvents() {
-        const container = document.getElementById('eventsList');
-        container.innerHTML = '<div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>';
-        const result = await apiCall('get_events');
-        if (result.success && result.events && result.events.length > 0) {
-            const icons = { mantenimiento:'🔧', reparacion:'⚙️', inspeccion:'📋', lavado:'🧼', cita_mecanico:'🧑‍🔧', otro:'📌' };
-            container.innerHTML = result.events.map(e => `
-                <div class="event-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div>
-                            <strong>${icons[e.event_type] || '📌'} ${escapeHtml(e.title)}</strong>
-                            <div class="small text-muted">📅 ${new Date(e.event_date + 'T12:00:00').toLocaleDateString('es-ES', {weekday:'long',year:'numeric',month:'long',day:'numeric'})} — ${e.event_time}</div>
-                            ${e.brand ? `<div class="small">🚗 ${escapeHtml(e.brand)} ${escapeHtml(e.model)} (${escapeHtml(e.plate_number)})</div>` : ''}
-                            ${e.description ? `<div class="small text-muted mt-1">📝 ${escapeHtml(e.description)}</div>` : ''}
-                        </div>
-                        <div class="d-flex gap-1">
-                            <button class="btn btn-sm btn-outline-light" onclick="editEvent(${e.id})"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteEvent(${e.id})"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                </div>`).join('');
-        } else {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-calendar-alt"></i><p>No tienes eventos programados</p><button class="btn btn-red btn-sm mt-2" onclick="showEventModal()"><i class="fa-solid fa-plus"></i> Agregar</button></div>`;
-        }
+    async function loadEvents() { 
+        const res = await apiCall('get_events'); 
+        const container = document.getElementById('eventsList'); 
+        if(res.success && res.events?.length) { 
+            container.innerHTML = res.events.map(e => `<div class="event-card"><div><strong>${escapeHtml(e.title)}</strong><div class="small">📅 ${e.event_date} ${e.event_time}</div></div></div>`).join(''); 
+        } else { container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-calendar-alt"></i><p>Sin eventos</p><button class="btn-red btn-sm" onclick="showEventModal()">Agregar</button></div>'; } 
     }
-
-    async function showEventModal(eventId = null) {
-        ['eventId','eventTitle','eventDescription'].forEach(id => document.getElementById(id).value = '');
+    
+    function showEventModal() { 
+        document.getElementById('eventId').value = ''; 
+        document.getElementById('eventTitle').value = ''; 
         document.getElementById('eventDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('eventTime').value = '10:00';
         document.getElementById('eventType').value = 'otro';
-        document.getElementById('eventModalTitle').innerHTML = '<i class="fa-solid fa-calendar-plus"></i> Agregar Evento';
-
-        const vehiclesResult = await apiCall('get_vehicles');
-        const sel = document.getElementById('eventVehicle');
-        sel.innerHTML = '<option value="">Sin vehículo...</option>';
-        if (vehiclesResult.success && vehiclesResult.vehicles) {
-            vehiclesResult.vehicles.forEach(v => sel.innerHTML += `<option value="${v.id}">${escapeHtml(v.brand)} ${escapeHtml(v.model)} - ${escapeHtml(v.plate_number)}</option>`);
-        }
-
-        if (eventId) {
-            const r = await apiCall('get_events');
-            const ev = r.success && r.events ? r.events.find(e => e.id == eventId) : null;
-            if (ev) {
-                document.getElementById('eventId').value = ev.id;
-                document.getElementById('eventTitle').value = ev.title;
-                document.getElementById('eventDate').value = ev.event_date;
-                document.getElementById('eventTime').value = ev.event_time;
-                document.getElementById('eventType').value = ev.event_type;
-                document.getElementById('eventDescription').value = ev.description || '';
-                if (ev.vehicle_id) sel.value = ev.vehicle_id;
-                document.getElementById('eventModalTitle').innerHTML = '<i class="fa-solid fa-edit"></i> Editar Evento';
-            }
-        }
-        eventModalInstance.show();
+        document.getElementById('eventDescription').value = '';
+        eventModal.show(); 
     }
-
-    async function editEvent(eventId) { await showEventModal(eventId); }
-
-    async function saveEvent() {
-        const eventData = {
+    
+    async function saveEvent() { 
+        const res = await apiCall('save_event', { 
             event_id: document.getElementById('eventId').value || null,
-            title: document.getElementById('eventTitle').value.trim(),
-            event_date: document.getElementById('eventDate').value,
-            event_time: document.getElementById('eventTime').value,
-            event_type: document.getElementById('eventType').value,
-            description: document.getElementById('eventDescription').value.trim(),
-            vehicle_id: document.getElementById('eventVehicle').value || null
-        };
-        if (!eventData.title || !eventData.event_date || !eventData.event_time) {
-            showToast('Título, fecha y hora son obligatorios', true); return;
-        }
-        const result = await apiCall('save_event', eventData);
-        if (result.success) { showToast(eventData.event_id ? 'Evento actualizado' : 'Evento creado'); eventModalInstance.hide(); loadEvents(); }
-        else showToast(result.message || 'Error', true);
+            title: document.getElementById('eventTitle').value, 
+            event_date: document.getElementById('eventDate').value, 
+            event_time: document.getElementById('eventTime').value, 
+            event_type: document.getElementById('eventType').value, 
+            description: document.getElementById('eventDescription').value, 
+            vehicle_id: document.getElementById('eventVehicle').value 
+        }); 
+        if(res.success) { showToast('Evento guardado'); eventModal.hide(); loadEvents(); } 
+        else showToast(res.message || 'Error', true); 
     }
 
-    async function deleteEvent(eventId) {
-        if (confirm('¿Eliminar este evento?')) {
-            const result = await apiCall('delete_event', { event_id: eventId });
-            if (result.success) { showToast('Evento eliminado'); loadEvents(); }
-            else showToast(result.message || 'Error', true);
-        }
-    }
-
-    // ========== MECÁNICOS ==========
-    async function loadMechanics() {
-        const container = document.getElementById('mechanicsList');
-        container.innerHTML = '<div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Cargando mecánicos...</div>';
-        const result = await apiCall('get_mechanics');
-
-        if (result.success && result.mechanics && result.mechanics.length > 0) {
-            container.innerHTML = result.mechanics.map(m => {
-                const stars = m.rating > 0 ? '★'.repeat(Math.round(parseFloat(m.rating))) + '☆'.repeat(5 - Math.round(parseFloat(m.rating))) : 'Sin calificaciones';
-                return `
-                <div class="diagnostic-card">
-                    <div class="d-flex justify-content-between align-items-start">
+    // ========== MECÁNICOS (con estrellas) ==========
+    async function loadMechanics() { 
+        const res = await apiCall('get_mechanics'); 
+        const container = document.getElementById('mechanicsList'); 
+        if(res.success && res.mechanics?.length) { 
+            container.innerHTML = res.mechanics.map(m => {
+                const rating = m.rating ? parseFloat(m.rating) : 0;
+                return `<div class="mechanic-card">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
                         <div>
-                            <strong><i class="fa-solid fa-user-gear me-2"></i>${escapeHtml(m.full_name)}</strong>
-                            <div class="small text-muted mt-1">📧 ${escapeHtml(m.email)}${m.phone ? ' | 📞 ' + escapeHtml(m.phone) : ''}</div>
-                            <div class="small mt-1">🔧 <strong>${escapeHtml(m.specialty || 'Mecánica general')}</strong></div>
-                            ${m.workshop_name ? `<div class="small">🏪 ${escapeHtml(m.workshop_name)}</div>` : ''}
-                            ${m.experience_years ? `<div class="small">📅 ${m.experience_years} años de experiencia</div>` : ''}
-                            <div class="small mt-1 text-warning">${stars}</div>
+                            <strong><i class="fa-solid fa-user-gear"></i> ${escapeHtml(m.full_name)}</strong>
+                            <div class="small text-muted">🔧 ${escapeHtml(m.specialty || 'Mecánica general')}</div>
+                            <div class="mt-1">${renderStars(rating)}</div>
+                            ${m.workshop_name ? `<div class="small text-muted mt-1">🏪 ${escapeHtml(m.workshop_name)}</div>` : ''}
                         </div>
-                        <div class="d-flex flex-column gap-2">
-                            <button class="btn btn-sm btn-red" onclick="quickAppointment(${m.id})">
-                                <i class="fa-solid fa-calendar-plus"></i> Solicitar Cita
-                            </button>
-                            <button class="btn btn-sm btn-outline-light" onclick="goToChat(${m.id}, '${escapeHtml(m.full_name)}')">
-                                <i class="fa-solid fa-comment"></i> Chatear
-                            </button>
+                        <div class="d-flex gap-2">
+                            <button class="btn-red btn-sm" onclick="quickAppointment(${m.id})"><i class="fa-solid fa-calendar-plus"></i> Cita</button>
+                            <button class="btn-outline-red btn-sm" onclick="openChatTab(${m.id}, '${escapeHtml(m.full_name)}')"><i class="fa-solid fa-comment"></i> Chat</button>
                         </div>
                     </div>
                 </div>`;
-            }).join('');
-        } else {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-users-slash"></i><p>No hay mecánicos disponibles</p></div>`;
-        }
+            }).join(''); 
+        } else { container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-users-slash"></i><p>No hay mecánicos</p></div>'; } 
     }
-
-    async function quickAppointment(mechanicId) {
-        await showNewAppointmentModal();
-        document.getElementById('appointmentMechanic').value = mechanicId;
-    }
-
-    function goToChat(mechanicId, mechanicName) {
+    
+    function quickAppointment(id) { showNewAppointmentModal(); setTimeout(() => { document.getElementById('appointmentMechanic').value = id; }, 100); }
+    
+    function openChatTab(mechanicId, mechanicName) {
         switchTab('chat');
-        openChat(mechanicId, mechanicName);
+        setTimeout(() => openChat(mechanicId, mechanicName), 100);
     }
 
     // ========== CHAT ==========
-    async function loadChatContacts() {
-        const list = document.getElementById('chatContactList');
-        list.innerHTML = '<div class="text-center text-muted p-3" style="font-size:0.8rem;"><i class="fa-solid fa-spinner fa-spin"></i></div>';
-        const result = await apiCall('get_chat_contacts');
-        if (result.success && result.contacts && result.contacts.length > 0) {
-            list.innerHTML = result.contacts.map(c => {
-                const initials = (c.full_name || 'M').charAt(0).toUpperCase();
-                const preview = c.last_message ? (c.last_message.length > 30 ? c.last_message.substring(0, 30) + '...' : c.last_message) : 'Sin mensajes aún';
-                const isActive = currentMechanicId == c.id ? 'active' : '';
-                return `
-                <div class="chat-contact-item ${isActive}" onclick="openChat(${c.id}, '${escapeHtml(c.full_name)}')">
-                    <div class="chat-contact-avatar">${initials}</div>
-                    <div class="chat-contact-info">
-                        <div class="chat-contact-name">${escapeHtml(c.full_name)}</div>
-                        <div class="chat-contact-preview">${escapeHtml(preview)}</div>
-                    </div>
-                    ${c.unread_count > 0 ? `<div class="chat-unread-badge">${c.unread_count}</div>` : ''}
-                </div>`;
-            }).join('');
-        } else {
-            list.innerHTML = `<div class="text-center p-3" style="font-size:0.78rem; color:#555;"><i class="fa-solid fa-comment-slash mb-2 d-block" style="font-size:1.4rem;"></i>Sin conversaciones aún.<br>Agrega un mecánico para empezar.</div>`;
-        }
+    async function loadChatContacts() { 
+        const res = await apiCall('get_chat_contacts'); 
+        const list = document.getElementById('chatContactList'); 
+        if(res.success && res.contacts?.length) { 
+            list.innerHTML = res.contacts.map(c => `<div class="chat-contact-item" onclick="openChat(${c.id}, '${escapeHtml(c.full_name)}')"><div class="chat-contact-avatar">${(c.full_name || 'M').charAt(0)}</div><div class="chat-contact-info"><div class="chat-contact-name">${escapeHtml(c.full_name)}</div><div class="chat-contact-preview">${escapeHtml(c.last_message || 'Sin mensajes')}</div></div></div>`).join(''); 
+        } else { list.innerHTML = '<div class="text-center p-3">Sin conversaciones</div>'; } 
     }
-
-    async function openAddMechanicModal() {
-        addMechanicModalInstance.show();
-        const list = document.getElementById('addMechanicList');
-        list.innerHTML = '<div class="text-center text-muted p-3"><i class="fa-solid fa-spinner fa-spin"></i></div>';
-        const result = await apiCall('get_all_mechanics');
-        if (result.success && result.mechanics && result.mechanics.length > 0) {
-            list.innerHTML = result.mechanics.map(m => `
-                <div class="d-flex align-items-center justify-content-between p-2 mb-1" style="background:#2a2a2a; border-radius:10px;">
-                    <div>
-                        <div style="font-size:0.88rem; font-weight:600;">${escapeHtml(m.full_name)}</div>
-                        <div style="font-size:0.75rem; color:#888;">${escapeHtml(m.specialty || 'Mecánica general')}${m.workshop_name ? ' — ' + escapeHtml(m.workshop_name) : ''}</div>
-                    </div>
-                    <button class="btn btn-sm btn-red" onclick="selectMechanicForChat(${m.id}, '${escapeHtml(m.full_name)}')">
-                        <i class="fa-solid fa-comment"></i> Chatear
-                    </button>
-                </div>`).join('');
-        } else {
-            list.innerHTML = '<div class="text-muted text-center p-3">No hay mecánicos disponibles</div>';
-        }
+    
+    function openChat(mechanicId, mechanicName) { 
+        currentMechanicId = mechanicId; 
+        currentMechanicName = mechanicName; 
+        document.getElementById('chatMainHeader').innerHTML = `<div class="chat-contact-avatar" style="width:32px;height:32px;">${mechanicName.charAt(0)}</div><span>${escapeHtml(mechanicName)}</span>`; 
+        loadChatMessages(); 
     }
-
-    function selectMechanicForChat(mechanicId, mechanicName) {
-        addMechanicModalInstance.hide();
-        openChat(mechanicId, mechanicName);
+    
+    async function loadChatMessages() { 
+        const container = document.getElementById('chatMessages'); 
+        if(!currentMechanicId) return; 
+        const res = await apiCall('get_chat_messages', { other_user_id: currentMechanicId }); 
+        if(res.success && res.messages?.length) { 
+            container.innerHTML = res.messages.map(m => `<div class="chat-bubble ${m.sender_id == CURRENT_USER_ID ? 'chat-sent' : 'chat-received'}"><div>${escapeHtml(m.message)}</div><small>${new Date(m.created_at).toLocaleTimeString()}</small></div>`).join(''); 
+            container.scrollTop = container.scrollHeight; 
+        } else { container.innerHTML = '<div class="chat-empty-state"><i class="fa-solid fa-comment-dots"></i><div>Sin mensajes</div></div>'; } 
     }
-
-    function openChat(mechanicId, mechanicName) {
-        currentMechanicId = mechanicId;
-        currentMechanicName = mechanicName;
-
-        const header = document.getElementById('chatMainHeader');
-        const initials = (mechanicName || 'M').charAt(0).toUpperCase();
-        header.innerHTML = `
-            <div style="width:32px;height:32px;border-radius:50%;background:var(--kiroo-red);display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;">${initials}</div>
-            <span>${escapeHtml(mechanicName)}</span>`;
-
-        document.querySelectorAll('.chat-contact-item').forEach(item => item.classList.remove('active'));
-        const items = document.querySelectorAll('.chat-contact-item');
-        items.forEach(item => {
-            if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(mechanicId)) {
-                item.classList.add('active');
-            }
-        });
-
-        loadChatMessages();
+    
+    async function sendMessage() { 
+        const msg = document.getElementById('chatInput').value.trim(); 
+        if(!msg || !currentMechanicId) return; 
+        const res = await apiCall('send_message', { receiver_id: currentMechanicId, message: msg }); 
+        if(res.success) { document.getElementById('chatInput').value = ''; loadChatMessages(); loadChatContacts(); } 
+        else showToast('Error al enviar', true); 
     }
-
-    async function loadChatMessages() {
-        const container = document.getElementById('chatMessages');
-        if (!currentMechanicId) return;
-
-        container.innerHTML = '<div class="chat-empty-state"><i class="fa-solid fa-spinner fa-spin fa-lg"></i></div>';
-        const result = await apiCall('get_chat_messages', { other_user_id: currentMechanicId });
-
-        if (result.success) {
-            if (result.messages && result.messages.length > 0) {
-                container.innerHTML = result.messages.map(m => `
-                    <div class="chat-bubble ${m.sender_id == CURRENT_USER_ID ? 'chat-sent' : 'chat-received'}">
-                        <div>${escapeHtml(m.message)}</div>
-                        <small style="opacity:0.6;font-size:0.68rem;display:block;margin-top:4px;">${new Date(m.created_at).toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'})}</small>
-                    </div>`).join('');
-            } else {
-                container.innerHTML = '<div class="chat-empty-state"><i class="fa-solid fa-comment-dots fa-lg mb-2" style="color:#333;"></i><div>Sin mensajes aún. ¡Envía el primero!</div></div>';
-            }
-            container.scrollTop = container.scrollHeight;
-            loadChatContacts();
-        } else {
-            container.innerHTML = '<div class="chat-empty-state text-danger">Error al cargar mensajes</div>';
-        }
+    
+    async function openAddMechanicModal() { 
+        const res = await apiCall('get_all_mechanics'); 
+        const list = document.getElementById('addMechanicList'); 
+        if(res.success && res.mechanics?.length) { 
+            list.innerHTML = res.mechanics.map(m => `<div class="d-flex justify-content-between p-2 mb-1" style="background:#1a1a1a; border-radius:10px;"><div><strong>${escapeHtml(m.full_name)}</strong><div class="small text-muted">${escapeHtml(m.specialty || '')}</div></div><button class="btn-red btn-sm" onclick="selectMechanicForChat(${m.id}, '${escapeHtml(m.full_name)}')">Chatear</button></div>`).join(''); 
+        } else { list.innerHTML = '<div class="text-muted p-3">No hay mecánicos</div>'; } 
+        addMechanicModal.show(); 
     }
+    
+    function selectMechanicForChat(id, name) { addMechanicModal.hide(); openChat(id, name); switchTab('chat'); }
 
-    async function sendMessage() {
-        const message = document.getElementById('chatInput').value.trim();
-        if (!message) { showToast('Escribe un mensaje', true); return; }
-        if (!currentMechanicId) { showToast('Selecciona un mecánico primero', true); return; }
-        const result = await apiCall('send_message', { receiver_id: currentMechanicId, message });
-        if (result.success) {
-            document.getElementById('chatInput').value = '';
-            loadChatMessages();
-        } else {
-            showToast(result.message || 'Error al enviar', true);
-        }
-    }
-
-    // ========== LOGOUT ==========
-    async function logout() {
-        try {
-            const formData = new FormData();
-            formData.append('action', 'logout');
-            await fetch('auth.php', { method: 'POST', body: formData });
-        } catch(e) {}
-        window.location.href = 'login.html';
-    }
-
-    // ========== TOGGLE MENU USUARIO ==========
-    function toggleUserMenu(e) {
-        e.stopPropagation();
-        document.getElementById('userDropdown').classList.toggle('open');
-    }
-    document.addEventListener('click', function(e) {
-        const wrapper = document.getElementById('userMenuWrapper');
-        if (wrapper && !wrapper.contains(e.target)) {
-            document.getElementById('userDropdown').classList.remove('open');
-        }
+    // ========== LOGOUT & DROPDOWNS ==========
+    async function logout() { try { const fd = new FormData(); fd.append('action', 'logout'); await fetch('auth.php', { method: 'POST', body: fd }); } catch(e) {} window.location.href = 'login.html'; }
+    
+    function toggleDropdown(btn) { const panel = btn.nextElementSibling; const isOpen = panel.classList.contains('open'); document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open')); if(!isOpen) panel.classList.add('open'); }
+    
+    function toggleUserMenu(e) { e.stopPropagation(); document.getElementById('userDropdown').classList.toggle('open'); }
+    
+    document.addEventListener('click', function(e) { 
+        if(!e.target.closest('.dropdown')) document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open')); 
+        if(!e.target.closest('#userMenuWrapper')) document.getElementById('userDropdown')?.classList.remove('open'); 
     });
 
-    // ========== INICIALIZACIÓN ==========
+    // ========== INIT ==========
     document.addEventListener('DOMContentLoaded', async () => {
-        const isAuth = await checkAuth();
-        if (!isAuth) return;
+        if(!await checkAuth()) return;
         
-        vehicleModalInstance = new bootstrap.Modal(document.getElementById('vehicleModal'));
-        appointmentModalInstance = new bootstrap.Modal(document.getElementById('appointmentModal'));
-        eventModalInstance = new bootstrap.Modal(document.getElementById('eventModal'));
-        ratingModalInstance = new bootstrap.Modal(document.getElementById('ratingModal'));
-        addMechanicModalInstance = new bootstrap.Modal(document.getElementById('addMechanicModal'));
+        vehicleModal = new bootstrap.Modal(document.getElementById('vehicleModal'));
+        appointmentModal = new bootstrap.Modal(document.getElementById('appointmentModal'));
+        eventModal = new bootstrap.Modal(document.getElementById('eventModal'));
+        ratingModal = new bootstrap.Modal(document.getElementById('ratingModal'));
+        addMechanicModal = new bootstrap.Modal(document.getElementById('addMechanicModal'));
         
         loadDiagnostics();
         
-        refreshInterval = setInterval(() => {
-            const activeTab = document.querySelector('.tab-btn.active')?.textContent.toLowerCase() || '';
-            if (activeTab.includes('diagnósticos')) loadDiagnostics();
-            else if (activeTab.includes('citas')) loadAppointments();
-            else if (activeTab.includes('chat') && currentMechanicId) loadChatMessages();
+        refreshInterval = setInterval(() => { 
+            const active = document.querySelector('.tab-btn.active')?.innerText || ''; 
+            if(active.includes('Diagnósticos')) loadDiagnostics(); 
+            else if(active.includes('Citas')) loadAppointments(); 
+            else if(active.includes('Chat') && currentMechanicId) loadChatMessages(); 
         }, 15000);
     });
     
-    window.addEventListener('beforeunload', () => { if (refreshInterval) clearInterval(refreshInterval); });
+    window.addEventListener('beforeunload', () => { if(refreshInterval) clearInterval(refreshInterval); });
 </script>
 </body>
 </html>

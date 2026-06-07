@@ -3,137 +3,609 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emergencias - Kiroo</title>
+    <title>Kiroo - Números de Emergencia</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/emergencias.css">
+    <style>
+        /* =============================================
+           RESET & BASE — Mismo estilo que index_cliente
+        ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --red: #d94343;
+            --red-dark: #a51313;
+            --red-glow: rgba(255, 61, 61, 0.3);
+            --bg: #0d0000;
+            --bg-grad: linear-gradient(135deg, #140000 0%, #3a0000 100%);
+            --nav-bg: #250000;
+            --card-bg: #111;
+            --card-border: rgba(255,255,255,0.08);
+            --text-muted: #bdbdbd;
+        }
+
+        body {
+            background: var(--bg-grad);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* =============================================
+           NAVBAR — Mismo estilo que index_cliente
+        ============================================= */
+        .navbar {
+            width: 100%;
+            height: 80px;
+            background: var(--nav-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: white;
+            text-decoration: none;
+        }
+        .logo span { color: #ff3d3d; }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links > li > a,
+        .nav-links > li > button.dropbtn {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+        }
+        .nav-links > li > a:hover,
+        .nav-links > li > button.dropbtn:hover {
+            background: rgba(217, 67, 67, 0.25);
+            color: #ff6b6b;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background: #1a0000;
+            min-width: 220px;
+            border-radius: 12px;
+            border: 1px solid rgba(217,67,67,0.35);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .dropdown-content.open { display: block; animation: ddFadeIn 0.2s ease; }
+
+        @keyframes ddFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 13px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.18s, color 0.18s;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background: rgba(217,67,67,0.2); color: #ff6b6b; }
+
+        /* Profile badge */
+        .profile {
+            background: var(--red);
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.2s;
+        }
+        .profile:hover { background: #c03636; }
+
+        .header-avatar-icon {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(0,0,0,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.78rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
+        }
+        .header-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.4);
+            display: none;
+        }
+        .user-name-header {
+            font-size: 0.82rem; font-weight: 600;
+            max-width: 120px; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        /* User dropdown */
+        .user-dropdown {
+            position: absolute; top: calc(100% + 14px); right: 0;
+            background: #140000;
+            border: 1px solid rgba(217,67,67,0.3);
+            border-radius: 16px; min-width: 240px;
+            box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+            z-index: 9999; overflow: hidden;
+            opacity: 0; pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        .dd-header {
+            padding: 18px;
+            background: linear-gradient(135deg, #1e0000, #300000);
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .dd-avatar-icon-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, #a51313, #d94343);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0;
+        }
+        .dd-avatar-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #d94343; flex-shrink: 0;
+            display: none;
+        }
+        .dd-info .dd-name { font-weight: 700; font-size: 0.92rem; color: white; }
+        .dd-info .dd-role { font-size: 0.68rem; color: #ff6b6b; font-weight: 600; text-transform: uppercase; }
+        .dd-info .dd-user { font-size: 0.72rem; color: #666; margin-top: 2px; }
+
+        .dd-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 18px; color: #ccc; text-decoration: none;
+            font-size: 0.83rem; font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer; border: none; background: none;
+            width: 100%; text-align: left;
+        }
+        .dd-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .dd-item i { width: 18px; text-align: center; color: #666; }
+        .dd-item:hover i { color: var(--red); }
+        .dd-sep { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+        .dd-item.logout { color: #ff5252; }
+        .dd-item.logout i { color: #ff5252; }
+        .dd-item.logout:hover { background: rgba(255,82,82,0.08); }
+
+        /* =============================================
+           CONTENIDO PRINCIPAL
+        ============================================= */
+        .container-main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto 60px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .page-header h1 i {
+            color: var(--red);
+            margin-right: 10px;
+        }
+        .page-header p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Emergency Numbers Grid */
+        .emergency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .emergency-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .emergency-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(217,67,67,0.2);
+            border-color: rgba(217,67,67,0.4);
+        }
+        .emergency-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(217,67,67,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2rem;
+        }
+        .emergency-card h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .emergency-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--red);
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        .emergency-desc {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        /* Steps Section */
+        .steps-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .steps-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .steps-title h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+        .steps-title h2 i {
+            color: var(--red);
+            margin-right: 10px;
+        }
+        .steps-title p {
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .step-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .step-card:hover {
+            transform: translateY(-3px);
+            background: rgba(217,67,67,0.05);
+            border-color: rgba(217,67,67,0.2);
+        }
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: rgba(217,67,67,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--red);
+        }
+        .step-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .step-card p {
+            font-size: 0.85rem;
+            color: #bbb;
+            line-height: 1.5;
+        }
+
+        /* Additional Tips */
+        .tips-section {
+            background: rgba(217,67,67,0.08);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 20px;
+            border: 1px solid rgba(217,67,67,0.2);
+        }
+        .tips-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tips-title i {
+            font-size: 1.5rem;
+            color: var(--red);
+        }
+        .tips-title h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .tips-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .tips-list li {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tips-list li i {
+            color: var(--red);
+            width: 20px;
+        }
+
+        /* Botón volver */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: 1px solid var(--red);
+            color: var(--red);
+            padding: 10px 24px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            margin-bottom: 30px;
+        }
+        .back-button:hover {
+            background: var(--red);
+            color: white;
+        }
+
+        /* Footer */
+        .footer-kiroo {
+            background: #0a0000;
+            border-top: 1px solid #2c0000;
+            padding: 3rem 0 1.5rem;
+            margin-top: 2rem;
+        }
+        .footer-kiroo a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-kiroo a:hover { color: #ff4a4a; }
+        .footer-kiroo h5 { font-weight: 700; margin-bottom: 1rem; }
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: auto;
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
+            .container-main { width: 95%; }
+            .emergency-number { font-size: 1.2rem; }
+            .page-header h1 { font-size: 1.6rem; }
+        }
+    </style>
 </head>
 <body>
-    <header class="main-header">
-    <div class="brand-name">KI<span>R</span>OO</div>
-    <nav>
-        <ul class="nav-links">
-            <li><a href="index_cliente.html">HOME</a></li>
-            <li class="dropdown">
-                <button class="dropbtn">Gestiona ▾</button>
-                <div class="dropdown-content">
-                    <a href="dashboard_cliente.php"> Panel cliente</a>
-                    <a href="vehiculos_cliente.html"> Registro Vehiculos</a>
-                    <a href="agenda_cliente.html"> Agenda tus citas</a>
-                   
-                </div>
-            </li>
-            <li class="dropdown">
-                <button class="dropbtn">HERRAMIENTAS ▾</button>
-                <div class="dropdown-content">
-                    <a href="scaner.html"> Escáner de Señales</a>
-                    <a href="gamificacion.html"> Gamificación</a>
-                </div>
-            </li>
-            <li class="dropdown">
-                <button class="dropbtn">AYUDA ▾</button>
-                <div class="dropdown-content">
-                    <a href="emergencias_cliente.html"> Números de Emergencia</a>
-                </div>
-            </li>
-            <span class="nav-separator">|</span>
-        </ul>
-    </nav>
- 
 
- <!-- USER MENU -->
-    <div class="user-menu-wrapper" id="userMenuWrapper">
-        <div class="user-badge" id="userBadge" onclick="toggleUserMenu(event)">
-            <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
-            <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
-            <span class="user-name-header" id="headerUserName">Cargando...</span>
-            <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:rgba(255,255,255,0.7); margin-left:2px;"></i>
-        </div>
+<!-- ===================== NAVBAR (MISMO ESTILO QUE INDEX_CLIENTE) ===================== -->
+<nav class="navbar">
+    <a class="logo" href="index_cliente.html">KI<span>R</span>OO</a>
 
-        <div class="user-dropdown" id="userDropdown">
-            <!-- Header del dropdown -->
+    <ul class="nav-links">
+        <li><a href="index_cliente.html">HOME</a></li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">GESTIONA ▾</button>
+            <div class="dropdown-content">
+                <a href="dashboard_cliente.html"><i class="fa-solid fa-gauge-high"></i> Panel Cliente</a>
+                <a href="vehiculos_cliente.html"><i class="fa-solid fa-car"></i> Registro Vehículos</a>
+                <a href="agenda_cliente.html"><i class="fa-solid fa-calendar-days"></i> Agenda tus citas</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">HERRAMIENTAS ▾</button>
+            <div class="dropdown-content">
+                <a href="scaner.html"><i class="fa-solid fa-magnifying-glass"></i> Escáner de Señales</a>
+                <a href="gamificacion.html"><i class="fa-solid fa-gamepad"></i> Gamificación</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">AYUDA ▾</button>
+            <div class="dropdown-content">
+                <a href="emergencias_cliente.html"><i class="fa-solid fa-phone-volume"></i> Números de Emergencia</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- USER BADGE -->
+    <div class="profile" id="userMenuWrapper" onclick="toggleUserMenu(event)">
+        <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+        <img src="" alt="" class="header-avatar" id="headerAvatarImg">
+        <span class="user-name-header" id="headerUserName">Cargando...</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.55rem; opacity:0.7;"></i>
+
+        <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
             <div class="dd-header">
                 <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
-                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg" style="display:none;">
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg">
                 <div class="dd-info">
                     <div class="dd-name" id="ddName">...</div>
                     <div class="dd-role">Cliente</div>
                     <div class="dd-user" id="ddUsername">@...</div>
                 </div>
             </div>
-            <!-- Opciones -->
-            <a href="perfil_cliente.html" class="dd-item">
-                <i class="fa-solid fa-user-circle"></i> Mi Perfil
-            </a>
-            <a href="dashboard_cliente.php" class="dd-item">
-                <i class="fa-solid fa-tachometer-alt"></i> Panel Cliente
-            </a>
-            <a href="dashboard_cliente.php?tab=appointments" class="dd-item">
-                <i class="fa-solid fa-calendar-check"></i> Mis Citas
-            </a>
+            <a href="perfil_cliente.html" class="dd-item"><i class="fa-solid fa-user-circle"></i> Mi Perfil</a>
+            <a href="dashboard_cliente.html" class="dd-item"><i class="fa-solid fa-tachometer-alt"></i> Panel Cliente</a>
+            <a href="dashboard_cliente.html?tab=appointments" class="dd-item"><i class="fa-solid fa-calendar-check"></i> Mis Citas</a>
             <div class="dd-sep"></div>
-            <button class="dd-item logout" onclick="logout()">
-                <i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión
-            </button>
+            <button class="dd-item logout" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión</button>
         </div>
     </div>
-</header>
+</nav>
 
-   
-    <main class="container">
-        <div class="banner-title"><h1>Asistencia Inmediata</h1></div>
+<!-- ===================== MAIN CONTENT ===================== -->
+<div class="container-main">
+    
+    <a href="index_cliente.html" class="back-button">
+        <i class="fa-solid fa-arrow-left"></i> Volver al inicio
+    </a>
 
-        <div class="emergency-numbers-grid">
-            <div class="small-card-tel"> <img src="css/img/PNC-ESA.png" alt="logoPnc"><h3>PNC</h3><p>911</p></div>
-            <div class="small-card-tel"><h3>SEM</h3><p>132</p></div>
-            <div class="small-card-tel"><h3>Cruz Verde</h3><p>2288-5792</p></div>
-            <div class="small-card-tel"><h3>Grúa</h3><p>2510-0199</p></div>
+    <div class="page-header">
+        <h1><i class="fa-solid fa-phone-flip"></i> Asistencia Inmediata</h1>
+        <p>Números de emergencia y pasos a seguir en caso de percance vial</p>
+    </div>
+
+    <!-- Emergency Numbers Grid -->
+    <div class="emergency-grid">
+        <div class="emergency-card" onclick="makeCall('911')">
+            <div class="emergency-icon"><i class="fa-solid fa-shield-haltered"></i></div>
+            <h3>PNC</h3>
+            <div class="emergency-number">911</div>
+            <div class="emergency-desc">Policía Nacional Civil</div>
         </div>
+        <div class="emergency-card" onclick="makeCall('132')">
+            <div class="emergency-icon"><i class="fa-solid fa-truck-medical"></i></div>
+            <h3>SEM</h3>
+            <div class="emergency-number">132</div>
+            <div class="emergency-desc">Sistema de Emergencias Médicas</div>
+        </div>
+        <div class="emergency-card" onclick="makeCall('22885792')">
+            <div class="emergency-icon"><i class="fa-solid fa-hand-holding-heart"></i></div>
+            <h3>Cruz Verde</h3>
+            <div class="emergency-number">2288-5792</div>
+            <div class="emergency-desc">Atención médica de emergencia</div>
+        </div>
+        <div class="emergency-card" onclick="makeCall('25100199')">
+            <div class="emergency-icon"><i class="fa-solid fa-truck"></i></div>
+            <h3>Grúa</h3>
+            <div class="emergency-number">2510-0199</div>
+            <div class="emergency-desc">Servicio de grúa 24/7</div>
+        </div>
+    </div>
 
-        <section class="checklist-container">
-            <h2 class="checklist-title">¿Tuviste un percance? Sigue estos pasos:</h2>
-            
-            <div class="steps-wrapper">
-                <div class="step-card">
-                    <div class="step-number">⚠️</div>
-                    <div class="step-text">
-                        <h3>Paso 1</h3>
-                        <p>Enciende luces de emergencia (estacionarias) inmediatamente.</p>
-                    </div>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-number">📐</div>
-                    <div class="step-text">
-                        <h3>Paso 2</h3>
-                        <p>Coloca los triángulos reflectivos a 15-30 metros de distancia.</p>
-                    </div>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-number">📸</div>
-                    <div class="step-text">
-                        <h3>Paso 3</h3>
-                        <p>Toma fotos de todos los ángulos y placas para el seguro.</p>
-                    </div>
-                </div>
-
-                <div class="step-card">
-                    <div class="step-number">📞</div>
-                    <div class="step-text">
-                        <h3>Paso 4</h3>
-                        <p>Mantén la calma y llama a tu aseguradora o a emergencias.</p>
-                    </div>
-                </div>
+    <!-- Steps Section -->
+    <div class="steps-section">
+        <div class="steps-title">
+            <h2><i class="fa-solid fa-triangle-exclamation"></i> ¿Tuviste un percance?</h2>
+            <p>Sigue estos pasos para actuar de manera segura y eficiente</p>
+        </div>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-number">⚠️</div>
+                <h3>Paso 1</h3>
+                <p>Enciende las luces de emergencia (estacionarias) inmediatamente para alertar a otros conductores.</p>
             </div>
-        </section>
-    </main>
-    <footer class="footer-kiroo">
-        <div class="container">
-            <div class="row gy-4">
-                <div class="col-md-5">
+            <div class="step-card">
+                <div class="step-number">📐</div>
+                <h3>Paso 2</h3>
+                <p>Coloca los triángulos reflectivos a 15-30 metros de distancia, antes y después del vehículo.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">📸</div>
+                <h3>Paso 3</h3>
+                <p>Toma fotos de todos los ángulos, placas y daños visibles para el seguro y autoridades.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">📞</div>
+                <h3>Paso 4</h3>
+                <p>Mantén la calma, llama a tu aseguradora y a los números de emergencia si es necesario.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Tips -->
+    <div class="tips-section">
+        <div class="tips-title">
+            <i class="fa-solid fa-lightbulb"></i>
+            <h3>Consejos de seguridad vial</h3>
+        </div>
+        <ul class="tips-list">
+            <li><i class="fa-solid fa-car-side"></i> Revisa frenos, neumáticos y luces cada mes</li>
+            <li><i class="fa-solid fa-battery-full"></i> Mantén tu vehículo con mantenimiento al día</li>
+            <li><i class="fa-solid fa-hand-peace"></i> Respeta los límites de velocidad y señales</li>
+            <li><i class="fa-solid fa-wine-bottle"></i> Nunca manejes bajo efectos del alcohol</li>
+            <li><i class="fa-solid fa-mobile-screen"></i> Lleva siempre un cargador y botiquín básico</li>
+            <li><i class="fa-solid fa-map"></i> Comparte tu ubicación con un familiar en viajes largos</li>
+        </ul>
+    </div>
+</div>
+
+<footer class="footer-kiroo">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-5">
                 <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
                 <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
                 <div class="d-flex gap-3 mt-2">
@@ -141,8 +613,8 @@
                     <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
                     <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
                 </div>
-                </div>
-                <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
                 <h5>Explorar</h5>
                 <ul class="list-unstyled">
                     <li class="mb-2"><a href="vehiculos.html"><i class="fa-regular fa-circle-right me-2"></i>Registro vehicular</a></li>
@@ -150,23 +622,122 @@
                     <li class="mb-2"><a href="gamificacion.html"><i class="fa-regular fa-circle-right me-2"></i>Gamificación</a></li>
                     <li class="mb-2"><a href="emergencias.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
                 </ul>
-                </div>
-                <div class="col-md-4">
+            </div>
+            <div class="col-md-4">
                 <h5>Contacto</h5>
                 <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
                 <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
                 <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
-                </div>
-            </div>
-            <hr class="mt-4 opacity-25">
-            <div class="text-center pt-2">
-            <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
             </div>
         </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <hr class="mt-4 opacity-25">
+        <div class="text-center pt-2">
+            <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
 
-    <script src="js/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ===== USER AUTH & MENU (igual que index_cliente) =====
+    let CURRENT_USER_ID = null;
 
+    function setAvatarFromUrl(url) {
+        ['headerAvatarImg', 'ddAvatarImg'].forEach(id => {
+            const img = document.getElementById(id);
+            if (img) { img.src = url; img.style.display = 'block'; }
+        });
+        ['headerAvatarIcon', 'ddAvatarIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    function applyUserUI(name, username, avatarUrl) {
+        const firstName = (name || 'Cliente').split(' ')[0];
+        const initials = (name || '?').charAt(0).toUpperCase();
+
+        document.getElementById('headerUserName').textContent = firstName;
+        document.getElementById('headerInitials').textContent = initials;
+        document.getElementById('ddName').textContent = name || 'Cliente';
+        document.getElementById('ddInitials').textContent = initials;
+        document.getElementById('ddUsername').textContent = username ? '@' + username : '';
+
+        if (avatarUrl) setAvatarFromUrl(avatarUrl);
+    }
+
+    async function checkAuth() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'check_auth');
+            const res = await fetch('auth.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            
+            if (data.authenticated) {
+                CURRENT_USER_ID = data.id;
+                applyUserUI(data.full_name || data.username, data.username, null);
+                await loadProfilePicture();
+                return true;
+            } else {
+                window.location.href = 'login.html';
+                return false;
+            }
+        } catch(e) {
+            console.error('Auth error:', e);
+            window.location.href = 'login.html';
+            return false;
+        }
+    }
+
+    async function loadProfilePicture() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'get_profile');
+            const res = await fetch('api.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success && data.profile && data.profile.profile_picture) {
+                setAvatarFromUrl(data.profile.profile_picture);
+            }
+        } catch(e) { /* sin foto */ }
+    }
+
+    function toggleDropdown(btn) {
+        const panel = btn.nextElementSibling;
+        const isOpen = panel.classList.contains('open');
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        if (!isOpen) panel.classList.add('open');
+    }
+
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        document.getElementById('userDropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        }
+        if (!e.target.closest('#userMenuWrapper')) {
+            document.getElementById('userDropdown')?.classList.remove('open');
+        }
+    });
+
+    async function logout() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'logout');
+            await fetch('auth.php', { method: 'POST', body: fd });
+        } catch(e) {}
+        window.location.href = 'login.html';
+    }
+
+    // Función para hacer llamada telefónica
+    function makeCall(phoneNumber) {
+        window.location.href = `tel:${phoneNumber}`;
+    }
+
+    // Inicializar autenticación
+    checkAuth();
+</script>
 </body>
 </html>

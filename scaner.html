@@ -7,187 +7,218 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/index_cliente2.css">
     <style>
-        /* ===== SCANNER PAGE STYLES ===== */
+        /* ===== RESET & BASE - Mismo estilo que index_cliente ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --kiroo-red: #a51313;
-            --kiroo-red-bright: #d32f2f;
-            --kiroo-black: #000000;
-            --kiroo-card: #161616;
-            --scanner-panel-bg: rgba(12, 10, 10, 0.97);
-            --scanner-border: rgba(165, 19, 19, 0.5);
+            --red: #d94343;
+            --red-dark: #a51313;
+            --red-glow: rgba(255, 61, 61, 0.3);
+            --bg: #0d0000;
+            --bg-grad: linear-gradient(135deg, #140000 0%, #3a0000 100%);
+            --nav-bg: #250000;
+            --card-bg: #111;
+            --card-border: rgba(255,255,255,0.08);
+            --text-muted: #bdbdbd;
         }
 
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: radial-gradient(circle at top right, #2a0505 0%, #000000 100%);
+            background: var(--bg-grad);
             color: white;
+            font-family: 'Montserrat', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* ===== HEADER (igual que index_cliente) ===== */
-        .main-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 50px;
-            background-color: #000;
+        /* ===== NAVBAR - Mismo estilo que index_cliente ===== */
+        .navbar {
             width: 100%;
+            height: 80px;
+            background: var(--nav-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             position: relative;
-            z-index: 100;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
-            flex-wrap: wrap;
-            gap: 15px;
+            z-index: 1000;
         }
-        .brand-name {
-            font-size: 1.8rem;
+
+        .logo {
+            font-size: 36px;
             font-weight: 800;
             letter-spacing: 3px;
             color: white;
-            font-family: 'Montserrat', sans-serif;
             text-decoration: none;
         }
-        .brand-name span { color: #a51313; }
+        .logo span { color: #ff3d3d; }
+
         .nav-links {
             display: flex;
-            list-style: none;
             gap: 8px;
             align-items: center;
-            margin: 0; padding: 0;
+            list-style: none;
         }
-        .nav-links a {
+
+        .nav-links > li > a,
+        .nav-links > li > button.dropbtn {
             color: white;
             text-decoration: none;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 0.78rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             padding: 8px 16px;
-            border-radius: 20px;
-            transition: all 0.3s;
-            font-family: 'Montserrat', sans-serif;
-        }
-        .nav-links a:hover { background-color: rgba(165,19,19,0.7); }
-        .dropdown { position: relative; display: inline-block; }
-        .dropbtn {
-            cursor: pointer;
+            border-radius: 8px;
             background: transparent;
             border: none;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding: 8px 16px;
-            border-radius: 20px;
-            transition: all 0.3s;
-            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
         }
-        .dropbtn:hover { background-color: rgba(165,19,19,0.7); }
+        .nav-links > li > a:hover,
+        .nav-links > li > button.dropbtn:hover {
+            background: rgba(217, 67, 67, 0.25);
+            color: #ff6b6b;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
         .dropdown-content {
             display: none;
             position: absolute;
-            background-color: #1a1a1a;
-            min-width: 200px;
-            box-shadow: 0px 8px 20px rgba(0,0,0,0.5);
-            z-index: 1001;
+            top: calc(100% + 10px);
+            left: 0;
+            background: #1a0000;
+            min-width: 220px;
             border-radius: 12px;
-            border: 1px solid #a51313;
-            margin-top: 10px;
+            border: 1px solid rgba(217,67,67,0.35);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
             overflow: hidden;
+            z-index: 9999;
         }
+        .dropdown-content.open { display: block; animation: ddFadeIn 0.2s ease; }
+
+        @keyframes ddFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .dropdown-content a {
-            color: white;
-            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ddd;
             text-decoration: none;
-            display: block;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 500;
-            text-transform: none;
-            border-bottom: 1px solid #2a2a2a;
+            padding: 13px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.18s, color 0.18s;
         }
         .dropdown-content a:last-child { border-bottom: none; }
-        .dropdown-content a:hover { background-color: #a51313; }
-        .dropdown:hover .dropdown-content { display: block; animation: fadeInMenu 0.3s ease; }
-        @keyframes fadeInMenu { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .nav-separator { color: rgba(255,255,255,0.3); margin: 0 5px; font-size: 0.75rem; }
+        .dropdown-content a:hover { background: rgba(217,67,67,0.2); color: #ff6b6b; }
 
-        /* ===== USER MENU ===== */
-        .user-menu-wrapper { position: relative; }
-        .user-badge {
+        /* Profile badge */
+        .profile {
+            background: var(--red);
+            padding: 8px 18px;
+            border-radius: 30px;
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
-            padding: 6px 14px 6px 6px;
-            border-radius: 30px;
-            background: rgba(211,47,47,0.85);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: background 0.2s;
+            position: relative;
             user-select: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.2s;
         }
-        .user-badge:hover { background: rgba(211,47,47,1); }
-        .header-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.5); flex-shrink: 0; }
+        .profile:hover { background: #c03636; }
+
         .header-avatar-icon {
-            width: 34px; height: 34px; border-radius: 50%;
-            background: rgba(0,0,0,0.3);
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(0,0,0,0.35);
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.85rem; font-weight: 700; color: white;
-            flex-shrink: 0; border: 2px solid rgba(255,255,255,0.4);
+            font-size: 0.78rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
         }
-        .user-name-header { font-size: 0.78rem; font-weight: 600; color: white; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'Montserrat', sans-serif; }
+        .header-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.4);
+            display: none;
+        }
+        .user-name-header {
+            font-size: 0.82rem; font-weight: 600;
+            max-width: 120px; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        /* User dropdown */
         .user-dropdown {
-            position: absolute; top: calc(100% + 12px); right: 0;
-            background: #111; border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 18px; min-width: 230px;
-            box-shadow: 0 12px 45px rgba(0,0,0,0.6);
+            position: absolute; top: calc(100% + 14px); right: 0;
+            background: #140000;
+            border: 1px solid rgba(217,67,67,0.3);
+            border-radius: 16px; min-width: 240px;
+            box-shadow: 0 16px 50px rgba(0,0,0,0.7);
             z-index: 9999; overflow: hidden;
             opacity: 0; pointer-events: none;
             transform: translateY(-8px);
             transition: opacity 0.2s, transform 0.2s;
         }
         .user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
         .dd-header {
-            padding: 16px;
-            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            padding: 18px;
+            background: linear-gradient(135deg, #1e0000, #300000);
             display: flex; align-items: center; gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-        .dd-avatar-lg { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #d32f2f; flex-shrink: 0; }
         .dd-avatar-icon-lg {
-            width: 50px; height: 50px; border-radius: 50%;
-            background: linear-gradient(135deg, #a51313, #d32f2f);
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, #a51313, #d94343);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem; font-weight: 700; color: white;
+            font-size: 1.2rem; font-weight: 700; color: white;
             border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0;
         }
-        .dd-info .dd-name { font-weight: 700; font-size: 0.9rem; color: white; }
-        .dd-info .dd-role { font-size: 0.7rem; color: #ff6b6b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .dd-info .dd-user { font-size: 0.72rem; color: #777; margin-top: 1px; }
+        .dd-avatar-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #d94343; flex-shrink: 0;
+            display: none;
+        }
+        .dd-info .dd-name { font-weight: 700; font-size: 0.92rem; color: white; }
+        .dd-info .dd-role { font-size: 0.68rem; color: #ff6b6b; font-weight: 600; text-transform: uppercase; }
+        .dd-info .dd-user { font-size: 0.72rem; color: #666; margin-top: 2px; }
+
         .dd-item {
             display: flex; align-items: center; gap: 12px;
             padding: 12px 18px; color: #ccc; text-decoration: none;
             font-size: 0.83rem; font-weight: 500;
             transition: background 0.15s, color 0.15s;
             cursor: pointer; border: none; background: none;
-            width: 100%; text-align: left; font-family: 'Segoe UI', sans-serif;
+            width: 100%; text-align: left;
         }
-        .dd-item:hover { background: rgba(255,255,255,0.06); color: white; }
-        .dd-item i { width: 18px; text-align: center; color: #888; }
-        .dd-item:hover i { color: #d32f2f; }
-        .dd-sep { height: 1px; background: rgba(255,255,255,0.07); margin: 4px 0; }
+        .dd-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .dd-item i { width: 18px; text-align: center; color: #666; }
+        .dd-item:hover i { color: var(--red); }
+        .dd-sep { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
         .dd-item.logout { color: #ff5252; }
         .dd-item.logout i { color: #ff5252; }
-        .dd-item.logout:hover { background: rgba(255,82,82,0.1); color: #ff6b6b; }
+        .dd-item.logout:hover { background: rgba(255,82,82,0.08); }
 
-        /* ===== SCANNER PAGE LAYOUT ===== */
+        /* ===== SCANNER PAGE STYLES ===== */
         .scanner-main {
             max-width: 760px;
             margin: 0 auto;
             padding: 28px 20px 60px;
         }
 
-        /* Page title */
         .scanner-hero {
             text-align: center;
             margin-bottom: 28px;
@@ -206,10 +237,8 @@
         .scanner-hero p {
             color: #aaa;
             font-size: 0.85rem;
-            font-family: 'Montserrat', sans-serif;
         }
 
-        /* Camera panel */
         .camera-panel {
             background: rgba(0,0,0,0.55);
             backdrop-filter: blur(10px);
@@ -245,7 +274,6 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             z-index: 3; color: #ccc; gap: 14px;
             border-radius: 18px; text-align: center; padding: 24px;
-            font-family: 'Montserrat', sans-serif;
         }
         .placeholder-cam .cam-icon {
             font-size: 3rem;
@@ -259,7 +287,6 @@
         .placeholder-cam strong { font-size: 1rem; font-weight: 700; color: white; }
         .placeholder-cam small { font-size: 0.75rem; color: #888; }
 
-        /* Controls */
         .controls {
             display: flex;
             gap: 10px;
@@ -283,8 +310,6 @@
             align-items: center;
             gap: 8px;
             box-shadow: 0 4px 14px rgba(0,0,0,0.35);
-            touch-action: manipulation;
-            letter-spacing: 0.3px;
         }
         .btn-scanner.primary {
             background: linear-gradient(135deg, #a51313, #d32f2f);
@@ -302,13 +327,12 @@
         }
         .btn-scanner:active { transform: scale(0.96); }
 
-        /* Info panel */
         .info-panel {
-            background: var(--scanner-panel-bg);
+            background: rgba(12, 10, 10, 0.97);
             backdrop-filter: blur(14px);
             border-radius: 24px;
             padding: 18px;
-            border: 1px solid var(--scanner-border);
+            border: 1px solid rgba(165,19,19,0.45);
             max-height: 420px;
             overflow-y: auto;
             transition: all 0.3s ease;
@@ -335,7 +359,6 @@
             color: #ffcccc;
             font-size: 0.72rem;
             font-weight: 600;
-            font-family: 'Montserrat', sans-serif;
             border: 1px solid rgba(165,19,19,0.4);
         }
         .detection-mode-badge {
@@ -345,7 +368,6 @@
             font-size: 0.68rem;
             font-weight: 600;
             color: #ff9999;
-            font-family: 'Montserrat', sans-serif;
             border: 1px solid rgba(165,19,19,0.3);
         }
 
@@ -368,7 +390,6 @@
             border-left: 4px solid #a51313;
             animation: fadeInCard 0.25s ease;
             border: 1px solid rgba(165,19,19,0.25);
-            border-left: 4px solid #a51313;
         }
         @keyframes fadeInCard {
             from { opacity: 0; transform: translateY(6px); }
@@ -379,8 +400,10 @@
             font-size: 1rem;
             font-weight: 800;
             color: white;
-            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
         .sign-confidence {
             font-size: 0.62rem;
@@ -406,7 +429,6 @@
             color: #666;
             font-style: italic;
             font-size: 0.85rem;
-            font-family: 'Montserrat', sans-serif;
         }
 
         .info-footer {
@@ -421,18 +443,26 @@
 
         /* Footer */
         .footer-kiroo {
-            background-color: #000;
-            border-top: 1px solid #2c2c2c;
-            padding: 2rem 0 1rem;
+            background: #0a0000;
+            border-top: 1px solid #2c0000;
+            padding: 3rem 0 1.5rem;
             margin-top: 2rem;
         }
-        .footer-kiroo a { color: #ccc; text-decoration: none; transition: color 0.2s; }
-        .footer-kiroo a:hover { color: #a51313; }
-        .footer-kiroo h5 { font-weight: 600; margin-bottom: 1rem; }
+        .footer-kiroo a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-kiroo a:hover { color: #ff4a4a; }
+        .footer-kiroo h5 { font-weight: 700; margin-bottom: 1rem; }
 
-        /* Responsive */
         @media (max-width: 768px) {
-            .main-header { padding: 15px 20px; flex-direction: column; }
+            .navbar {
+                height: auto;
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 15px;
+            }
             .nav-links { flex-wrap: wrap; justify-content: center; }
             .scanner-main { padding: 20px 14px 50px; }
             .scanner-hero h1 { font-size: 1.4rem; }
@@ -446,50 +476,46 @@
 </head>
 <body>
 
-<!-- ===== HEADER ===== -->
-<header class="main-header">
-    <a href="index_cliente.html" class="brand-name">KI<span>R</span>OO</a>
-    <nav>
-        <ul class="nav-links">
-            <li><a href="index_cliente.html">HOME</a></li>
-            <li class="dropdown">
-                <button class="dropbtn">Gestiona ▾</button>
-                <div class="dropdown-content">
-                    <a href="dashboard_cliente.html"><i class="fa-solid fa-gauge me-2"></i> Panel cliente</a>
-                    <a href="vehiculos_cliente.html"><i class="fa-solid fa-car me-2"></i> Registro Vehículos</a>
-                    <a href="agenda_cliente.html"><i class="fa-solid fa-calendar me-2"></i> Agenda tus citas</a>
-                </div>
-            </li>
-            <li class="dropdown">
-                <button class="dropbtn">HERRAMIENTAS ▾</button>
-                <div class="dropdown-content">
-                    <a href="scaner.html" style="color:#f39c12; font-weight:700;"><i class="fa-solid fa-magnifying-glass me-2"></i> Escáner de Señales</a>
-                    <a href="gamificacion.html"><i class="fa-solid fa-gamepad me-2"></i> Gamificación</a>
-                </div>
-            </li>
-            <li class="dropdown">
-                <button class="dropbtn">AYUDA ▾</button>
-                <div class="dropdown-content">
-                    <a href="emergencias_cliente.html"><i class="fa-solid fa-phone-volume me-2"></i> Números de Emergencia</a>
-                </div>
-            </li>
-            <span class="nav-separator">|</span>
-        </ul>
-    </nav>
+<!-- ===== NAVBAR - Mismo estilo que index_cliente ===== -->
+<nav class="navbar">
+    <a href="index_cliente.html" class="logo">KI<span>R</span>OO</a>
 
-    <!-- USER MENU -->
-    <div class="user-menu-wrapper" id="userMenuWrapper">
-        <div class="user-badge" id="userBadge" onclick="toggleUserMenu(event)">
-            <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
-            <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
-            <span class="user-name-header" id="headerUserName">Cargando...</span>
-            <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:rgba(255,255,255,0.7); margin-left:2px;"></i>
-        </div>
+    <ul class="nav-links">
+        <li><a href="index_cliente.html">HOME</a></li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">GESTIONA ▾</button>
+            <div class="dropdown-content">
+                <a href="dashboard_cliente.html"><i class="fa-solid fa-gauge-high"></i> Panel Cliente</a>
+                <a href="vehiculos_cliente.html"><i class="fa-solid fa-car"></i> Registro Vehículos</a>
+                <a href="agenda_cliente.html"><i class="fa-solid fa-calendar-days"></i> Agenda tus citas</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">HERRAMIENTAS ▾</button>
+            <div class="dropdown-content">
+                <a href="scaner.html" style="color:#f39c12; font-weight:700;"><i class="fa-solid fa-magnifying-glass"></i> Escáner de Señales</a>
+                <a href="gamificacion.html"><i class="fa-solid fa-gamepad"></i> Gamificación</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">AYUDA ▾</button>
+            <div class="dropdown-content">
+                <a href="emergencias_cliente.html"><i class="fa-solid fa-phone-volume"></i> Números de Emergencia</a>
+            </div>
+        </li>
+    </ul>
 
-        <div class="user-dropdown" id="userDropdown">
+    <!-- USER BADGE -->
+    <div class="profile" id="userMenuWrapper" onclick="toggleUserMenu(event)">
+        <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+        <img src="" alt="" class="header-avatar" id="headerAvatarImg">
+        <span class="user-name-header" id="headerUserName">Cargando...</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.55rem; opacity:0.7;"></i>
+
+        <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
             <div class="dd-header">
                 <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
-                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg" style="display:none;">
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg">
                 <div class="dd-info">
                     <div class="dd-name" id="ddName">...</div>
                     <div class="dd-role">Cliente</div>
@@ -497,24 +523,21 @@
                 </div>
             </div>
             <a href="perfil_cliente.html" class="dd-item"><i class="fa-solid fa-user-circle"></i> Mi Perfil</a>
-            <a href="dashboard_cliente.php" class="dd-item"><i class="fa-solid fa-tachometer-alt"></i> Panel Cliente</a>
-            <a href="dashboard_cliente.php?tab=appointments" class="dd-item"><i class="fa-solid fa-calendar-check"></i> Mis Citas</a>
+            <a href="dashboard_cliente.html" class="dd-item"><i class="fa-solid fa-tachometer-alt"></i> Panel Cliente</a>
+            <a href="dashboard_cliente.html?tab=appointments" class="dd-item"><i class="fa-solid fa-calendar-check"></i> Mis Citas</a>
             <div class="dd-sep"></div>
             <button class="dd-item logout" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión</button>
         </div>
     </div>
-</header>
+</nav>
 
 <!-- ===== MAIN CONTENT ===== -->
 <main class="scanner-main">
-
-    <!-- Hero / título -->
     <div class="scanner-hero">
         <h1>🚦 <span>ESCÁNER</span> DE SEÑALES VIALES</h1>
         <p>Apunta la cámara a señales de tránsito para detectarlas e identificarlas en tiempo real</p>
     </div>
 
-    <!-- Cámara -->
     <div class="camera-panel">
         <div class="video-wrapper">
             <video id="webcam" autoplay playsinline muted></video>
@@ -532,7 +555,6 @@
         </div>
     </div>
 
-    <!-- Panel de resultados -->
     <div class="info-panel" id="infoPanel">
         <div class="status-bar">
             <span class="status-badge" id="aiStatus">🔍 Sistema listo</span>
@@ -547,10 +569,8 @@
             📱 Diseño adaptado para móviles · Desliza para ver más señales detectadas
         </div>
     </div>
-
 </main>
 
-<!-- ===== FOOTER ===== -->
 <footer class="footer-kiroo">
     <div class="container">
         <div class="row gy-4">
@@ -587,501 +607,483 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
-// ===== USER AUTH & MENU (igual que index.js) =====
-async function loadUserData() {
-    try {
-        const fd = new FormData();
-        fd.append('action', 'check_auth');
-        const res = await fetch('auth.php', { method: 'POST', body: fd });
-        const data = await res.json();
+    // ===== USER AUTH & MENU (igual que index_cliente) =====
+    let CURRENT_USER_ID = null;
 
-        if (!data.authenticated) {
-            window.location.href = 'login.html';
-            return;
-        }
+    function setAvatarFromUrl(url) {
+        ['headerAvatarImg', 'ddAvatarImg'].forEach(id => {
+            const img = document.getElementById(id);
+            if (img) { img.src = url; img.style.display = 'block'; }
+        });
+        ['headerAvatarIcon', 'ddAvatarIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
 
-        const firstName = (data.full_name || data.username || 'Usuario').split(' ')[0];
+    function applyUserUI(name, username, avatarUrl) {
+        const firstName = (name || 'Cliente').split(' ')[0];
+        const initials = (name || '?').charAt(0).toUpperCase();
 
-        // Header badges
         document.getElementById('headerUserName').textContent = firstName;
-        document.getElementById('ddName').textContent = data.full_name || data.username;
-        document.getElementById('ddUsername').textContent = '@' + (data.username || '');
-
-        const initials = (data.full_name || data.username || '?').charAt(0).toUpperCase();
         document.getElementById('headerInitials').textContent = initials;
+        document.getElementById('ddName').textContent = name || 'Cliente';
         document.getElementById('ddInitials').textContent = initials;
+        document.getElementById('ddUsername').textContent = username ? '@' + username : '';
 
-        loadProfilePicture();
-    } catch(e) {
-        console.error('Error cargando datos:', e);
-    }
-}
-
-async function loadProfilePicture() {
-    try {
-        const fd = new FormData();
-        fd.append('action', 'get_profile');
-        const res = await fetch('api.php', { method: 'POST', body: fd });
-        const data = await res.json();
-
-        if (data.success && data.profile && data.profile.profile_picture) {
-            const url = data.profile.profile_picture;
-            // Header
-            document.getElementById('headerAvatarIcon').style.display = 'none';
-            const img = document.getElementById('headerAvatarImg');
-            img.src = url; img.style.display = 'block';
-            // Dropdown
-            document.getElementById('ddAvatarIcon').style.display = 'none';
-            const ddImg = document.getElementById('ddAvatarImg');
-            ddImg.src = url; ddImg.style.display = 'block';
-        }
-    } catch(e) { /* sin foto */ }
-}
-
-function toggleUserMenu(e) {
-    e.stopPropagation();
-    document.getElementById('userDropdown').classList.toggle('open');
-}
-document.addEventListener('click', function(e) {
-    const wrapper = document.getElementById('userMenuWrapper');
-    if (wrapper && !wrapper.contains(e.target)) {
-        document.getElementById('userDropdown').classList.remove('open');
-    }
-});
-async function logout() {
-    try {
-        const fd = new FormData();
-        fd.append('action', 'logout');
-        await fetch('auth.php', { method: 'POST', body: fd });
-    } catch(e) {}
-    window.location.href = 'login.html';
-}
-
-loadUserData();
-</script>
-
-<!-- ===== SCANNER LOGIC ===== -->
-<script>
-(function(){
-    "use strict";
-
-    const video = document.getElementById('webcam');
-    const canvas = document.getElementById('overlayCanvas');
-    const ctx = canvas.getContext('2d');
-    const startBtn = document.getElementById('startBtn');
-    const pauseDetectionBtn = document.getElementById('pauseDetectionBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const camPlaceholder = document.getElementById('camPlaceholder');
-    const aiStatusSpan = document.getElementById('aiStatus');
-    const detectionModeText = document.getElementById('detectionModeText');
-    const signListContainer = document.getElementById('signListContainer');
-
-    let currentStream = null;
-    let isCameraActive = false;
-    let isDetectionRunning = true;
-    let animationId = null;
-    let lastFrameTime = 0;
-    let lastDetections = [];
-
-    // ========== BASE DE DATOS DE SEÑALES ==========
-    const SIGN_DATABASE = {
-        "STOP": {
-            nombre: "🛑 SEÑAL DE STOP",
-            significado: "Detención obligatoria total. Debes detener el vehículo completamente antes de la línea de stop.",
-            consejo: "Detente por completo, mira hacia ambos lados y cede el paso a peatones y vehículos antes de continuar."
-        },
-        "PARE": {
-            nombre: "🛑 SEÑAL DE PARE",
-            significado: "Señal de alto obligatorio. Requiere detención total del vehículo.",
-            consejo: "Alto total, verificar el cruce y avanzar solo cuando sea seguro."
-        },
-        "CEDA EL PASO": {
-            nombre: "⚠️ SEÑAL DE CEDA EL PASO",
-            significado: "Debes reducir la velocidad y ceder el paso a los vehículos que circulan por la vía preferente.",
-            consejo: "Disminuye la velocidad, observa el tráfico y cede el paso antes de incorporarte."
-        },
-        "SEMAFORO": {
-            nombre: "🚦 SEMÁFORO",
-            significado: "Regula el tránsito vehicular y peatonal. Rojo: alto, Amarillo: precaución, Verde: avance.",
-            consejo: "Respeta los colores, no aceleres en amarillo y nunca cruces en rojo."
-        },
-        "SEMÁFORO": {
-            nombre: "🚦 SEMÁFORO",
-            significado: "Control de tráfico en intersecciones. Sigue las indicaciones lumínicas.",
-            consejo: "Mantén distancia, atento al cambio de luces."
-        },
-        "ZONA ESCOLAR": {
-            nombre: "🏫 ZONA ESCOLAR",
-            significado: "Área cercana a escuelas, límite de velocidad reducido y máxima precaución.",
-            consejo: "Reduce la velocidad a 30 km/h o menos, atento a niños cruzando."
-        },
-        "LÍMITE DE VELOCIDAD": {
-            nombre: "🚫 LÍMITE DE VELOCIDAD",
-            significado: "Velocidad máxima permitida en el tramo. Respetar el número indicado.",
-            consejo: "No superes la velocidad indicada, ajusta tu velocidad según las condiciones."
-        },
-        "PROHIBIDO ESTACIONAR": {
-            nombre: "🚫 PROHIBIDO ESTACIONAR",
-            significado: "No se permite estacionar el vehículo en esta zona.",
-            consejo: "Busca un estacionamiento autorizado para evitar multas y remolque."
-        },
-        "GIRO OBLIGATORIO": {
-            nombre: "🔄 GIRO OBLIGATORIO",
-            significado: "Indica la dirección obligatoria que debes seguir.",
-            consejo: "Sigue la flecha indicada, no puedes continuar recto ni girar en otra dirección."
-        },
-        "PEATONES": {
-            nombre: "🚶 CRUCE DE PEATONES",
-            significado: "Zona de cruce de peatones. Debes ceder el paso.",
-            consejo: "Reduce la velocidad y permite el paso seguro de peatones."
-        }
-    };
-
-    function getSignDetails(signName) {
-        const normalized = signName.toUpperCase();
-        for (const [key, info] of Object.entries(SIGN_DATABASE)) {
-            if (normalized.includes(key) || key.includes(normalized.split(' ')[0])) {
-                return info;
-            }
-        }
-        return {
-            nombre: `🚸 ${signName}`,
-            significado: "Señal de regulación vial detectada. Respeta las indicaciones de tránsito.",
-            consejo: "Mantén precaución y sigue las normas de tránsito aplicables."
-        };
+        if (avatarUrl) setAvatarFromUrl(avatarUrl);
     }
 
-    async function analyzeFrameForSigns() {
-        if (!isCameraActive || !video.videoWidth || !video.videoHeight || !isDetectionRunning) return [];
-
-        const W = video.videoWidth;
-        const H = video.videoHeight;
-        const tempCanvas = document.createElement('canvas');
-        // Trabajar a 1/2 resolución para balance velocidad/precisión
-        tempCanvas.width = Math.floor(W / 2);
-        tempCanvas.height = Math.floor(H / 2);
-        const tempCtx = tempCanvas.getContext('2d');
-        tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-
-        const detectedSigns = [];
-        // Grid más fino: 10x8 regiones
-        const cols = 10, rows = 8;
-        const stepX = Math.floor(tempCanvas.width / cols);
-        const stepY = Math.floor(tempCanvas.height / rows);
-
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                const x = col * stepX;
-                const y = row * stepY;
-                const rc = analyzeRegionColors(imageData, x, y, stepX, stepY);
-
-                // ── STOP / PARE ──
-                // Señal roja octogonal: alto contenido rojo + blanco, poco verde/azul
-                if (rc.redRatio > 0.18 && rc.whiteRatio > 0.08 &&
-                    rc.greenRatio < 0.1 && rc.blueRatio < 0.1 &&
-                    rc.redCount > 40) {
-                    detectedSigns.push({
-                        bbox: [x*2, y*2, stepX*2, stepY*2],
-                        class: 'STOP',
-                        score: Math.min(0.98, 0.75 + rc.redRatio * 0.8)
-                    });
-                }
-                // ── SEMÁFORO ──
-                // Poste oscuro con al menos 2 colores de luz distintos
-                else if (rc.blackRatio > 0.12 &&
-                    ((rc.redCount > 15 && rc.greenCount > 10) ||
-                     (rc.redCount > 15 && rc.yellowCount > 10) ||
-                     (rc.greenCount > 10 && rc.yellowCount > 10))) {
-                    detectedSigns.push({
-                        bbox: [x*2, y*2, stepX*2, stepY*2],
-                        class: 'SEMÁFORO',
-                        score: 0.80
-                    });
-                }
-                // ── CEDA EL PASO ──
-                // Triángulo invertido: rojo bordeando blanco/poco, sin mucho negro
-                else if (rc.redRatio > 0.08 && rc.redRatio < 0.25 &&
-                    rc.whiteRatio > 0.25 && rc.blackRatio < 0.1 &&
-                    rc.greenRatio < 0.08) {
-                    detectedSigns.push({
-                        bbox: [x*2, y*2, stepX*2, stepY*2],
-                        class: 'CEDA EL PASO',
-                        score: 0.72
-                    });
-                }
-                // ── ZONA ESCOLAR ──
-                // Fondo amarillo dominante con algo de negro (texto/silueta)
-                else if (rc.yellowRatio > 0.20 && rc.blackRatio > 0.05 &&
-                    rc.redRatio < 0.12 && rc.blueRatio < 0.08) {
-                    detectedSigns.push({
-                        bbox: [x*2, y*2, stepX*2, stepY*2],
-                        class: 'ZONA ESCOLAR',
-                        score: Math.min(0.92, 0.65 + rc.yellowRatio)
-                    });
-                }
-                // ── PROHIBIDO ESTACIONAR / CIRCULACIÓN ──
-                // Círculo rojo bordeando blanco o azul interior
-                else if (rc.redRatio > 0.12 && rc.redRatio < 0.35 &&
-                    (rc.whiteRatio > 0.15 || rc.blueRatio > 0.10) &&
-                    rc.blackRatio > 0.06 && rc.greenRatio < 0.06) {
-                    const signClass = rc.blueRatio > 0.10 ? 'PROHIBIDO ESTACIONAR' : 'LÍMITE DE VELOCIDAD';
-                    detectedSigns.push({
-                        bbox: [x*2, y*2, stepX*2, stepY*2],
-                        class: signClass,
-                        score: 0.70
-                    });
-                }
-                // ── SEÑAL AZUL (GIRO/INFORMACIÓN) ──
-                // Azul dominante + blanco para flecha/texto
-                else if (rc.blueRatio > 0.20 && rc.whiteRatio > 0.10 &&
-                    rc.redRatio < 0.08 && rc.yellowRatio < 0.08) {
-                    detectedSigns.push({
-                        bbox: [x*2, y*2, stepX*2, stepY*2],
-                        class: 'GIRO OBLIGATORIO',
-                        score: 0.68
-                    });
-                }
-                // ── PASO PEATONAL ──
-                // Bandas blancas/negras alternadas: alta proporción de ambos, sin colores fuertes
-                else if (rc.whiteRatio > 0.25 && rc.blackRatio > 0.15 &&
-                    rc.redRatio < 0.05 && rc.blueRatio < 0.05 && rc.yellowRatio < 0.05) {
-                    detectedSigns.push({
-                        bbox: [x*2, y*2, stepX*2, stepY*2],
-                        class: 'PEATONES',
-                        score: 0.62
-                    });
-                }
-            }
-        }
-
-        // Desduplicar por cercanía (NMS simplificado)
-        const uniqueSigns = [];
-        for (const sign of detectedSigns) {
-            let duplicate = false;
-            for (const existing of uniqueSigns) {
-                const dx = Math.abs(existing.bbox[0] - sign.bbox[0]);
-                const dy = Math.abs(existing.bbox[1] - sign.bbox[1]);
-                // Si están muy juntos, quedarse con el de mayor score
-                if (dx < stepX * 2.5 && dy < stepY * 2.5) {
-                    if (sign.score > existing.score) {
-                        existing.bbox = sign.bbox;
-                        existing.class = sign.class;
-                        existing.score = sign.score;
-                    }
-                    duplicate = true;
-                    break;
-                }
-            }
-            if (!duplicate) uniqueSigns.push(sign);
-        }
-
-        // Ordenar por score descendente y limitar a 5
-        return uniqueSigns.sort((a, b) => b.score - a.score).slice(0, 5);
-    }
-
-    function analyzeRegionColors(imageData, x, y, w, h) {
-        let redCount = 0, yellowCount = 0, greenCount = 0, blueCount = 0,
-            whiteCount = 0, blackCount = 0, totalPixels = 0;
-
-        const startX = Math.max(0, x);
-        const startY = Math.max(0, y);
-        const endX = Math.min(imageData.width, x + w);
-        const endY = Math.min(imageData.height, y + h);
-
-        // Paso 2: más preciso que 4, sin sacrificar demasiado rendimiento
-        for (let py = startY; py < endY; py += 2) {
-            for (let px = startX; px < endX; px += 2) {
-                const idx = (py * imageData.width + px) * 4;
-                const r = imageData.data[idx];
-                const g = imageData.data[idx + 1];
-                const b = imageData.data[idx + 2];
-
-                // Rojo: r dominante, g y b bajos
-                if (r > 150 && g < 90 && b < 90 && r - g > 70 && r - b > 70) redCount++;
-                // Amarillo: r y g altos, b bajo
-                else if (r > 180 && g > 150 && b < 90 && r - b > 100) yellowCount++;
-                // Verde: g dominante
-                else if (g > 140 && r < 100 && b < 100 && g - r > 50 && g - b > 50) greenCount++;
-                // Azul: b dominante
-                else if (b > 140 && r < 100 && g < 130 && b - r > 60) blueCount++;
-                // Blanco: todos altos
-                else if (r > 200 && g > 200 && b > 200) whiteCount++;
-                // Negro: todos bajos
-                else if (r < 50 && g < 50 && b < 50) blackCount++;
-
-                totalPixels++;
-            }
-        }
-
-        const t = Math.max(1, totalPixels);
-        return {
-            redCount, yellowCount, greenCount, blueCount, whiteCount, blackCount, totalPixels,
-            redRatio:    redCount    / t,
-            yellowRatio: yellowCount / t,
-            greenRatio:  greenCount  / t,
-            blueRatio:   blueCount   / t,
-            whiteRatio:  whiteCount  / t,
-            blackRatio:  blackCount  / t,
-        };
-    }
-
-    function drawDetections(detections) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (!detections.length || !isDetectionRunning) return;
-        for (const det of detections) {
-            const [x, y, w, h] = det.bbox;
-            // Colores por tipo de señal
-            let color;
-            switch(det.class) {
-                case 'STOP':            color = "#d32f2f"; break;
-                case 'SEMÁFORO':        color = "#4caf50"; break;
-                case 'ZONA ESCOLAR':    color = "#f9a825"; break;
-                case 'CEDA EL PASO':    color = "#e53935"; break;
-                case 'GIRO OBLIGATORIO':color = "#1565c0"; break;
-                default:                color = "#c62828"; break;
-            }
-            ctx.strokeStyle = color; ctx.lineWidth = 3;
-            ctx.strokeRect(x, y, w, h);
-            ctx.fillStyle = `${color}22`; ctx.fillRect(x, y, w, h);
-            ctx.font = "bold 14px 'Segoe UI'"; ctx.shadowBlur = 4; ctx.shadowColor = "black";
-            const label = det.class;
-            const metrics = ctx.measureText(label);
-            ctx.fillStyle = "rgba(0,0,0,0.75)"; ctx.fillRect(x, y - 26, metrics.width + 14, 24);
-            ctx.fillStyle = "#ffffff"; ctx.fillText(label, x + 7, y - 8);
-            ctx.shadowBlur = 0;
-        }
-    }
-
-    function updateInfoPanel(detections) {
-        if (!detections || detections.length === 0) {
-            let msg = "";
-            if (!isCameraActive) msg = "⏹️ Cámara detenida. Inicia el escáner para buscar señales.";
-            else if (!isDetectionRunning) msg = "⏸️ Detección pausada. Puedes leer la información.";
-            else msg = "📡 Escaneando... Apunta a una señal de tránsito.";
-            signListContainer.innerHTML = `<div class="no-signs">${msg}</div>`;
-            return;
-        }
-        let html = '';
-        for (const det of detections) {
-            const info = getSignDetails(det.class);
-            html += `
-                <div class="sign-card">
-                    <div class="sign-name">
-                        ${info.nombre}
-                        <span style="font-size:0.62rem; background:rgba(165,19,19,0.4); padding:2px 9px; border-radius:20px; color:#ffaaaa;">${Math.round(det.score * 100)}%</span>
-                    </div>
-                    <div class="sign-confidence">Tipo detectado: ${det.class}</div>
-                    <div class="sign-description">
-                        <strong>📘 Significado:</strong> ${info.significado}<br><br>
-                        <strong>⚠️ Recomendación:</strong> ${info.consejo}
-                    </div>
-                </div>
-            `;
-        }
-        signListContainer.innerHTML = html;
-    }
-
-    async function detectionLoop() {
-        if (!isCameraActive) { if (animationId) animationId = requestAnimationFrame(detectionLoop); return; }
-        if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
-            if (video.videoWidth && video.videoHeight) {
-                canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-            }
-        }
-        if (isDetectionRunning) {
-            const detections = await analyzeFrameForSigns();
-            lastDetections = detections;
-            drawDetections(detections);
-            updateInfoPanel(detections);
-            const now = performance.now();
-            if (lastFrameTime !== 0 && now - lastFrameTime > 500) {
-                const fps = Math.round(1000 / (now - lastFrameTime));
-                aiStatusSpan.innerHTML = `📡 Escaneando • ${fps}fps`;
-            }
-            lastFrameTime = now;
-        } else {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            updateInfoPanel(lastDetections);
-            aiStatusSpan.innerHTML = "⏸️ Detección pausada";
-        }
-        animationId = requestAnimationFrame(detectionLoop);
-    }
-
-    async function startCamera() {
-        if (currentStream) stopCamera(false);
-        camPlaceholder.style.display = "none";
+    async function checkAuth() {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "environment", width: { ideal: 1024 }, height: { ideal: 768 } }
-            });
-            currentStream = stream;
-            video.srcObject = stream;
-            await video.play();
-            setTimeout(() => { if (video.videoWidth) { canvas.width = video.videoWidth; canvas.height = video.videoHeight; } }, 100);
-            isCameraActive = true; isDetectionRunning = true;
-            detectionModeText.innerHTML = "⚡ Modo: DETECTANDO";
-            pauseDetectionBtn.innerHTML = "⏸️ PAUSAR DETECCIÓN";
-            pauseDetectionBtn.classList.add("detecting-active");
-            aiStatusSpan.innerHTML = "✅ Cámara activa - Escaneando";
-            if (!animationId) detectionLoop();
-        } catch(err) {
-            console.error("Error cámara:", err);
-            camPlaceholder.style.display = "flex";
-            camPlaceholder.innerHTML = '<div class="cam-icon">⚠️</div><strong>Error de cámara</strong><small>Permite los permisos en tu dispositivo</small>';
-            aiStatusSpan.innerHTML = "❌ Error de cámara";
-            isCameraActive = false;
+            const fd = new FormData();
+            fd.append('action', 'check_auth');
+            const res = await fetch('auth.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            
+            if (data.authenticated) {
+                CURRENT_USER_ID = data.id;
+                applyUserUI(data.full_name || data.username, data.username, null);
+                await loadProfilePicture();
+                return true;
+            } else {
+                window.location.href = 'login.html';
+                return false;
+            }
+        } catch(e) {
+            console.error('Auth error:', e);
+            window.location.href = 'login.html';
+            return false;
         }
     }
 
-    function toggleDetection() {
-        if (!isCameraActive) { alert("Primero inicia el escáner con 'INICIAR ESCÁNER'"); return; }
-        isDetectionRunning = !isDetectionRunning;
-        if (isDetectionRunning) {
-            detectionModeText.innerHTML = "⚡ Modo: DETECTANDO";
-            pauseDetectionBtn.innerHTML = "⏸️ PAUSAR DETECCIÓN";
-            pauseDetectionBtn.classList.add("detecting-active");
-            aiStatusSpan.innerHTML = "📡 Detectando señales...";
-            updateInfoPanel(lastDetections);
-        } else {
-            detectionModeText.innerHTML = "⏸️ Modo: PAUSADO (lectura)";
-            pauseDetectionBtn.innerHTML = "▶️ REANUDAR DETECCIÓN";
-            pauseDetectionBtn.classList.remove("detecting-active");
-            aiStatusSpan.innerHTML = "⏸️ Detección pausada - Puedes leer la información";
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            updateInfoPanel(lastDetections);
+    async function loadProfilePicture() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'get_profile');
+            const res = await fetch('api.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success && data.profile && data.profile.profile_picture) {
+                setAvatarFromUrl(data.profile.profile_picture);
+            }
+        } catch(e) { /* sin foto */ }
+    }
+
+    function toggleDropdown(btn) {
+        const panel = btn.nextElementSibling;
+        const isOpen = panel.classList.contains('open');
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        if (!isOpen) panel.classList.add('open');
+    }
+
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        document.getElementById('userDropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
         }
-    }
-
-    function stopCamera(clearDetections = false) {
-        isCameraActive = false; isDetectionRunning = false;
-        if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
-        if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); currentStream = null; }
-        video.srcObject = null;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        camPlaceholder.style.display = "flex";
-        camPlaceholder.innerHTML = '<div class="cam-icon">📷</div><strong>Cámara detenida</strong><small>Presiona "INICIAR ESCÁNER" para reiniciar</small>';
-        aiStatusSpan.innerHTML = "⏹️ Sistema detenido";
-        detectionModeText.innerHTML = "⚙️ Inactivo";
-        pauseDetectionBtn.innerHTML = "⏸️ PAUSAR DETECCIÓN";
-        pauseDetectionBtn.classList.remove("detecting-active");
-        if (clearDetections) lastDetections = [];
-        updateInfoPanel(lastDetections);
-    }
-
-    startBtn.addEventListener('click', startCamera);
-    startBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startCamera(); });
-    pauseDetectionBtn.addEventListener('click', toggleDetection);
-    pauseDetectionBtn.addEventListener('touchstart', (e) => { e.preventDefault(); toggleDetection(); });
-    stopBtn.addEventListener('click', () => stopCamera(false));
-    stopBtn.addEventListener('touchstart', (e) => { e.preventDefault(); stopCamera(false); });
-    video.addEventListener('loadedmetadata', () => {
-        if (video.videoWidth) { canvas.width = video.videoWidth; canvas.height = video.videoHeight; }
+        if (!e.target.closest('#userMenuWrapper')) {
+            document.getElementById('userDropdown')?.classList.remove('open');
+        }
     });
-})();
-</script>
 
+    async function logout() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'logout');
+            await fetch('auth.php', { method: 'POST', body: fd });
+        } catch(e) {}
+        window.location.href = 'login.html';
+    }
+
+    // Inicializar autenticación
+    checkAuth();
+
+    // ===== SCANNER LOGIC =====
+    (function(){
+        "use strict";
+
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('overlayCanvas');
+        const ctx = canvas.getContext('2d');
+        const startBtn = document.getElementById('startBtn');
+        const pauseDetectionBtn = document.getElementById('pauseDetectionBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const camPlaceholder = document.getElementById('camPlaceholder');
+        const aiStatusSpan = document.getElementById('aiStatus');
+        const detectionModeText = document.getElementById('detectionModeText');
+        const signListContainer = document.getElementById('signListContainer');
+
+        let currentStream = null;
+        let isCameraActive = false;
+        let isDetectionRunning = true;
+        let animationId = null;
+        let lastFrameTime = 0;
+        let lastDetections = [];
+
+        const SIGN_DATABASE = {
+            "STOP": {
+                nombre: "🛑 SEÑAL DE STOP",
+                significado: "Detención obligatoria total. Debes detener el vehículo completamente antes de la línea de stop.",
+                consejo: "Detente por completo, mira hacia ambos lados y cede el paso a peatones y vehículos antes de continuar."
+            },
+            "PARE": {
+                nombre: "🛑 SEÑAL DE PARE",
+                significado: "Señal de alto obligatorio. Requiere detención total del vehículo.",
+                consejo: "Alto total, verificar el cruce y avanzar solo cuando sea seguro."
+            },
+            "CEDA EL PASO": {
+                nombre: "⚠️ SEÑAL DE CEDA EL PASO",
+                significado: "Debes reducir la velocidad y ceder el paso a los vehículos que circulan por la vía preferente.",
+                consejo: "Disminuye la velocidad, observa el tráfico y cede el paso antes de incorporarte."
+            },
+            "SEMAFORO": {
+                nombre: "🚦 SEMÁFORO",
+                significado: "Regula el tránsito vehicular y peatonal. Rojo: alto, Amarillo: precaución, Verde: avance.",
+                consejo: "Respeta los colores, no aceleres en amarillo y nunca cruces en rojo."
+            },
+            "ZONA ESCOLAR": {
+                nombre: "🏫 ZONA ESCOLAR",
+                significado: "Área cercana a escuelas, límite de velocidad reducido y máxima precaución.",
+                consejo: "Reduce la velocidad a 30 km/h o menos, atento a niños cruzando."
+            },
+            "LÍMITE DE VELOCIDAD": {
+                nombre: "🚫 LÍMITE DE VELOCIDAD",
+                significado: "Velocidad máxima permitida en el tramo. Respetar el número indicado.",
+                consejo: "No superes la velocidad indicada, ajusta tu velocidad según las condiciones."
+            },
+            "PROHIBIDO ESTACIONAR": {
+                nombre: "🚫 PROHIBIDO ESTACIONAR",
+                significado: "No se permite estacionar el vehículo en esta zona.",
+                consejo: "Busca un estacionamiento autorizado para evitar multas y remolque."
+            },
+            "GIRO OBLIGATORIO": {
+                nombre: "🔄 GIRO OBLIGATORIO",
+                significado: "Indica la dirección obligatoria que debes seguir.",
+                consejo: "Sigue la flecha indicada, no puedes continuar recto ni girar en otra dirección."
+            },
+            "PEATONES": {
+                nombre: "🚶 CRUCE DE PEATONES",
+                significado: "Zona de cruce de peatones. Debes ceder el paso.",
+                consejo: "Reduce la velocidad y permite el paso seguro de peatones."
+            }
+        };
+
+        function getSignDetails(signName) {
+            const normalized = signName.toUpperCase();
+            for (const [key, info] of Object.entries(SIGN_DATABASE)) {
+                if (normalized.includes(key) || key.includes(normalized.split(' ')[0])) {
+                    return info;
+                }
+            }
+            return {
+                nombre: `🚸 ${signName}`,
+                significado: "Señal de regulación vial detectada. Respeta las indicaciones de tránsito.",
+                consejo: "Mantén precaución y sigue las normas de tránsito aplicables."
+            };
+        }
+
+        async function analyzeFrameForSigns() {
+            if (!isCameraActive || !video.videoWidth || !video.videoHeight || !isDetectionRunning) return [];
+
+            const W = video.videoWidth;
+            const H = video.videoHeight;
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = Math.floor(W / 2);
+            tempCanvas.height = Math.floor(H / 2);
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+            const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+
+            const detectedSigns = [];
+            const cols = 10, rows = 8;
+            const stepX = Math.floor(tempCanvas.width / cols);
+            const stepY = Math.floor(tempCanvas.height / rows);
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const x = col * stepX;
+                    const y = row * stepY;
+                    const rc = analyzeRegionColors(imageData, x, y, stepX, stepY);
+
+                    if (rc.redRatio > 0.18 && rc.whiteRatio > 0.08 &&
+                        rc.greenRatio < 0.1 && rc.blueRatio < 0.1 &&
+                        rc.redCount > 40) {
+                        detectedSigns.push({
+                            bbox: [x*2, y*2, stepX*2, stepY*2],
+                            class: 'STOP',
+                            score: Math.min(0.98, 0.75 + rc.redRatio * 0.8)
+                        });
+                    }
+                    else if (rc.blackRatio > 0.12 &&
+                        ((rc.redCount > 15 && rc.greenCount > 10) ||
+                         (rc.redCount > 15 && rc.yellowCount > 10) ||
+                         (rc.greenCount > 10 && rc.yellowCount > 10))) {
+                        detectedSigns.push({
+                            bbox: [x*2, y*2, stepX*2, stepY*2],
+                            class: 'SEMAFORO',
+                            score: 0.80
+                        });
+                    }
+                    else if (rc.redRatio > 0.08 && rc.redRatio < 0.25 &&
+                        rc.whiteRatio > 0.25 && rc.blackRatio < 0.1 &&
+                        rc.greenRatio < 0.08) {
+                        detectedSigns.push({
+                            bbox: [x*2, y*2, stepX*2, stepY*2],
+                            class: 'CEDA EL PASO',
+                            score: 0.72
+                        });
+                    }
+                    else if (rc.yellowRatio > 0.20 && rc.blackRatio > 0.05 &&
+                        rc.redRatio < 0.12 && rc.blueRatio < 0.08) {
+                        detectedSigns.push({
+                            bbox: [x*2, y*2, stepX*2, stepY*2],
+                            class: 'ZONA ESCOLAR',
+                            score: Math.min(0.92, 0.65 + rc.yellowRatio)
+                        });
+                    }
+                    else if (rc.redRatio > 0.12 && rc.redRatio < 0.35 &&
+                        (rc.whiteRatio > 0.15 || rc.blueRatio > 0.10) &&
+                        rc.blackRatio > 0.06 && rc.greenRatio < 0.06) {
+                        const signClass = rc.blueRatio > 0.10 ? 'PROHIBIDO ESTACIONAR' : 'LÍMITE DE VELOCIDAD';
+                        detectedSigns.push({
+                            bbox: [x*2, y*2, stepX*2, stepY*2],
+                            class: signClass,
+                            score: 0.70
+                        });
+                    }
+                    else if (rc.blueRatio > 0.20 && rc.whiteRatio > 0.10 &&
+                        rc.redRatio < 0.08 && rc.yellowRatio < 0.08) {
+                        detectedSigns.push({
+                            bbox: [x*2, y*2, stepX*2, stepY*2],
+                            class: 'GIRO OBLIGATORIO',
+                            score: 0.68
+                        });
+                    }
+                    else if (rc.whiteRatio > 0.25 && rc.blackRatio > 0.15 &&
+                        rc.redRatio < 0.05 && rc.blueRatio < 0.05 && rc.yellowRatio < 0.05) {
+                        detectedSigns.push({
+                            bbox: [x*2, y*2, stepX*2, stepY*2],
+                            class: 'PEATONES',
+                            score: 0.62
+                        });
+                    }
+                }
+            }
+
+            const uniqueSigns = [];
+            for (const sign of detectedSigns) {
+                let duplicate = false;
+                for (const existing of uniqueSigns) {
+                    const dx = Math.abs(existing.bbox[0] - sign.bbox[0]);
+                    const dy = Math.abs(existing.bbox[1] - sign.bbox[1]);
+                    if (dx < stepX * 2.5 && dy < stepY * 2.5) {
+                        if (sign.score > existing.score) {
+                            existing.bbox = sign.bbox;
+                            existing.class = sign.class;
+                            existing.score = sign.score;
+                        }
+                        duplicate = true;
+                        break;
+                    }
+                }
+                if (!duplicate) uniqueSigns.push(sign);
+            }
+
+            return uniqueSigns.sort((a, b) => b.score - a.score).slice(0, 5);
+        }
+
+        function analyzeRegionColors(imageData, x, y, w, h) {
+            let redCount = 0, yellowCount = 0, greenCount = 0, blueCount = 0,
+                whiteCount = 0, blackCount = 0, totalPixels = 0;
+
+            const startX = Math.max(0, x);
+            const startY = Math.max(0, y);
+            const endX = Math.min(imageData.width, x + w);
+            const endY = Math.min(imageData.height, y + h);
+
+            for (let py = startY; py < endY; py += 2) {
+                for (let px = startX; px < endX; px += 2) {
+                    const idx = (py * imageData.width + px) * 4;
+                    const r = imageData.data[idx];
+                    const g = imageData.data[idx + 1];
+                    const b = imageData.data[idx + 2];
+
+                    if (r > 150 && g < 90 && b < 90 && r - g > 70 && r - b > 70) redCount++;
+                    else if (r > 180 && g > 150 && b < 90 && r - b > 100) yellowCount++;
+                    else if (g > 140 && r < 100 && b < 100 && g - r > 50 && g - b > 50) greenCount++;
+                    else if (b > 140 && r < 100 && g < 130 && b - r > 60) blueCount++;
+                    else if (r > 200 && g > 200 && b > 200) whiteCount++;
+                    else if (r < 50 && g < 50 && b < 50) blackCount++;
+                    totalPixels++;
+                }
+            }
+
+            const t = Math.max(1, totalPixels);
+            return {
+                redCount, yellowCount, greenCount, blueCount, whiteCount, blackCount, totalPixels,
+                redRatio:    redCount    / t,
+                yellowRatio: yellowCount / t,
+                greenRatio:  greenCount  / t,
+                blueRatio:   blueCount   / t,
+                whiteRatio:  whiteCount  / t,
+                blackRatio:  blackCount  / t,
+            };
+        }
+
+        function drawDetections(detections) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (!detections.length || !isDetectionRunning) return;
+            for (const det of detections) {
+                const [x, y, w, h] = det.bbox;
+                let color;
+                switch(det.class) {
+                    case 'STOP':            color = "#d32f2f"; break;
+                    case 'SEMAFORO':        color = "#4caf50"; break;
+                    case 'ZONA ESCOLAR':    color = "#f9a825"; break;
+                    case 'CEDA EL PASO':    color = "#e53935"; break;
+                    case 'GIRO OBLIGATORIO':color = "#1565c0"; break;
+                    default:                color = "#c62828"; break;
+                }
+                ctx.strokeStyle = color; ctx.lineWidth = 3;
+                ctx.strokeRect(x, y, w, h);
+                ctx.fillStyle = `${color}22`; ctx.fillRect(x, y, w, h);
+                ctx.font = "bold 14px 'Segoe UI'"; ctx.shadowBlur = 4; ctx.shadowColor = "black";
+                const label = det.class;
+                const metrics = ctx.measureText(label);
+                ctx.fillStyle = "rgba(0,0,0,0.75)"; ctx.fillRect(x, y - 26, metrics.width + 14, 24);
+                ctx.fillStyle = "#ffffff"; ctx.fillText(label, x + 7, y - 8);
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function updateInfoPanel(detections) {
+            if (!detections || detections.length === 0) {
+                let msg = "";
+                if (!isCameraActive) msg = "⏹️ Cámara detenida. Inicia el escáner para buscar señales.";
+                else if (!isDetectionRunning) msg = "⏸️ Detección pausada. Puedes leer la información.";
+                else msg = "📡 Escaneando... Apunta a una señal de tránsito.";
+                signListContainer.innerHTML = `<div class="no-signs">${msg}</div>`;
+                return;
+            }
+            let html = '';
+            for (const det of detections) {
+                const info = getSignDetails(det.class);
+                html += `
+                    <div class="sign-card">
+                        <div class="sign-name">
+                            ${info.nombre}
+                            <span style="font-size:0.62rem; background:rgba(165,19,19,0.4); padding:2px 9px; border-radius:20px; color:#ffaaaa;">${Math.round(det.score * 100)}%</span>
+                        </div>
+                        <div class="sign-confidence">Tipo detectado: ${det.class}</div>
+                        <div class="sign-description">
+                            <strong>📘 Significado:</strong> ${info.significado}<br><br>
+                            <strong>⚠️ Recomendación:</strong> ${info.consejo}
+                        </div>
+                    </div>
+                `;
+            }
+            signListContainer.innerHTML = html;
+        }
+
+        async function detectionLoop() {
+            if (!isCameraActive) { if (animationId) animationId = requestAnimationFrame(detectionLoop); return; }
+            if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+                if (video.videoWidth && video.videoHeight) {
+                    canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+                }
+            }
+            if (isDetectionRunning) {
+                const detections = await analyzeFrameForSigns();
+                lastDetections = detections;
+                drawDetections(detections);
+                updateInfoPanel(detections);
+                const now = performance.now();
+                if (lastFrameTime !== 0 && now - lastFrameTime > 500) {
+                    const fps = Math.round(1000 / (now - lastFrameTime));
+                    aiStatusSpan.innerHTML = `📡 Escaneando • ${fps}fps`;
+                }
+                lastFrameTime = now;
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                updateInfoPanel(lastDetections);
+                aiStatusSpan.innerHTML = "⏸️ Detección pausada";
+            }
+            animationId = requestAnimationFrame(detectionLoop);
+        }
+
+        async function startCamera() {
+            if (currentStream) stopCamera(false);
+            camPlaceholder.style.display = "none";
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment", width: { ideal: 1024 }, height: { ideal: 768 } }
+                });
+                currentStream = stream;
+                video.srcObject = stream;
+                await video.play();
+                setTimeout(() => { if (video.videoWidth) { canvas.width = video.videoWidth; canvas.height = video.videoHeight; } }, 100);
+                isCameraActive = true; isDetectionRunning = true;
+                detectionModeText.innerHTML = "⚡ Modo: DETECTANDO";
+                pauseDetectionBtn.innerHTML = "⏸️ PAUSAR DETECCIÓN";
+                pauseDetectionBtn.classList.add("detecting-active");
+                aiStatusSpan.innerHTML = "✅ Cámara activa - Escaneando";
+                if (!animationId) detectionLoop();
+            } catch(err) {
+                console.error("Error cámara:", err);
+                camPlaceholder.style.display = "flex";
+                camPlaceholder.innerHTML = '<div class="cam-icon">⚠️</div><strong>Error de cámara</strong><small>Permite los permisos en tu dispositivo</small>';
+                aiStatusSpan.innerHTML = "❌ Error de cámara";
+                isCameraActive = false;
+            }
+        }
+
+        function toggleDetection() {
+            if (!isCameraActive) { alert("Primero inicia el escáner con 'INICIAR ESCÁNER'"); return; }
+            isDetectionRunning = !isDetectionRunning;
+            if (isDetectionRunning) {
+                detectionModeText.innerHTML = "⚡ Modo: DETECTANDO";
+                pauseDetectionBtn.innerHTML = "⏸️ PAUSAR DETECCIÓN";
+                pauseDetectionBtn.classList.add("detecting-active");
+                aiStatusSpan.innerHTML = "📡 Detectando señales...";
+                updateInfoPanel(lastDetections);
+            } else {
+                detectionModeText.innerHTML = "⏸️ Modo: PAUSADO (lectura)";
+                pauseDetectionBtn.innerHTML = "▶️ REANUDAR DETECCIÓN";
+                pauseDetectionBtn.classList.remove("detecting-active");
+                aiStatusSpan.innerHTML = "⏸️ Detección pausada - Puedes leer la información";
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                updateInfoPanel(lastDetections);
+            }
+        }
+
+        function stopCamera(clearDetections = false) {
+            isCameraActive = false; isDetectionRunning = false;
+            if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
+            if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); currentStream = null; }
+            video.srcObject = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            camPlaceholder.style.display = "flex";
+            camPlaceholder.innerHTML = '<div class="cam-icon">📷</div><strong>Cámara detenida</strong><small>Presiona "INICIAR ESCÁNER" para reiniciar</small>';
+            aiStatusSpan.innerHTML = "⏹️ Sistema detenido";
+            detectionModeText.innerHTML = "⚙️ Inactivo";
+            pauseDetectionBtn.innerHTML = "⏸️ PAUSAR DETECCIÓN";
+            pauseDetectionBtn.classList.remove("detecting-active");
+            if (clearDetections) lastDetections = [];
+            updateInfoPanel(lastDetections);
+        }
+
+        startBtn.addEventListener('click', startCamera);
+        pauseDetectionBtn.addEventListener('click', toggleDetection);
+        stopBtn.addEventListener('click', () => stopCamera(false));
+        video.addEventListener('loadedmetadata', () => {
+            if (video.videoWidth) { canvas.width = video.videoWidth; canvas.height = video.videoHeight; }
+        });
+    })();
+</script>
 </body>
 </html>
