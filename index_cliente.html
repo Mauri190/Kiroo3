@@ -7,50 +7,52 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/index_cliente2.css">
+    <link rel="stylesheet" href="css/index_clientes.css">
 </head>
 <body>
-    
-<header class="main-header">
-    <div class="brand-name">KI<span>R</span>OO</div>
-    <nav>
-        <ul class="nav-links">
-            <li><a href="index_cliente.html">HOME</a></li>
-            <li class="dropdown">
-                <button class="dropbtn">Gestiona ▾</button>
-                <div class="dropdown-content">
-                    <a href="dashboard_cliente.html"> Panel cliente</a>
-                    <a href="vehiculos_cliente.html"> Registro Vehiculos</a>
-                    <a href="agenda_cliente.html"> Agenda tus citas</a>
-                </div>
-            </li>
-            <li class="dropdown">
-                <button class="dropbtn">HERRAMIENTAS ▾</button>
-                <div class="dropdown-content">
-                    <a href="scaner.html"> Escáner de Señales</a>
-                    <a href="gamificacion.html"> Gamificación</a>
-                </div>
-            </li>
-            <li class="dropdown">
-                <button class="dropbtn">AYUDA ▾</button>
-                <div class="dropdown-content">
-                    <a href="emergencias_cliente.html"> Números de Emergencia</a>
-                </div>
-            </li>
-            <span class="nav-separator">|</span>
-        </ul>
-    </nav>
 
-    <!-- USER MENU -->
-    <div class="user-menu-wrapper" id="userMenuWrapper">
-        <div class="user-badge" id="userBadge" onclick="toggleUserMenu(event)">
-            <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
-            <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
-            <span class="user-name-header" id="headerUserName">Cargando...</span>
-            <i class="fa-solid fa-chevron-down" style="font-size:0.6rem; color:rgba(255,255,255,0.7); margin-left:2px;"></i>
-        </div>
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar">
 
-        <div class="user-dropdown" id="userDropdown">
+    <a class="logo" href="index_cliente.html">KI<span>R</span>OO</a>
+
+    <ul class="nav-links">
+        <li><a href="index_cliente.html">HOME</a></li>
+
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">GESTIONA ▾</button>
+            <div class="dropdown-content">
+                <a href="dashboard_cliente.html"><i class="fa-solid fa-gauge-high"></i> Panel Cliente</a>
+                <a href="vehiculos_cliente.html"><i class="fa-solid fa-car"></i> Registro Vehículos</a>
+                <a href="agenda_cliente.html"><i class="fa-solid fa-calendar-days"></i> Agenda tus citas</a>
+            </div>
+        </li>
+
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">HERRAMIENTAS ▾</button>
+            <div class="dropdown-content">
+                <a href="scaner.html"><i class="fa-solid fa-satellite-dish"></i> Escáner de Señales</a>
+                <a href="gamificacion.html"><i class="fa-solid fa-trophy"></i> Gamificación</a>
+            </div>
+        </li>
+
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">AYUDA ▾</button>
+            <div class="dropdown-content">
+                <a href="emergencias_cliente.html"><i class="fa-solid fa-phone-flip"></i> Números de Emergencia</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- USER BADGE -->
+    <div class="profile" id="userMenuWrapper" onclick="toggleUserMenu(event)">
+        <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+        <img src="" alt="" class="header-avatar" id="headerAvatarImg" style="display:none;">
+        <span class="user-name-header" id="headerUserName">Cargando...</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.55rem; opacity:0.7; margin-left:2px;"></i>
+
+        <!-- User dropdown -->
+        <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
             <div class="dd-header">
                 <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
                 <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg" style="display:none;">
@@ -63,10 +65,10 @@
             <a href="perfil_cliente.html" class="dd-item">
                 <i class="fa-solid fa-user-circle"></i> Mi Perfil
             </a>
-            <a href="dashboard_cliente.php" class="dd-item">
+            <a href="dashboard_cliente.html" class="dd-item">
                 <i class="fa-solid fa-tachometer-alt"></i> Panel Cliente
             </a>
-            <a href="dashboard_cliente.php?tab=appointments" class="dd-item">
+            <a href="dashboard_cliente.html?tab=appointments" class="dd-item">
                 <i class="fa-solid fa-calendar-check"></i> Mis Citas
             </a>
             <div class="dd-sep"></div>
@@ -75,30 +77,80 @@
             </button>
         </div>
     </div>
-</header>
 
-<main class="main-kiroo">
-    <div style="max-width: 1200px; margin: 2rem auto; padding: 0 20px;">
-        
-        <!-- SECCIÓN DE BIENVENIDA CON EL NOMBRE DEL USUARIO -->
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 style="color: white;">Bienvenido, <span id="welcomeName" style="color: #d32f2f;">...</span> 👋</h2>
-            <p style="color: #aaa;">Tu panel de control personalizado</p>
+</nav>
+
+<!-- ===================== MAIN ===================== -->
+<div class="container-main">
+
+    <!-- Bienvenida -->
+    <section class="welcome">
+        <h1>Bienvenido, <span id="welcomeName">...</span> 👋</h1>
+        <p>Tu panel de control personalizado</p>
+    </section>
+
+    <!-- Card principal -->
+    <a href="dashboard_cliente.html" class="main-card">
+        <div class="mc-icon">⚙️</div>
+        <div>
+            <h2>Panel Cliente</h2>
+            <p>Diagnósticos y citas</p>
         </div>
+    </a>
 
-        <a href="dashboard_cliente.php" class="menu-card-modern" style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 3rem;">
-            <i class="fa-solid fa-user-gear" style="font-size: 2rem; margin: 0;"></i>
-            <span style="font-size: 1.5rem;">Panel Cliente</span>
-            <small style="font-size: 0.8rem;">Diagnósticos y citas</small>
+    <!-- Grid de noticias -->
+    <div id="news-grid" class="cards-grid">
+
+        <a href="averias.html" class="news-card">
+            <img src="img/motor.jfif" alt="Motor" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h3>5 averías que pueden destruir tu coche</h3>
+                <p>Descubre los fallos silenciosos que pueden causar daños graves a tu vehículo.</p>
+            </div>
+            <div class="card-meta"><i class="fa-solid fa-newspaper me-1"></i>Mantenimiento · 5 min</div>
         </a>
 
-        <!-- Contenedor dinámico de noticias -->
-        <div id="news-grid" class="news-grid-dark">
-            <!-- Las tarjetas se generan mediante JavaScript -->
-        </div>
-    </div>
-</main>
+        <a href="llanta.html" class="news-card">
+            <img src="img/Llanta.webp" alt="Llanta reventada" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h3>¿Qué hacer si explota una llanta mientras conduces?</h3>
+                <p>Aprende la técnica más simple para evitar accidentes en carretera.</p>
+            </div>
+            <div class="card-meta"><i class="fa-solid fa-newspaper me-1"></i>Seguridad · 4 min</div>
+        </a>
 
+        <a href="potencia.html" class="news-card">
+            <img src="img/perdida-motor.avif" alt="Motor" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h3>Pérdida de potencia del motor</h3>
+                <p>Descubre las causas más comunes y cómo actuar antes de que el problema empeore.</p>
+            </div>
+            <div class="card-meta"><i class="fa-solid fa-newspaper me-1"></i>Motor · 6 min</div>
+        </a>
+
+        <a href="problemas.html" class="news-card">
+            <img src="img/quedado.webp" alt="Mecánica" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h3>Pequeños problemas mecánicos</h3>
+                <p>Ignorar fallas menores puede convertirse en reparaciones muy costosas.</p>
+            </div>
+            <div class="card-meta"><i class="fa-solid fa-newspaper me-1"></i>Tips · 3 min</div>
+        </a>
+
+        <a href="alineacion.html" class="news-card">
+            <img src="img/alineacion.jpg" alt="Alineación" onerror="this.style.display='none'">
+            <div class="card-content">
+                <h3>Alineación y balanceo</h3>
+                <p>Aprende a identificar señales de desgaste y vibraciones en tu vehículo.</p>
+            </div>
+            <div class="card-meta"><i class="fa-solid fa-newspaper me-1"></i>Neumáticos · 4 min</div>
+        </a>
+
+    </div>
+
+</div>
+
+<!-- ===================== FOOTER ===================== -->
 <footer class="footer-kiroo">
     <div class="container">
         <div class="row gy-4">
@@ -106,9 +158,9 @@
                 <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
                 <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
                 <div class="d-flex gap-3 mt-2">
-                    <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
-                    <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
-                    <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                    <a href="#"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
                 </div>
             </div>
             <div class="col-md-3">
@@ -135,7 +187,133 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/index_cliente.js"></script>
-<script src="js/index.js"></script>
+
+<script>
+/* =============================================
+   KIROO — Script unificado
+============================================= */
+
+/* ---------- DROPDOWNS DE NAVEGACIÓN ---------- */
+function toggleDropdown(btn) {
+    const panel = btn.nextElementSibling;
+    const isOpen = panel.classList.contains('open');
+    closeAllDropdowns();
+    if (!isOpen) {
+        panel.classList.add('open');
+        btn.classList.add('active');
+    }
+}
+
+function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.dropbtn').forEach(b => b.classList.remove('active'));
+}
+
+/* ---------- MENÚ DE USUARIO ---------- */
+function toggleUserMenu(e) {
+    e.stopPropagation();
+    document.getElementById('userDropdown').classList.toggle('open');
+}
+
+function closeUserMenu() {
+    document.getElementById('userDropdown')?.classList.remove('open');
+}
+
+/* Cerrar al hacer clic fuera */
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.dropdown'))   closeAllDropdowns();
+    if (!e.target.closest('#userMenuWrapper')) closeUserMenu();
+});
+
+/* ---------- HELPERS DE UI ---------- */
+function setAvatarFromUrl(url) {
+    ['headerAvatarImg', 'ddAvatarImg'].forEach(id => {
+        const img = document.getElementById(id);
+        if (img) { img.src = url; img.style.display = 'block'; }
+    });
+    ['headerAvatarIcon', 'ddAvatarIcon'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+}
+
+function applyUserUI(name, username, avatarUrl) {
+    const firstName = (name || 'Cliente').split(' ')[0];
+    const initials  = (name || '?').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('welcomeName',    firstName);
+    set('headerUserName', firstName);
+    set('headerInitials', initials);
+    set('ddName',         name || 'Cliente');
+    set('ddInitials',     initials);
+    set('ddUsername',     username ? '@' + username : '');
+
+    if (avatarUrl) setAvatarFromUrl(avatarUrl);
+}
+
+/* ---------- CARGA DE DATOS (con fallback a localStorage) ---------- */
+async function loadUserData() {
+    /* 1. Intentar con el servidor (auth.php) */
+    try {
+        const fd = new FormData();
+        fd.append('action', 'check_auth');
+        const res  = await fetch('auth.php', { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (data.authenticated) {
+            applyUserUI(data.full_name || data.username, data.username, null);
+            loadProfilePicture();
+            return;
+        }
+        window.location.href = 'login.html';
+        return;
+    } catch (e) {
+        /* Sin servidor disponible: usar localStorage / sessionStorage */
+    }
+
+    /* 2. Fallback a datos locales */
+    try {
+        const user = JSON.parse(
+            localStorage.getItem('kiroo_user') ||
+            sessionStorage.getItem('kiroo_user') ||
+            '{}'
+        );
+        const name  = user.nombre || user.name || user.username || 'Cliente';
+        const uname = user.username || user.email || '';
+        applyUserUI(name, uname, user.avatar || null);
+    } catch (err) {
+        console.warn('Error cargando datos de usuario:', err);
+    }
+}
+
+async function loadProfilePicture() {
+    try {
+        const fd = new FormData();
+        fd.append('action', 'get_profile');
+        const res  = await fetch('api.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.success && data.profile?.profile_picture) {
+            setAvatarFromUrl(data.profile.profile_picture);
+        }
+    } catch (e) { }
+}
+
+/* ---------- LOGOUT ---------- */
+async function logout() {
+    try {
+        const fd = new FormData();
+        fd.append('action', 'logout');
+        await fetch('auth.php', { method: 'POST', body: fd });
+    } catch (e) {}
+    localStorage.removeItem('kiroo_user');
+    sessionStorage.removeItem('kiroo_user');
+    window.location.href = 'login.html';
+}
+
+/* ---------- INIT ---------- */
+document.addEventListener('DOMContentLoaded', loadUserData);
+</script>
+
 </body>
 </html>
