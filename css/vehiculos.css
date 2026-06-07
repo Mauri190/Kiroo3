@@ -260,7 +260,8 @@
 
         .card-header h2 {
             font-size: 1.3rem;
-            font-weight: 600;    
+            font-weight: 600; 
+            color: white;
         }
 
         .form-group {
