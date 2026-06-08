@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kiroo - Pequeños Problemas Mecánicos</title>
+    <title>Kiroo - Sistema de Frenos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -274,53 +274,103 @@
             color: #ddd;
         }
 
-        /* Tips Cards */
-        .tips-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        /* Section Cards */
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 30px;
         }
-        .tip-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
-            border: 1px solid rgba(217,67,67,0.2);
-            border-radius: 20px;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border-left: 4px solid var(--red);
-        }
-        .tip-card:hover {
-            transform: translateX(8px);
-            border-color: rgba(217,67,67,0.5);
-            box-shadow: 0 10px 25px rgba(217,67,67,0.15);
-        }
-        .tip-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 12px;
-        }
-        .tip-number {
-            width: 50px;
-            height: 50px;
-            background: var(--red);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            font-weight: 800;
-            flex-shrink: 0;
-        }
-        .tip-header h2 {
-            font-size: 1.3rem;
+        .section-header {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
             font-weight: 700;
-            margin: 0;
+            font-size: 1.2rem;
         }
-        .tip-card p {
+        .section-header i {
+            color: var(--red);
+            margin-right: 10px;
+        }
+        .section-content {
+            padding: 1.5rem;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--warning);
+        }
+        .info-box h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--warning);
+        }
+        .info-box p {
             color: #ccc;
             line-height: 1.6;
-            font-size: 0.95rem;
-            margin-left: 65px;
+        }
+
+        /* Components Grid */
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .component-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .component-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(217,67,67,0.3);
+        }
+        .component-icon {
+            font-size: 2rem;
+            color: var(--red);
+            margin-bottom: 10px;
+        }
+        .component-card span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Symptoms Grid */
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .symptom-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .symptom-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(217,67,67,0.3);
+        }
+        .symptom-icon {
+            font-size: 2rem;
+            color: var(--warning);
+            margin-bottom: 10px;
+        }
+        .symptom-card span {
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         /* Warning Box */
@@ -329,7 +379,7 @@
             border: 1px solid rgba(244,67,54,0.3);
             border-radius: 16px;
             padding: 15px 20px;
-            margin-top: 30px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -350,7 +400,7 @@
             border: 1px solid rgba(217,67,67,0.3);
             border-radius: 20px;
             padding: 25px;
-            margin-top: 30px;
+            margin-top: 20px;
         }
         .kiroo-tip h3 {
             font-size: 1.3rem;
@@ -394,9 +444,7 @@
             }
             .nav-links { flex-wrap: wrap; justify-content: center; }
             .container-main { width: 95%; }
-            .tip-number { width: 40px; height: 40px; font-size: 1.1rem; }
-            .tip-header h2 { font-size: 1rem; }
-            .tip-card p { margin-left: 55px; font-size: 0.85rem; }
+            .components-grid, .symptoms-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -430,10 +478,6 @@
                 <a href="cambio_llanta.html"><i class="fa-solid fa-tire"></i> Cambio de llanta</a>
                 <a href="fallo_bateria.html"><i class="fa-solid fa-car-battery"></i> Fallo de batería</a>
                 <a href="frenos.html"><i class="fa-solid fa-brake-sign"></i> Sistema de frenos</a>
-                <a href="refrigerante.html"><i class="fa-solid fa-temperature-low"></i> Pérdidas de refrigerante</a>
-                <a href="revisar_aceite.html"><i class="fa-solid fa-oil-can"></i> Revisar el aceite</a>
-                <a href="Sobrecalentamiento.html"><i class="fa-solid fa-thermometer-full"></i> Sobrecalentamiento</a>
-                <a href="problemas.html"><i class="fa-solid fa-triangle-exclamation"></i> Problemas mecánicos</a>
             </div>
         </li>
     </ul>
@@ -471,72 +515,117 @@
         <a href="index_cliente.html" class="btn-outline-red">
             <i class="bi bi-arrow-left"></i> Volver al inicio
         </a>
-        <h1><i class="fas fa-triangle-exclamation"></i> Pequeños Problemas Mecánicos</h1>
+        <h1><i class="fas fa-brake-sign"></i> Sistema de Frenos</h1>
     </div>
 
     <div class="intro-text">
         <i class="fas fa-info-circle me-2" style="color: var(--red);"></i>
-        Muchas averías comienzan siendo pequeñas molestias. Ignorarlas durante
-        mucho tiempo puede generar reparaciones costosas y riesgos para la seguridad.
-        Conoce las consecuencias de no prestar atención a tiempo.
+        El sistema de frenos es uno de los elementos de seguridad más importantes
+        de cualquier vehículo. Su función es reducir la velocidad o detener el
+        automóvil de manera segura cuando el conductor lo necesita.
     </div>
 
-    <div class="tips-container">
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">1</div>
-                <h2>Caer constantemente en hoyos</h2>
-            </div>
-            <p>Puede aflojar componentes de la suspensión, desalinear la dirección y provocar desgaste prematuro de neumáticos, amortiguadores y rótulas. Con el tiempo, esto afecta la estabilidad y seguridad del vehículo.</p>
+    <!-- Componentes principales -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-cogs"></i> Componentes principales
         </div>
-
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">2</div>
-                <h2>Ignorar la presión de las llantas</h2>
+        <div class="section-content">
+            <div class="components-grid">
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-layer-group"></i></div>
+                    <span>Pastillas de freno</span>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-circle"></i></div>
+                    <span>Discos de freno</span>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-tint"></i></div>
+                    <span>Líquido de frenos</span>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-oil-can"></i></div>
+                    <span>Bomba hidráulica</span>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-pedal"></i></div>
+                    <span>Pedal de freno</span>
+                </div>
+                <div class="component-card">
+                    <div class="component-icon"><i class="fas fa-tubes"></i></div>
+                    <span>Líneas hidráulicas</span>
+                </div>
             </div>
-            <p>Aumenta el consumo de combustible (hasta un 10%), reduce la vida útil de los neumáticos y afecta el manejo del vehículo. Una presión incorrecta también puede provocar reventones peligrosos.</p>
         </div>
+    </div>
 
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">3</div>
-                <h2>No prestar atención a ruidos extraños</h2>
-            </div>
-            <p>Un chirrido, golpeteo o silbido puede ser la señal temprana de una falla importante en frenos, suspensión, motor o transmisión. Ignorarlos puede convertir una reparación sencilla en una costosa avería.</p>
+    <!-- ¿Cómo funciona? -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-question-circle"></i> ¿Cómo funciona?
         </div>
-
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">4</div>
-                <h2>Retrasar el mantenimiento</h2>
+        <div class="section-content">
+            <div class="info-box">
+                <h3><i class="fas fa-microchip me-2"></i> Proceso hidráulico</h3>
+                <p>Cuando presionas el pedal del freno, el líquido hidráulico transmite presión desde la bomba (cilindro maestro) hacia las ruedas. Esta presión empuja las pastillas contra los discos, generando fricción y reduciendo la velocidad del vehículo hasta detenerlo. El sistema está diseñado para ser progresivo: a mayor presión en el pedal, mayor fuerza de frenado.</p>
             </div>
-            <p>Los cambios de aceite, filtros y revisiones periódicas ayudan a prevenir daños mayores. Saltarse estos servicios acorta la vida útil del motor y puede causar fallas catastróficas.</p>
         </div>
+    </div>
 
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">5</div>
-                <h2>Mayor riesgo de accidentes</h2>
+    <!-- Señales de problemas -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-exclamation-triangle"></i> Señales de problemas
+        </div>
+        <div class="section-content">
+            <div class="symptoms-grid">
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-volume-up"></i></div>
+                    <span>Chillidos al frenar</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-vibration"></i></div>
+                    <span>Vibraciones en el pedal</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-hand-peace"></i></div>
+                    <span>Pedal suave o esponjoso</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <span>Mayor distancia de frenado</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-lightbulb"></i></div>
+                    <span>Luz de freno en el tablero</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-car-crash"></i></div>
+                    <span>El vehículo tira hacia un lado</span>
+                </div>
             </div>
-            <p>Frenos desgastados, dirección inestable, llantas dañadas o luces fundidas pueden comprometer seriamente la seguridad del conductor, pasajeros y otros usuarios de la vía.</p>
         </div>
     </div>
 
     <!-- Advertencia -->
     <div class="warning-box">
         <i class="fas fa-exclamation-triangle"></i>
-        <p><strong>⚠️ DATO IMPORTANTE:</strong> Un mantenimiento preventivo cuesta mucho menos que una reparación mayor. Revisar tu vehículo regularmente puede ahorrarte dinero y mantenerte seguro.</p>
+        <p><strong>⚠️ IMPORTANTE:</strong> No ignores las señales de advertencia. Un sistema de frenos en mal estado puede causar accidentes graves. Si notas alguno de estos síntomas, revisa tu vehículo inmediatamente.</p>
     </div>
 
     <!-- Consejo Kiroo -->
     <div class="kiroo-tip">
         <h3><i class="fas fa-star"></i> Consejo Kiroo</h3>
         <p>
-            🔧 <strong>Mantenimiento preventivo:</strong> Realiza una inspección visual básica cada semana: revisa niveles de aceite, refrigerante, presión de neumáticos y busca fugas o daños visibles.
+            🔧 <strong>Revisa el sistema de frenos aproximadamente cada 10,000 kilómetros</strong> 
+            y siempre antes de realizar viajes largos. Detectar un problema a tiempo puede prevenir 
+            accidentes y reparaciones costosas.
         </p>
         <p class="mt-2">
-            💡 <strong>Tip adicional:</strong> Lleva un registro de mantenimiento en la app de Kiroo. Programa recordatorios para cambios de aceite, rotación de llantas y revisiones periódicas. ¡Un pequeño esfuerzo hoy puede evitar grandes dolores de cabeza mañana!
+            💡 <strong>Tip adicional:</strong> El líquido de frenos debe cambiarse cada 2 años o según 
+            las especificaciones del fabricante, ya que absorbe humedad con el tiempo, lo que reduce 
+            su efectividad y puede dañar los componentes internos.
         </p>
     </div>
 </div>

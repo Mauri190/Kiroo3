@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kiroo - Pequeños Problemas Mecánicos</title>
+    <title>Kiroo - Fallo de batería</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -274,53 +274,103 @@
             color: #ddd;
         }
 
-        /* Tips Cards */
-        .tips-container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+        /* Section Cards */
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 30px;
         }
-        .tip-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
-            border: 1px solid rgba(217,67,67,0.2);
-            border-radius: 20px;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border-left: 4px solid var(--red);
-        }
-        .tip-card:hover {
-            transform: translateX(8px);
-            border-color: rgba(217,67,67,0.5);
-            box-shadow: 0 10px 25px rgba(217,67,67,0.15);
-        }
-        .tip-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 12px;
-        }
-        .tip-number {
-            width: 50px;
-            height: 50px;
-            background: var(--red);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            font-weight: 800;
-            flex-shrink: 0;
-        }
-        .tip-header h2 {
-            font-size: 1.3rem;
+        .section-header {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
             font-weight: 700;
-            margin: 0;
+            font-size: 1.2rem;
         }
-        .tip-card p {
+        .section-header i {
+            color: var(--red);
+            margin-right: 10px;
+        }
+        .section-content {
+            padding: 1.5rem;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--warning);
+        }
+        .info-box h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--warning);
+        }
+        .info-box p {
             color: #ccc;
             line-height: 1.6;
-            font-size: 0.95rem;
-            margin-left: 65px;
+        }
+
+        /* Symptoms Grid */
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .symptom-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .symptom-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(217,67,67,0.3);
+        }
+        .symptom-icon {
+            font-size: 2rem;
+            color: var(--red);
+            margin-bottom: 10px;
+        }
+        .symptom-card span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Factors Grid */
+        .factors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .factor-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .factor-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(217,67,67,0.3);
+        }
+        .factor-icon {
+            font-size: 2rem;
+            color: var(--warning);
+            margin-bottom: 10px;
+        }
+        .factor-card span {
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         /* Warning Box */
@@ -329,7 +379,7 @@
             border: 1px solid rgba(244,67,54,0.3);
             border-radius: 16px;
             padding: 15px 20px;
-            margin-top: 30px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -350,7 +400,7 @@
             border: 1px solid rgba(217,67,67,0.3);
             border-radius: 20px;
             padding: 25px;
-            margin-top: 30px;
+            margin-top: 20px;
         }
         .kiroo-tip h3 {
             font-size: 1.3rem;
@@ -394,9 +444,7 @@
             }
             .nav-links { flex-wrap: wrap; justify-content: center; }
             .container-main { width: 95%; }
-            .tip-number { width: 40px; height: 40px; font-size: 1.1rem; }
-            .tip-header h2 { font-size: 1rem; }
-            .tip-card p { margin-left: 55px; font-size: 0.85rem; }
+            .symptoms-grid, .factors-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -429,11 +477,6 @@
                 <a href="emergencias_cliente.html"><i class="fa-solid fa-phone-volume"></i> Números de Emergencia</a>
                 <a href="cambio_llanta.html"><i class="fa-solid fa-tire"></i> Cambio de llanta</a>
                 <a href="fallo_bateria.html"><i class="fa-solid fa-car-battery"></i> Fallo de batería</a>
-                <a href="frenos.html"><i class="fa-solid fa-brake-sign"></i> Sistema de frenos</a>
-                <a href="refrigerante.html"><i class="fa-solid fa-temperature-low"></i> Pérdidas de refrigerante</a>
-                <a href="revisar_aceite.html"><i class="fa-solid fa-oil-can"></i> Revisar el aceite</a>
-                <a href="Sobrecalentamiento.html"><i class="fa-solid fa-thermometer-full"></i> Sobrecalentamiento</a>
-                <a href="problemas.html"><i class="fa-solid fa-triangle-exclamation"></i> Problemas mecánicos</a>
             </div>
         </li>
     </ul>
@@ -471,72 +514,112 @@
         <a href="index_cliente.html" class="btn-outline-red">
             <i class="bi bi-arrow-left"></i> Volver al inicio
         </a>
-        <h1><i class="fas fa-triangle-exclamation"></i> Pequeños Problemas Mecánicos</h1>
+        <h1><i class="fas fa-car-battery"></i> Fallo de batería</h1>
     </div>
 
     <div class="intro-text">
         <i class="fas fa-info-circle me-2" style="color: var(--red);"></i>
-        Muchas averías comienzan siendo pequeñas molestias. Ignorarlas durante
-        mucho tiempo puede generar reparaciones costosas y riesgos para la seguridad.
-        Conoce las consecuencias de no prestar atención a tiempo.
+        La batería proporciona la energía necesaria para arrancar el vehículo y alimentar
+        diversos sistemas eléctricos. Detectar los síntomas de desgaste a tiempo puede
+        evitar que el carro te deje varado inesperadamente.
     </div>
 
-    <div class="tips-container">
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">1</div>
-                <h2>Caer constantemente en hoyos</h2>
-            </div>
-            <p>Puede aflojar componentes de la suspensión, desalinear la dirección y provocar desgaste prematuro de neumáticos, amortiguadores y rótulas. Con el tiempo, esto afecta la estabilidad y seguridad del vehículo.</p>
+    <!-- ¿Cuánto dura una batería? -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-clock"></i> ¿Cuánto dura una batería?
         </div>
-
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">2</div>
-                <h2>Ignorar la presión de las llantas</h2>
+        <div class="section-content">
+            <div class="info-box">
+                <h3><i class="fas fa-chart-line me-2"></i> Vida útil promedio</h3>
+                <p>La vida útil de una batería automotriz suele estar entre <strong>2 y 5 años</strong>, dependiendo del clima, el mantenimiento y los hábitos de conducción. Las temperaturas extremas (calor o frío intenso) pueden reducir significativamente su duración.</p>
             </div>
-            <p>Aumenta el consumo de combustible (hasta un 10%), reduce la vida útil de los neumáticos y afecta el manejo del vehículo. Una presión incorrecta también puede provocar reventones peligrosos.</p>
         </div>
+    </div>
 
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">3</div>
-                <h2>No prestar atención a ruidos extraños</h2>
-            </div>
-            <p>Un chirrido, golpeteo o silbido puede ser la señal temprana de una falla importante en frenos, suspensión, motor o transmisión. Ignorarlos puede convertir una reparación sencilla en una costosa avería.</p>
+    <!-- Síntomas de falla -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-exclamation-triangle"></i> Síntomas de falla
         </div>
-
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">4</div>
-                <h2>Retrasar el mantenimiento</h2>
+        <div class="section-content">
+            <div class="symptoms-grid">
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-lightbulb"></i></div>
+                    <span>Luces débiles</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-key"></i></div>
+                    <span>Arranque lento</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-volume-up"></i></div>
+                    <span>Sonido "clic clic"</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-car"></i></div>
+                    <span>Vidrios lentos</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-rust"></i></div>
+                    <span>Corrosión en terminales</span>
+                </div>
+                <div class="symptom-card">
+                    <div class="symptom-icon"><i class="fas fa-charging-station"></i></div>
+                    <span>Luces del tablero tenues</span>
+                </div>
             </div>
-            <p>Los cambios de aceite, filtros y revisiones periódicas ayudan a prevenir daños mayores. Saltarse estos servicios acorta la vida útil del motor y puede causar fallas catastróficas.</p>
         </div>
+    </div>
 
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">5</div>
-                <h2>Mayor riesgo de accidentes</h2>
+    <!-- Factores que reducen su vida útil -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-microchip"></i> Factores que reducen su vida útil
+        </div>
+        <div class="section-content">
+            <div class="factors-grid">
+                <div class="factor-card">
+                    <div class="factor-icon"><i class="fas fa-temperature-high"></i></div>
+                    <span>Temperaturas extremas</span>
+                </div>
+                <div class="factor-card">
+                    <div class="factor-icon"><i class="fas fa-car-side"></i></div>
+                    <span>Poco uso del vehículo</span>
+                </div>
+                <div class="factor-card">
+                    <div class="factor-icon"><i class="fas fa-lightbulb"></i></div>
+                    <span>Dejar luces encendidas</span>
+                </div>
+                <div class="factor-card">
+                    <div class="factor-icon"><i class="fas fa-music"></i></div>
+                    <span>Uso excesivo de electrónica con el motor apagado</span>
+                </div>
+                <div class="factor-card">
+                    <div class="factor-icon"><i class="fas fa-shield-alt"></i></div>
+                    <span>Vibraciones excesivas</span>
+                </div>
             </div>
-            <p>Frenos desgastados, dirección inestable, llantas dañadas o luces fundidas pueden comprometer seriamente la seguridad del conductor, pasajeros y otros usuarios de la vía.</p>
         </div>
     </div>
 
     <!-- Advertencia -->
     <div class="warning-box">
         <i class="fas fa-exclamation-triangle"></i>
-        <p><strong>⚠️ DATO IMPORTANTE:</strong> Un mantenimiento preventivo cuesta mucho menos que una reparación mayor. Revisar tu vehículo regularmente puede ahorrarte dinero y mantenerte seguro.</p>
+        <p><strong>⚠️ IMPORTANTE:</strong> Si notas varios de estos síntomas, es recomendable revisar la batería con un profesional antes de que falle por completo y te deje varado.</p>
     </div>
 
     <!-- Consejo Kiroo -->
     <div class="kiroo-tip">
         <h3><i class="fas fa-star"></i> Consejo Kiroo</h3>
         <p>
-            🔧 <strong>Mantenimiento preventivo:</strong> Realiza una inspección visual básica cada semana: revisa niveles de aceite, refrigerante, presión de neumáticos y busca fugas o daños visibles.
+            🔋 <strong>Mantén limpios los terminales de la batería</strong>, revisa periódicamente
+            su carga y evita descargas completas. Un mantenimiento sencillo puede
+            prolongar significativamente su vida útil.
         </p>
         <p class="mt-2">
-            💡 <strong>Tip adicional:</strong> Lleva un registro de mantenimiento en la app de Kiroo. Programa recordatorios para cambios de aceite, rotación de llantas y revisiones periódicas. ¡Un pequeño esfuerzo hoy puede evitar grandes dolores de cabeza mañana!
+            💡 <strong>Tip adicional:</strong> Si el vehículo va a estar estacionado por más de dos semanas,
+            considera desconectar la batería o usar un mantenedor de carga para evitar que se descargue completamente.
         </p>
     </div>
 </div>

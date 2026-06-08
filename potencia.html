@@ -1,124 +1,725 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Razones por las que un motor pierde potencia</title>
-    <link rel="stylesheet" href="css/stilos.css">
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kiroo - Pérdida de Potencia del Motor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* =============================================
+           RESET & BASE — Mismo estilo que index_cliente
+        ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --red: #d94343;
+            --red-dark: #a51313;
+            --red-glow: rgba(255, 61, 61, 0.3);
+            --bg: #0d0000;
+            --bg-grad: linear-gradient(135deg, #140000 0%, #3a0000 100%);
+            --nav-bg: #250000;
+            --card-bg: #111;
+            --card-border: rgba(255,255,255,0.08);
+            --text-muted: #bdbdbd;
+            --success: #4caf50;
+            --warning: #ffc107;
+            --danger: #f44336;
+            --high: #f44336;
+            --medium: #ff9800;
+            --low: #4caf50;
+        }
+
+        body {
+            background: var(--bg-grad);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* =============================================
+           NAVBAR — Mismo estilo que index_cliente
+        ============================================= */
+        .navbar {
+            width: 100%;
+            height: 80px;
+            background: var(--nav-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: white;
+            text-decoration: none;
+        }
+        .logo span { color: #ff3d3d; }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links > li > a,
+        .nav-links > li > button.dropbtn {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+        }
+        .nav-links > li > a:hover,
+        .nav-links > li > button.dropbtn:hover {
+            background: rgba(217, 67, 67, 0.25);
+            color: #ff6b6b;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background: #1a0000;
+            min-width: 220px;
+            border-radius: 12px;
+            border: 1px solid rgba(217,67,67,0.35);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .dropdown-content.open { display: block; animation: ddFadeIn 0.2s ease; }
+
+        @keyframes ddFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 13px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.18s, color 0.18s;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background: rgba(217,67,67,0.2); color: #ff6b6b; }
+
+        /* Profile badge */
+        .profile {
+            background: var(--red);
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.2s;
+        }
+        .profile:hover { background: #c03636; }
+
+        .header-avatar-icon {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(0,0,0,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.78rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
+        }
+        .header-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.4);
+            display: none;
+        }
+        .user-name-header {
+            font-size: 0.82rem; font-weight: 600;
+            max-width: 120px; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        /* User dropdown */
+        .user-dropdown {
+            position: absolute; top: calc(100% + 14px); right: 0;
+            background: #140000;
+            border: 1px solid rgba(217,67,67,0.3);
+            border-radius: 16px; min-width: 240px;
+            box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+            z-index: 9999; overflow: hidden;
+            opacity: 0; pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        .dd-header {
+            padding: 18px;
+            background: linear-gradient(135deg, #1e0000, #300000);
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .dd-avatar-icon-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, #a51313, #d94343);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0;
+        }
+        .dd-avatar-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #d94343; flex-shrink: 0;
+            display: none;
+        }
+        .dd-info .dd-name { font-weight: 700; font-size: 0.92rem; color: white; }
+        .dd-info .dd-role { font-size: 0.68rem; color: #ff6b6b; font-weight: 600; text-transform: uppercase; }
+        .dd-info .dd-user { font-size: 0.72rem; color: #666; margin-top: 2px; }
+
+        .dd-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 18px; color: #ccc; text-decoration: none;
+            font-size: 0.83rem; font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer; border: none; background: none;
+            width: 100%; text-align: left;
+        }
+        .dd-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .dd-item i { width: 18px; text-align: center; color: #666; }
+        .dd-item:hover i { color: var(--red); }
+        .dd-sep { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+        .dd-item.logout { color: #ff5252; }
+        .dd-item.logout i { color: #ff5252; }
+        .dd-item.logout:hover { background: rgba(255,82,82,0.08); }
+
+        /* =============================================
+           CONTENIDO PRINCIPAL
+        ============================================= */
+        .container-main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto 60px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .btn-outline-red {
+            border: 1px solid var(--red);
+            color: var(--red);
+            background: transparent;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-outline-red:hover {
+            background-color: var(--red);
+            color: white;
+        }
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .page-header h1 i {
+            color: var(--red);
+            margin-right: 10px;
+        }
+
+        .intro-text {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--red);
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        /* Tips Cards */
+        .tips-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .tip-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            border: 1px solid rgba(217,67,67,0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 4px solid var(--red);
+        }
+        .tip-card:hover {
+            transform: translateX(8px);
+            border-color: rgba(217,67,67,0.5);
+            box-shadow: 0 10px 25px rgba(217,67,67,0.15);
+        }
+        .tip-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .tip-number {
+            width: 50px;
+            height: 50px;
+            background: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .tip-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+            flex: 1;
+        }
+        .urgency-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .urgency-high {
+            background: rgba(244,67,54,0.2);
+            color: #f44336;
+            border: 1px solid rgba(244,67,54,0.3);
+        }
+        .urgency-medium {
+            background: rgba(255,152,0,0.2);
+            color: #ff9800;
+            border: 1px solid rgba(255,152,0,0.3);
+        }
+        .urgency-low {
+            background: rgba(76,175,80,0.2);
+            color: #4caf50;
+            border: 1px solid rgba(76,175,80,0.3);
+        }
+        .tip-card p {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-left: 65px;
+            margin-top: 8px;
+        }
+        .tip-card strong {
+            color: var(--warning);
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(244,67,54,0.1);
+            border: 1px solid rgba(244,67,54,0.3);
+            border-radius: 16px;
+            padding: 15px 20px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .warning-box i {
+            font-size: 1.8rem;
+            color: #f44336;
+        }
+        .warning-box p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #ffaaaa;
+        }
+
+        /* Kiroo Tip */
+        .kiroo-tip {
+            background: linear-gradient(135deg, rgba(217,67,67,0.15), rgba(165,19,19,0.05));
+            border: 1px solid rgba(217,67,67,0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        .kiroo-tip h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .kiroo-tip h3 i {
+            color: var(--warning);
+            font-size: 1.5rem;
+        }
+        .kiroo-tip p {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        .footer-kiroo {
+            background: #0a0000;
+            border-top: 1px solid #2c0000;
+            padding: 3rem 0 1.5rem;
+            margin-top: 2rem;
+        }
+        .footer-kiroo a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-kiroo a:hover { color: #ff4a4a; }
+        .footer-kiroo h5 { font-weight: 700; margin-bottom: 1rem; }
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: auto;
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
+            .container-main { width: 95%; }
+            .tip-number { width: 40px; height: 40px; font-size: 1.1rem; }
+            .tip-header h2 { font-size: 1rem; }
+            .tip-card p { margin-left: 55px; font-size: 0.85rem; }
+            .urgency-badge { font-size: 0.6rem; }
+        }
+    </style>
+</head>
 <body>
 
-    <nav class="navbar">
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar">
+    <a class="logo" href="index_cliente.html">KI<span>R</span>OO</a>
 
-        <div class="logo">
-            KI<span>ROO</span>
+    <ul class="nav-links">
+        <li><a href="index_cliente.html">HOME</a></li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">GESTIONA ▾</button>
+            <div class="dropdown-content">
+                <a href="dashboard_cliente.html"><i class="fa-solid fa-gauge-high"></i> Panel Cliente</a>
+                <a href="vehiculos_cliente.html"><i class="fa-solid fa-car"></i> Registro Vehículos</a>
+                <a href="agenda_cliente.html"><i class="fa-solid fa-calendar-days"></i> Agenda tus citas</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">HERRAMIENTAS ▾</button>
+            <div class="dropdown-content">
+                <a href="scaner.html"><i class="fa-solid fa-magnifying-glass"></i> Escáner de Señales</a>
+                <a href="gamificacion.html"><i class="fa-solid fa-gamepad"></i> Gamificación</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">AYUDA ▾</button>
+            <div class="dropdown-content">
+                <a href="emergencias_cliente.html"><i class="fa-solid fa-phone-volume"></i> Números de Emergencia</a>
+                <a href="cambio_llanta.html"><i class="fa-solid fa-tire"></i> Cambio de llanta</a>
+                <a href="fallo_bateria.html"><i class="fa-solid fa-car-battery"></i> Fallo de batería</a>
+                <a href="frenos.html"><i class="fa-solid fa-brake-sign"></i> Sistema de frenos</a>
+                <a href="refrigerante.html"><i class="fa-solid fa-temperature-low"></i> Pérdidas de refrigerante</a>
+                <a href="revisar_aceite.html"><i class="fa-solid fa-oil-can"></i> Revisar el aceite</a>
+                <a href="Sobrecalentamiento.html"><i class="fa-solid fa-thermometer-full"></i> Sobrecalentamiento</a>
+                <a href="problemas.html"><i class="fa-solid fa-triangle-exclamation"></i> Problemas mecánicos</a>
+                <a href="potencia.html"><i class="fa-solid fa-tachometer-alt"></i> Pérdida de potencia</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- USER BADGE -->
+    <div class="profile" id="userMenuWrapper" onclick="toggleUserMenu(event)">
+        <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+        <img src="" alt="" class="header-avatar" id="headerAvatarImg">
+        <span class="user-name-header" id="headerUserName">Cargando...</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.55rem; opacity:0.7;"></i>
+
+        <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
+            <div class="dd-header">
+                <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg">
+                <div class="dd-info">
+                    <div class="dd-name" id="ddName">...</div>
+                    <div class="dd-role">Cliente</div>
+                    <div class="dd-user" id="ddUsername">@...</div>
+                </div>
+            </div>
+            <a href="perfil_cliente.html" class="dd-item"><i class="fa-solid fa-user-circle"></i> Mi Perfil</a>
+            <a href="dashboard_cliente.html" class="dd-item"><i class="fa-solid fa-tachometer-alt"></i> Panel Cliente</a>
+            <a href="dashboard_cliente.html?tab=appointments" class="dd-item"><i class="fa-solid fa-calendar-check"></i> Mis Citas</a>
+            <div class="dd-sep"></div>
+            <button class="dd-item logout" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión</button>
         </div>
+    </div>
+</nav>
 
-        <div class="nav-links">
-            <a href="tarjetaas.html">HOME</a>
-            <a href="#">GESTIONA</a>
-            <a href="#">HERRAMIENTAS</a>
-            <a href="#">AYUDA</a>
-        </div>
-
-        <div class="profile">
-            👤 Mauricio
-        </div>
-
-    </nav>
-
-    <div class="info-page">
-
-        <h1>Las razones más comunes por las que un motor pierde potencia</h1>
-
-        <p class="intro">
-            Cuando un motor pierde potencia, el vehículo responde más lentamente,
-            consume más combustible y puede presentar dificultades al acelerar.
-        </p>
-
-        <div class="tip">
-
-            <h2>1. Problemas en el turbocompresor</h2>
-
-            <p>
-                El turbocompresor aumenta la cantidad de aire que entra al motor.
-                Cuando presenta fugas o daños internos, el vehículo puede perder
-                fuerza al acelerar y responder de manera más lenta.
-            </p>
-
-            <p><strong>¿Es urgente?</strong> 🔴 Sí, alta prioridad.
-            Lleva el vehículo a una revisión mecánica lo antes posible.
-            </p>
-
-        </div>
-
-        <div class="tip">
-
-            <h2>2. Fallas en la inyección de combustible</h2>
-
-            <p>
-                La ruptura u obstrucción de los sistemas de inyección, 
-                impidiendo el transporte de combustible en el momento, 
-                cantidad y presión adecuada.
-            </p>
-
-            <p><strong>¿Es urgente?</strong> 🔴 Sí, alta prioridad.
-            Realiza una revisión del sistema
-            de combustible para evitar mayor deterioro.
-            </p>
-
-        </div>
-
-        <div class="tip">
-
-            <h2>3. Bujías desgastadas</h2>
-
-            <p>
-                Las bujías producen la chispa que enciende la mezcla de aire
-                y combustible, al estar arrruinadas el motor pierde eficiencia.
-            </p>
-
-            <p><strong>¿Es urgente?</strong> 🟡 Prioridad media. Revisa el 
-                estado de las bujías y reemplázalas según recomendaciones.
-            </p>
-
-        </div>
-
-        <div class="tip">
-
-            <h2>5. Falta de mantenimiento preventivo</h2>
-
-            <p>
-                Retrasar cambios de aceite, filtros o revisiones generales
-                provoca desgaste prematuro y gastos mayores.
-            </p>
-
-            <p><strong>¿Es urgente?</strong> 🟡 Prioridad media. Programa una 
-                revisión completa y ponte al día con los servicios de 
-                mantenimiento para tu vehículo.
-            </p>
-
-        </div>
-
-        <div class="tip">
-
-            <h2>4. Filtro de aire obstruido</h2>
-
-            <p>
-                Un filtro de aire sucio reduce la cantidad de aire que llega al
-                motor. Esto afecta la combustión y puede aumentar el consumo de combustible.
-            </p>
-
-            <p><strong>¿Es urgente?</strong> 🟢 Prioridad baja. Verifica el filtro y 
-                sustitúyelo si está muy sucio.
-            </p>
-
-        </div>
-
+<!-- ===================== MAIN CONTENT ===================== -->
+<div class="container-main">
+    
+    <div class="page-header">
+        <a href="index_cliente.html" class="btn-outline-red">
+            <i class="bi bi-arrow-left"></i> Volver al inicio
+        </a>
+        <h1><i class="fas fa-tachometer-alt"></i> Pérdida de Potencia del Motor</h1>
     </div>
 
-</body>
+    <div class="intro-text">
+        <i class="fas fa-info-circle me-2" style="color: var(--red);"></i>
+        Cuando un motor pierde potencia, el vehículo responde más lentamente,
+        consume más combustible y puede presentar dificultades al acelerar.
+        Conoce las causas más comunes y su nivel de urgencia.
+    </div>
 
+    <div class="tips-container">
+        <!-- 1. Problemas en el turbocompresor -->
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">1</div>
+                <h2>Problemas en el turbocompresor</h2>
+                <span class="urgency-badge urgency-high">🔴 ALTA PRIORIDAD</span>
+            </div>
+            <p>El turbocompresor aumenta la cantidad de aire que entra al motor. Cuando presenta fugas o daños internos, el vehículo puede perder fuerza al acelerar y responder de manera más lenta.</p>
+            <p><strong>¿Qué hacer?</strong> Lleva el vehículo a una revisión mecánica especializada lo antes posible. Conducir con un turbo dañado puede causar daños mayores al motor.</p>
+        </div>
+
+        <!-- 2. Fallas en la inyección de combustible -->
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">2</div>
+                <h2>Fallas en la inyección de combustible</h2>
+                <span class="urgency-badge urgency-high">🔴 ALTA PRIORIDAD</span>
+            </div>
+            <p>La ruptura u obstrucción de los sistemas de inyección impide el transporte de combustible en el momento, cantidad y presión adecuada, afectando directamente el rendimiento del motor.</p>
+            <p><strong>¿Qué hacer?</strong> Realiza una revisión del sistema de combustible para evitar mayor deterioro. Los inyectores obstruidos pueden dañar el motor a largo plazo.</p>
+        </div>
+
+        <!-- 3. Bujías desgastadas -->
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">3</div>
+                <h2>Bujías desgastadas</h2>
+                <span class="urgency-badge urgency-medium">🟡 PRIORIDAD MEDIA</span>
+            </div>
+            <p>Las bujías producen la chispa que enciende la mezcla de aire y combustible. Al estar desgastadas o en mal estado, el motor pierde eficiencia, consume más combustible y puede fallar en aceleraciones.</p>
+            <p><strong>¿Qué hacer?</strong> Revisa el estado de las bujías y reemplázalas según las recomendaciones del fabricante (generalmente cada 30,000-50,000 km).</p>
+        </div>
+
+        <!-- 4. Filtro de aire obstruido -->
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">4</div>
+                <h2>Filtro de aire obstruido</h2>
+                <span class="urgency-badge urgency-low">🟢 PRIORIDAD BAJA</span>
+            </div>
+            <p>Un filtro de aire sucio o saturado reduce la cantidad de aire que llega al motor. Esto afecta la combustión y puede aumentar el consumo de combustible entre un 5% y 10%.</p>
+            <p><strong>¿Qué hacer?</strong> Verifica el filtro de aire y sustitúyelo si está muy sucio. Es un mantenimiento sencillo y económico que mejora el rendimiento.</p>
+        </div>
+
+        <!-- 5. Falta de mantenimiento preventivo -->
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">5</div>
+                <h2>Falta de mantenimiento preventivo</h2>
+                <span class="urgency-badge urgency-medium">🟡 PRIORIDAD MEDIA</span>
+            </div>
+            <p>Retrasar cambios de aceite, filtros o revisiones generales provoca desgaste prematuro de componentes, acumulación de sedimentos y pérdida gradual de potencia.</p>
+            <p><strong>¿Qué hacer?</strong> Programa una revisión completa y ponte al día con los servicios de mantenimiento para tu vehículo según el manual del fabricante.</p>
+        </div>
+    </div>
+
+    <!-- Advertencia -->
+    <div class="warning-box">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p><strong>⚠️ IMPORTANTE:</strong> La pérdida de potencia no debe ignorarse. Puede ser señal de problemas graves que, si no se atienden a tiempo, pueden resultar en reparaciones extremadamente costosas o incluso la necesidad de reemplazar el motor.</p>
+    </div>
+
+    <!-- Consejo Kiroo -->
+    <div class="kiroo-tip">
+        <h3><i class="fas fa-star"></i> Consejo Kiroo</h3>
+        <p>
+            🔧 <strong>Diagnóstico temprano:</strong> Si notas que tu vehículo acelera más lento de lo normal, tiene tirones o consume más combustible, no esperes a que la luz de check engine se encienda. Un diagnóstico temprano puede ahorrarte miles de dólares en reparaciones.
+        </p>
+        <p class="mt-2">
+            💡 <strong>Tip adicional:</strong> Utiliza la función de "Escáner de Señales" de Kiroo para identificar códigos de falla del motor. Muchos problemas de potencia están relacionados con sensores, la sonda lambda o el sistema de escape.
+        </p>
+    </div>
+</div>
+
+<footer class="footer-kiroo">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-5">
+                <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
+                <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
+                <div class="d-flex gap-3 mt-2">
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <h5>Explorar</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="vehiculos.html"><i class="fa-regular fa-circle-right me-2"></i>Registro vehicular</a></li>
+                    <li class="mb-2"><a href="agenda.html"><i class="fa-regular fa-circle-right me-2"></i>Agenda de servicios</a></li>
+                    <li class="mb-2"><a href="gamificacion.html"><i class="fa-regular fa-circle-right me-2"></i>Gamificación</a></li>
+                    <li class="mb-2"><a href="emergencias.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contacto</h5>
+                <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
+                <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
+                <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
+            </div>
+        </div>
+        <hr class="mt-4 opacity-25">
+        <div class="text-center pt-2">
+            <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ===== USER AUTH & MENU =====
+    let CURRENT_USER_ID = null;
+
+    function setAvatarFromUrl(url) {
+        ['headerAvatarImg', 'ddAvatarImg'].forEach(id => {
+            const img = document.getElementById(id);
+            if (img) { img.src = url; img.style.display = 'block'; }
+        });
+        ['headerAvatarIcon', 'ddAvatarIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    function applyUserUI(name, username, avatarUrl) {
+        const firstName = (name || 'Cliente').split(' ')[0];
+        const initials = (name || '?').charAt(0).toUpperCase();
+
+        document.getElementById('headerUserName').textContent = firstName;
+        document.getElementById('headerInitials').textContent = initials;
+        document.getElementById('ddName').textContent = name || 'Cliente';
+        document.getElementById('ddInitials').textContent = initials;
+        document.getElementById('ddUsername').textContent = username ? '@' + username : '';
+
+        if (avatarUrl) setAvatarFromUrl(avatarUrl);
+    }
+
+    async function checkAuth() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'check_auth');
+            const res = await fetch('auth.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            
+            if (data.authenticated) {
+                CURRENT_USER_ID = data.id;
+                applyUserUI(data.full_name || data.username, data.username, null);
+                await loadProfilePicture();
+                return true;
+            } else {
+                window.location.href = 'login.html';
+                return false;
+            }
+        } catch(e) {
+            window.location.href = 'login.html';
+            return false;
+        }
+    }
+
+    async function loadProfilePicture() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'get_profile');
+            const res = await fetch('api.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success && data.profile && data.profile.profile_picture) {
+                setAvatarFromUrl(data.profile.profile_picture);
+            }
+        } catch(e) {}
+    }
+
+    function toggleDropdown(btn) {
+        const panel = btn.nextElementSibling;
+        const isOpen = panel.classList.contains('open');
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        if (!isOpen) panel.classList.add('open');
+    }
+
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        document.getElementById('userDropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        }
+        if (!e.target.closest('#userMenuWrapper')) {
+            document.getElementById('userDropdown')?.classList.remove('open');
+        }
+    });
+
+    async function logout() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'logout');
+            await fetch('auth.php', { method: 'POST', body: fd });
+        } catch(e) {}
+        window.location.href = 'login.html';
+    }
+
+    // Inicializar autenticación
+    checkAuth();
+</script>
+</body>
 </html>

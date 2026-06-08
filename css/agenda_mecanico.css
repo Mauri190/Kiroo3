@@ -1,6 +1,3 @@
-        /* =============================================
-           RESET & BASE — Mismo estilo que index_cliente
-        ============================================= */
         * {
             margin: 0;
             padding: 0;
@@ -28,7 +25,7 @@
         }
 
         /* =============================================
-           NAVBAR — Mismo estilo que index_cliente
+           NAVBAR — Mismo estilo que index_mecanico
         ============================================= */
         .navbar {
             width: 100%;
@@ -207,7 +204,7 @@
         .dd-item.logout:hover { background: rgba(255,82,82,0.08); }
 
         /* =============================================
-           CONTENIDO PRINCIPAL
+           ESTILOS DE LA AGENDA
         ============================================= */
         .container-main {
             width: 90%;
@@ -216,315 +213,284 @@
         }
 
         .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
+            text-align: center;
+            margin-bottom: 40px;
         }
         .page-header h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
         }
-        .page-header h1 i {
+        .page-header h1 span {
             color: var(--red);
-            margin-right: 10px;
         }
-        .btn-outline-red {
-            border: 1px solid var(--red);
-            color: var(--red);
-            background: transparent;
+        .page-header p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Botones */
+        .btn-red {
+            background: var(--red);
+            border: none;
+            color: white;
             border-radius: 30px;
             padding: 8px 20px;
             font-size: 0.85rem;
             font-weight: 600;
-            text-decoration: none;
             transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-red:hover {
+            background: var(--red-dark);
+            transform: scale(1.02);
+        }
+        .btn-outline-red {
+            background: transparent;
+            border: 1px solid var(--red);
+            color: var(--red);
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
         }
         .btn-outline-red:hover {
-            background-color: var(--red);
-            color: white;
+            background: rgba(217,67,67,0.2);
+            color: #ff6b6b;
+        }
+        .btn-sm {
+            padding: 5px 14px;
+            font-size: 0.75rem;
         }
 
-        /* Tabs */
-        .tabs-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 5px;
-        }
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: #aaa;
-            padding: 12px 24px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            border-radius: 30px;
-            transition: 0.2s;
-        }
-        .tab-btn i { margin-right: 8px; }
-        .tab-btn:hover { color: white; background: rgba(255,255,255,0.05); }
-        .tab-btn.active {
-            color: white;
-            background: var(--red);
-        }
-
-        /* Cards */
+        /* Content Cards */
         .content-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
+            border-radius: 24px;
             overflow: hidden;
-            margin-bottom: 25px;
+            margin-bottom: 28px;
         }
         .card-header-custom {
             background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .card-header-custom span {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Calendario */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .month-year {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--red);
+        }
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .weekday {
+            padding: 10px;
             font-weight: 600;
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .calendar-day {
+            aspect-ratio: 1;
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative;
+            border: 1px solid transparent;
+        }
+        .calendar-day:hover {
+            background: #2a2a2a;
+            border-color: var(--red);
+        }
+        .calendar-day.empty {
+            background: transparent;
+            cursor: default;
+        }
+        .calendar-day.empty:hover {
+            background: transparent;
+            border-color: transparent;
+        }
+        .day-number {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .day-events {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            margin-top: 5px;
+        }
+        .event-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
+        }
+        .calendar-day.has-event {
+            border-color: rgba(217,67,67,0.5);
+        }
+        .calendar-day.today {
+            background: rgba(217,67,67,0.2);
+            border-color: var(--red);
+        }
+
+        /* Eventos próximos */
+        .upcoming-events-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .event-item {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--red);
+            transition: 0.2s;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
         }
-        .btn-red {
-            background-color: var(--red);
-            border: none;
-            color: white;
-            border-radius: 30px;
-            padding: 6px 18px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: 0.2s;
+        .event-item:hover {
+            background: #222;
         }
-        .btn-red:hover {
-            background-color: var(--red-dark);
-            transform: scale(1.02);
+        .event-info {
+            flex: 1;
         }
-
-        .diagnostic-card, .appointment-card, .event-card, .mechanic-card {
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 1.2rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--red);
-            transition: transform 0.2s;
-        }
-        .diagnostic-card:hover, .appointment-card:hover, .mechanic-card:hover {
-            transform: translateX(5px);
-        }
-        .diagnostic-section {
-            background: #0f0f0f;
-            border-radius: 10px;
-            padding: 0.8rem 1rem;
-            margin-bottom: 0.6rem;
-            border-left: 3px solid #444;
-        }
-        .diagnostic-section .section-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #888;
+        .event-title {
+            font-weight: 700;
+            font-size: 1rem;
             margin-bottom: 4px;
         }
-        .diagnostic-section .section-value {
-            font-size: 0.9rem;
-            color: #eee;
-        }
-        .badge-status {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-        }
-        .status-completado { background: #4caf50; color: white; }
-        .status-pendiente { background: #ff9800; color: #000; }
-        .status-confirmada { background: #2196f3; color: white; }
-        .status-cancelada { background: #dc3545; color: white; }
-
-        /* Rating Stars */
-        .rating-stars {
-            display: inline-flex;
-            gap: 3px;
-        }
-        .rating-stars i {
-            font-size: 0.9rem;
-            color: #ffc107;
-        }
-        .rating-stars i.far {
-            color: #555;
-        }
-
-        /* Chat layout */
-        .chat-layout {
+        .event-meta {
+            font-size: 0.75rem;
+            color: #aaa;
             display: flex;
-            height: 500px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
-        .chat-sidebar {
-            width: 260px;
-            background: #0a0a0a;
-            border-right: 1px solid rgba(255,255,255,0.08);
+        .event-actions {
             display: flex;
-            flex-direction: column;
+            gap: 8px;
         }
-        .chat-sidebar-header {
-            padding: 12px 14px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .chat-contact-list {
-            flex: 1;
-            overflow-y: auto;
-        }
-        .chat-contact-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
+        .event-actions button {
+            background: transparent;
+            border: none;
+            color: #aaa;
             cursor: pointer;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            transition: background 0.15s;
-        }
-        .chat-contact-item:hover, .chat-contact-item.active {
-            background: rgba(217,67,67,0.15);
-        }
-        .chat-contact-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: var(--red);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-        .chat-contact-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .chat-contact-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .chat-contact-preview {
-            font-size: 0.72rem;
-            color: #888;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .chat-unread-badge {
-            background: var(--red);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.65rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .chat-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat-main-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            font-weight: 600;
+            transition: 0.2s;
             font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
-        .chat-messages-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background: #0f0f0f;
-            display: flex;
-            flex-direction: column;
+        .event-actions button:hover {
+            color: var(--red);
         }
-        .chat-input-area {
-            padding: 12px 14px;
-            border-top: 1px solid rgba(255,255,255,0.08);
+        .delete-event-btn:hover {
+            color: #ff5252 !important;
         }
-        .chat-bubble {
-            padding: 10px 15px;
-            border-radius: 20px;
-            margin-bottom: 10px;
-            max-width: 75%;
-            word-wrap: break-word;
-        }
-        .chat-sent {
-            background: var(--red);
-            align-self: flex-end;
-        }
-        .chat-received {
-            background: #2a2a2a;
-            align-self: flex-start;
-        }
-        .chat-empty-state {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            text-align: center;
-        }
-
         .empty-state {
             text-align: center;
-            padding: 3rem;
-            color: #888;
+            padding: 2rem;
+            color: #aaa;
         }
         .empty-state i {
             font-size: 3rem;
             margin-bottom: 1rem;
             display: block;
         }
+        .loading-spinner {
+            text-align: center;
+            padding: 2rem;
+            color: #aaa;
+        }
 
         /* Modal */
         .modal-content {
             background: #111;
-            border-radius: 20px;
+            border-radius: 24px;
             border: 1px solid rgba(217,67,67,0.3);
             color: white;
         }
         .modal-header, .modal-footer {
             border-color: rgba(255,255,255,0.08);
         }
+        .btn-close-white {
+            filter: invert(1);
+        }
         .form-control, .form-select {
-            background-color: #1a1a1a;
-            border-color: #333;
+            background: #1a1a1a;
+            border: 1px solid #333;
             color: white;
+            border-radius: 12px;
+            padding: 10px 14px;
         }
         .form-control:focus, .form-select:focus {
-            background-color: #222;
+            background: #222;
             border-color: var(--red);
             color: white;
-            box-shadow: none;
+            box-shadow: 0 0 0 2px rgba(217,67,67,0.2);
+        }
+        .form-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+        .vehicle-detail-mini {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+        .no-vehicles-warning {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(217,67,67,0.15);
+            border-radius: 10px;
+            font-size: 0.75rem;
+            color: #ff6b6b;
+        }
+        .no-vehicles-warning a {
+            color: var(--red);
+            text-decoration: none;
         }
 
+        /* Toast */
         .toast-notification {
             position: fixed;
             bottom: 20px;
@@ -556,6 +522,7 @@
             }
             .nav-links { flex-wrap: wrap; justify-content: center; }
             .container-main { width: 95%; }
-            .tab-btn { padding: 8px 16px; font-size: 0.75rem; }
-            .chat-sidebar { width: 200px; }
+            .calendar-weekdays .weekday { font-size: 0.7rem; padding: 5px; }
+            .calendar-day { padding: 4px; }
+            .day-number { font-size: 0.75rem; }
         }

@@ -3,99 +3,1011 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kiroo - Registro de Vehículos</title>
+    <title>Kiroo - Mis Vehículos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/vehiculos.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* =============================================
+           RESET & BASE — Mismo estilo que index_mecanico
+        ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red: #d94343;
+            --red-dark: #a51313;
+            --red-glow: rgba(255, 61, 61, 0.3);
+            --bg: #0d0000;
+            --bg-grad: linear-gradient(135deg, #140000 0%, #3a0000 100%);
+            --nav-bg: #250000;
+            --card-bg: #111;
+            --card-border: rgba(255,255,255,0.08);
+            --text-muted: #bdbdbd;
+        }
+
+        body {
+            background: var(--bg-grad);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* =============================================
+           NAVBAR — Mismo estilo que index_mecanico
+        ============================================= */
+        .navbar {
+            width: 100%;
+            height: 80px;
+            background: var(--nav-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: white;
+            text-decoration: none;
+        }
+        .logo span { color: #ff3d3d; }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links > li > a,
+        .nav-links > li > button.dropbtn {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+        }
+        .nav-links > li > a:hover,
+        .nav-links > li > button.dropbtn:hover {
+            background: rgba(217, 67, 67, 0.25);
+            color: #ff6b6b;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background: #1a0000;
+            min-width: 220px;
+            border-radius: 12px;
+            border: 1px solid rgba(217,67,67,0.35);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .dropdown-content.open { display: block; animation: ddFadeIn 0.2s ease; }
+
+        @keyframes ddFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 13px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.18s, color 0.18s;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background: rgba(217,67,67,0.2); color: #ff6b6b; }
+
+        /* Profile badge */
+        .profile {
+            background: var(--red);
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.2s;
+        }
+        .profile:hover { background: #c03636; }
+
+        .header-avatar-icon {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(0,0,0,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.78rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
+        }
+        .header-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.4);
+            display: none;
+        }
+        .user-name-header {
+            font-size: 0.82rem; font-weight: 600;
+            max-width: 120px; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        /* User dropdown */
+        .user-dropdown {
+            position: absolute; top: calc(100% + 14px); right: 0;
+            background: #140000;
+            border: 1px solid rgba(217,67,67,0.3);
+            border-radius: 16px; min-width: 240px;
+            box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+            z-index: 9999; overflow: hidden;
+            opacity: 0; pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        .dd-header {
+            padding: 18px;
+            background: linear-gradient(135deg, #1e0000, #300000);
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .dd-avatar-icon-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, #a51313, #d94343);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0;
+        }
+        .dd-avatar-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #d94343; flex-shrink: 0;
+            display: none;
+        }
+        .dd-info .dd-name { font-weight: 700; font-size: 0.92rem; color: white; }
+        .dd-info .dd-role { font-size: 0.68rem; color: #ff6b6b; font-weight: 600; text-transform: uppercase; }
+        .dd-info .dd-user { font-size: 0.72rem; color: #666; margin-top: 2px; }
+
+        .dd-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 18px; color: #ccc; text-decoration: none;
+            font-size: 0.83rem; font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer; border: none; background: none;
+            width: 100%; text-align: left;
+        }
+        .dd-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .dd-item i { width: 18px; text-align: center; color: #666; }
+        .dd-item:hover i { color: var(--red); }
+        .dd-sep { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+        .dd-item.logout { color: #ff5252; }
+        .dd-item.logout i { color: #ff5252; }
+        .dd-item.logout:hover { background: rgba(255,82,82,0.08); }
+
+        /* =============================================
+           ESTILOS DE VEHÍCULOS
+        ============================================= */
+        .container-main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto 60px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .page-header h1 span {
+            color: var(--red);
+        }
+        .page-header p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Botones */
+        .btn-red {
+            background: var(--red);
+            border: none;
+            color: white;
+            border-radius: 30px;
+            padding: 10px 24px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.2s;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-red:hover {
+            background: var(--red-dark);
+            transform: scale(1.02);
+        }
+        .btn-outline-red {
+            background: transparent;
+            border: 1px solid var(--red);
+            color: var(--red);
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-outline-red:hover {
+            background: rgba(217,67,67,0.2);
+            color: #ff6b6b;
+        }
+        .btn-sm {
+            padding: 5px 14px;
+            font-size: 0.75rem;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+        .card-header-custom {
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .card-header-custom span {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Formulario */
+        .form-container {
+            padding: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: #ddd;
+        }
+        .form-control {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .form-control:focus {
+            background: #222;
+            border-color: var(--red);
+            color: white;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(217,67,67,0.2);
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Lista de vehículos */
+        .vehicles-list {
+            padding: 1rem;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+        .vehicle-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-left: 4px solid var(--red);
+            transition: 0.2s;
+        }
+        .vehicle-card:hover {
+            background: #222;
+            transform: translateX(5px);
+        }
+        .vehicle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .vehicle-title {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .vehicle-title i {
+            color: var(--red);
+            margin-right: 8px;
+        }
+        .vehicle-plate {
+            background: var(--red);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .vehicle-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .detail-item {
+            background: #0f0f0f;
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+        .detail-label {
+            font-size: 0.65rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+        .detail-value {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: white;
+        }
+        .vehicle-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .btn-edit, .btn-delete {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-edit {
+            background: #ffc107;
+            color: #000;
+        }
+        .btn-edit:hover {
+            background: #e0a800;
+        }
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #aaa;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .loading-spinner {
+            text-align: center;
+            padding: 2rem;
+            color: #aaa;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .alert-success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+        }
+        .alert-error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+        }
+        .close-alert {
+            margin-left: auto;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Grid de dos columnas */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 25px;
+        }
+
+        /* Footer */
+        .footer-kiroo {
+            background: #0a0000;
+            border-top: 1px solid #2c0000;
+            padding: 3rem 0 1.5rem;
+            margin-top: 2rem;
+        }
+        .footer-kiroo a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-kiroo a:hover { color: #ff4a4a; }
+        .footer-kiroo h5 { font-weight: 700; margin-bottom: 1rem; }
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: auto;
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
+            .container-main { width: 95%; }
+            .two-columns { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
-    <nav class="navbar-kiroo">
-        <div class="navbar-content">
-            <a href="index.html" class="brand">KIROO</a>
-            <div class="nav-links">
-                <a href="index_mecanico.html" class="nav-link"><i class="fas fa-home"></i> Inicio</a>
-                <a href="agenda_mecanico.html" class="nav-link"><i class="fas fa-calendar"></i> Agenda</a>
-                <a href="vehiculos_mecanico.html" class="nav-link active"><i class="fas fa-car"></i> Vehículos</a>
+<!-- ===================== NAVBAR (MISMO ESTILO QUE INDEX_MECANICO) ===================== -->
+<nav class="navbar">
+    <a class="logo" href="index_mecanico.html">KI<span>R</span>OO</a>
+
+    <ul class="nav-links">
+        <li><a href="index_mecanico.html">HOME</a></li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">GESTIONA ▾</button>
+            <div class="dropdown-content">
+                <a href="dashboard_mecanico.html"><i class="fa-solid fa-gauge-high"></i> Panel Mecánico</a>
+                <a href="agenda_mecanico.html"><i class="fa-solid fa-calendar-alt"></i> Mi Agenda</a>
+                <a href="vehiculos_mecanico.html"><i class="fa-solid fa-car"></i> Mis Vehículos</a>
             </div>
-        </div>
-    </nav>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">AYUDA ▾</button>
+            <div class="dropdown-content">
+                <a href="emergencias_mecanico.html"><i class="fa-solid fa-phone-volume"></i> Números de Emergencia</a>
+            </div>
+        </li>
+    </ul>
 
-    <div class="main-container">
-        <div class="page-header">
-            <h1><i class="fas fa-car"></i> Mis Vehículos</h1>
-            <a href="index_mecanico.html" class="btn-back">
-                <i class="fas fa-arrow-left"></i> Volver al inicio
-            </a>
-        </div>
+    <!-- USER BADGE -->
+    <div class="profile" id="userMenuWrapper" onclick="toggleUserMenu(event)">
+        <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+        <img src="" alt="" class="header-avatar" id="headerAvatarImg">
+        <span class="user-name-header" id="headerUserName">Cargando...</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.55rem; opacity:0.7;"></i>
 
-        <div id="alertContainer"></div>
-
-        <div class="content-grid">
-            <!-- Formulario -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 id="formTitle"><i class="fas fa-plus-circle"></i> Nuevo Vehículo</h2>
+        <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
+            <div class="dd-header">
+                <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg">
+                <div class="dd-info">
+                    <div class="dd-name" id="ddName">...</div>
+                    <div class="dd-role">Mecánico</div>
+                    <div class="dd-user" id="ddUsername">@...</div>
                 </div>
+            </div>
+            <a href="perfil_mecanico.html" class="dd-item"><i class="fa-solid fa-user-circle"></i> Mi Perfil</a>
+            <a href="dashboard_mecanico.html" class="dd-item"><i class="fa-solid fa-tachometer-alt"></i> Panel Mecánico</a>
+            <a href="agenda_mecanico.html" class="dd-item"><i class="fa-solid fa-calendar-alt"></i> Mi Agenda</a>
+            <a href="vehiculos_mecanico.html" class="dd-item"><i class="fa-solid fa-car"></i> Mis Vehículos</a>
+            <div class="dd-sep"></div>
+            <button class="dd-item logout" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión</button>
+        </div>
+    </div>
+</nav>
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<div class="container-main">
+    <div class="page-header">
+        <h1>Mis <span>Vehículos</span></h1>
+        <p>Registra y gestiona los vehículos de tus clientes</p>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <div class="two-columns">
+        <!-- Formulario -->
+        <div class="content-card">
+            <div class="card-header-custom">
+                <span id="formTitle"><i class="fa-solid fa-plus-circle"></i> Nuevo Vehículo</span>
+            </div>
+            <div class="form-container">
                 <form id="vehicleForm">
                     <input type="hidden" id="vehicleId">
                     
                     <div class="form-group">
                         <label class="form-label">Marca *</label>
-                        <input type="text" id="brand" class="input-field" placeholder="Ej: Toyota" required>
+                        <input type="text" id="brand" class="form-control" placeholder="Ej: Toyota" required>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Modelo *</label>
-                        <input type="text" id="model" class="input-field" placeholder="Ej: Corolla" required>
+                        <input type="text" id="model" class="form-control" placeholder="Ej: Corolla" required>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Número de Placa *</label>
-                        <input type="text" id="plateNumber" class="input-field" placeholder="Ej: ABC-123" required>
+                        <input type="text" id="plateNumber" class="form-control" placeholder="Ej: ABC-123" required>
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Año</label>
-                        <input type="number" id="year" class="input-field" placeholder="Ej: 2024" min="1900" max="2030">
+                        <input type="number" id="year" class="form-control" placeholder="Ej: 2024" min="1900" max="2030">
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Kilometraje</label>
-                        <input type="number" id="mileage" class="input-field" placeholder="Kilómetros actuales" value="0">
+                        <input type="number" id="mileage" class="form-control" placeholder="Kilómetros actuales" value="0">
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Color</label>
-                        <input type="text" id="color" class="input-field" placeholder="Ej: Rojo">
+                        <input type="text" id="color" class="form-control" placeholder="Ej: Rojo">
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">Notas</label>
-                        <textarea id="notes" class="input-field" placeholder="Notas adicionales sobre el vehículo..."></textarea>
+                        <textarea id="notes" class="form-control" placeholder="Notas adicionales sobre el vehículo..."></textarea>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary" id="submitBtn">
-                        <i class="fas fa-save"></i> Guardar Vehículo
+                    <button type="submit" class="btn-red" id="submitBtn">
+                        <i class="fa-solid fa-save"></i> Guardar Vehículo
                     </button>
                 </form>
             </div>
+        </div>
 
-            <!-- Lista de vehículos -->
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-list"></i> Vehículos Registrados</h2>
-                    <button class="btn btn-secondary" id="newVehicleBtn">
-                        <i class="fas fa-plus"></i> Nuevo
-                    </button>
-                </div>
-                <div class="vehicles-list" id="vehiclesList">
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin"></i> Cargando vehículos...
-                    </div>
+        <!-- Lista de vehículos -->
+        <div class="content-card">
+            <div class="card-header-custom">
+                <span><i class="fa-solid fa-list"></i> Vehículos Registrados</span>
+                <button class="btn-outline-red btn-sm" id="newVehicleBtn">
+                    <i class="fa-solid fa-plus"></i> Nuevo
+                </button>
+            </div>
+            <div class="vehicles-list" id="vehiclesList">
+                <div class="loading-spinner">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Cargando vehículos...
                 </div>
             </div>
         </div>
     </div>
-    <script src="js/vehiculos.js"></script>
+</div>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer-kiroo">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-5">
+                <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
+                <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
+                <div class="d-flex gap-3 mt-2">
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <h5>Explorar</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="vehiculos_mecanico.html"><i class="fa-regular fa-circle-right me-2"></i>Mis Vehículos</a></li>
+                    <li class="mb-2"><a href="agenda_mecanico.html"><i class="fa-regular fa-circle-right me-2"></i>Mi Agenda</a></li>
+                    <li class="mb-2"><a href="dashboard_mecanico.html"><i class="fa-regular fa-circle-right me-2"></i>Panel Mecánico</a></li>
+                    <li class="mb-2"><a href="emergencias_mecanico.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contacto</h5>
+                <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
+                <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
+                <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
+            </div>
+        </div>
+        <hr class="mt-4 opacity-25">
+        <div class="text-center pt-2">
+            <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ========== VARIABLES GLOBALES ==========
+    let CURRENT_USER_ID = null;
+    let CURRENT_USER_ROLE = null;
+    let vehicles = [];
+    let selectedVehicleId = null;
+
+    // ========== USER AUTH & MENU ==========
+    function setAvatarFromUrl(url) {
+        ['headerAvatarImg', 'ddAvatarImg'].forEach(id => {
+            const img = document.getElementById(id);
+            if (img) { img.src = url; img.style.display = 'block'; }
+        });
+        ['headerAvatarIcon', 'ddAvatarIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    function applyUserUI(name, username, avatarUrl, role) {
+        const firstName = (name || 'Mecánico').split(' ')[0];
+        const initials = (name || 'M').charAt(0).toUpperCase();
+
+        document.getElementById('headerUserName').textContent = firstName;
+        document.getElementById('headerInitials').textContent = initials;
+        document.getElementById('ddName').textContent = name || 'Mecánico';
+        document.getElementById('ddInitials').textContent = initials;
+        document.getElementById('ddUsername').textContent = username ? '@' + username : '';
+
+        if (avatarUrl) setAvatarFromUrl(avatarUrl);
+    }
+
+    async function checkAuth() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'check_auth');
+            const res = await fetch('auth.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            
+            if (data.authenticated) {
+                CURRENT_USER_ID = data.user_id;
+                CURRENT_USER_ROLE = data.user_type;
+                
+                const isMechanic = (CURRENT_USER_ROLE === 'mecanico');
+                
+                if (!isMechanic) {
+                    window.location.href = 'dashboard_cliente.html';
+                    return false;
+                }
+                
+                applyUserUI(data.full_name || data.username, data.username, null, CURRENT_USER_ROLE);
+                await loadProfilePicture();
+                return true;
+            } else {
+                window.location.href = 'login.html';
+                return false;
+            }
+        } catch(e) {
+            console.error('Auth error:', e);
+            window.location.href = 'login.html';
+            return false;
+        }
+    }
+
+    async function loadProfilePicture() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'get_profile');
+            const res = await fetch('api.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success && data.profile && data.profile.profile_picture) {
+                setAvatarFromUrl(data.profile.profile_picture);
+            }
+        } catch(e) { }
+    }
+
+    function toggleDropdown(btn) {
+        const panel = btn.nextElementSibling;
+        const isOpen = panel.classList.contains('open');
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        if (!isOpen) panel.classList.add('open');
+    }
+
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        document.getElementById('userDropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        }
+        if (!e.target.closest('#userMenuWrapper')) {
+            document.getElementById('userDropdown')?.classList.remove('open');
+        }
+    });
+
+    async function logout() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'logout');
+            await fetch('auth.php', { method: 'POST', body: fd });
+        } catch(e) {}
+        window.location.href = 'login.html';
+    }
+
+    // ========== UTILIDADES ==========
+    function showAlert(message, type = 'success') {
+        const container = document.getElementById('alertContainer');
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.innerHTML = `
+            <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+            <span>${message}</span>
+            <span class="close-alert" onclick="this.parentElement.remove()">&times;</span>
+        `;
+        container.appendChild(alertDiv);
+        setTimeout(() => {
+            if (alertDiv.parentElement) alertDiv.remove();
+        }, 5000);
+    }
+
+    async function apiCall(action, data = {}) {
+        try {
+            const formData = new FormData();
+            formData.append('action', action);
+            Object.keys(data).forEach(key => {
+                if (data[key] !== null && data[key] !== undefined) formData.append(key, data[key]);
+            });
+            const response = await fetch('api.php', { method: 'POST', body: formData });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            console.error('API Error:', error);
+            return { success: false, message: 'Error de conexión: ' + error.message };
+        }
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = String(text);
+        return div.innerHTML;
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return 'No disponible';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+
+    // ========== VEHÍCULOS ==========
+    async function loadVehicles() {
+        const container = document.getElementById('vehiclesList');
+        container.innerHTML = '<div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> Cargando vehículos...</div>';
+        
+        const result = await apiCall('get_vehicles');
+        
+        if (result.success && result.vehicles) {
+            vehicles = result.vehicles;
+            renderVehiclesList();
+        } else {
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-car-side"></i><p>No se pudieron cargar los vehículos</p><small>${result.message || 'Error desconocido'}</small></div>`;
+        }
+    }
+
+    function renderVehiclesList() {
+        const container = document.getElementById('vehiclesList');
+        
+        if (vehicles.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-car-side"></i><p>No tienes vehículos registrados</p><small>Agrega un vehículo usando el formulario</small></div>`;
+            return;
+        }
+        
+        container.innerHTML = vehicles.map(vehicle => {
+            const isSelected = selectedVehicleId == vehicle.id;
+            return `
+            <div class="vehicle-card" style="${isSelected ? 'border-left-color: #ffaa00;' : ''}" id="vehicle-${vehicle.id}">
+                <div class="vehicle-header">
+                    <div class="vehicle-title">
+                        <i class="fa-solid fa-car"></i> ${escapeHtml(vehicle.brand)} ${escapeHtml(vehicle.model)}
+                    </div>
+                    <div class="vehicle-plate">${escapeHtml(vehicle.plate_number)}</div>
+                </div>
+                <div class="vehicle-details">
+                    <div class="detail-item">
+                        <div class="detail-label">Año</div>
+                        <div class="detail-value">${vehicle.year || 'No especificado'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Kilometraje</div>
+                        <div class="detail-value">${vehicle.mileage ? parseInt(vehicle.mileage).toLocaleString() + ' km' : 'No especificado'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Color</div>
+                        <div class="detail-value">${vehicle.color || 'No especificado'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Registrado</div>
+                        <div class="detail-value">${formatDate(vehicle.created_at)}</div>
+                    </div>
+                </div>
+                ${vehicle.notes ? `
+                <div class="detail-item" style="margin-top: 10px; background: #0f0f0f; padding: 8px; border-radius: 8px;">
+                    <div class="detail-label">Notas</div>
+                    <div class="detail-value" style="font-size: 0.8rem;">${escapeHtml(vehicle.notes)}</div>
+                </div>
+                ` : ''}
+                <div class="vehicle-actions">
+                    <button class="btn-edit" onclick="editVehicle(${vehicle.id})">
+                        <i class="fa-solid fa-pencil"></i> Editar
+                    </button>
+                    <button class="btn-delete" onclick="deleteVehicle(${vehicle.id})">
+                        <i class="fa-solid fa-trash"></i> Eliminar
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    async function saveVehicle(event) {
+        event.preventDefault();
+        
+        const vehicleId = document.getElementById('vehicleId').value;
+        const brand = document.getElementById('brand').value.trim();
+        const model = document.getElementById('model').value.trim();
+        const plateNumber = document.getElementById('plateNumber').value.trim();
+        const year = document.getElementById('year').value;
+        const mileage = document.getElementById('mileage').value;
+        const color = document.getElementById('color').value.trim();
+        const notes = document.getElementById('notes').value.trim();
+        
+        if (!brand || !model || !plateNumber) {
+            showAlert('Marca, modelo y placa son obligatorios', 'error');
+            return;
+        }
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+        
+        const result = await apiCall('save_vehicle', {
+            vehicle_id: vehicleId || null,
+            brand,
+            model,
+            plate_number: plateNumber,
+            year: year || null,
+            mileage: mileage || 0,
+            color,
+            notes
+        });
+        
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-save"></i> Guardar Vehículo';
+        
+        if (result.success) {
+            showAlert(vehicleId ? 'Vehículo actualizado correctamente' : 'Vehículo registrado correctamente', 'success');
+            resetForm();
+            await loadVehicles();
+        } else {
+            showAlert(result.message || 'Error al guardar', 'error');
+        }
+    }
+
+    window.editVehicle = async function(vehicleId) {
+        const vehicle = vehicles.find(v => v.id == vehicleId);
+        if (!vehicle) return;
+        
+        document.getElementById('vehicleId').value = vehicle.id;
+        document.getElementById('brand').value = vehicle.brand;
+        document.getElementById('model').value = vehicle.model;
+        document.getElementById('plateNumber').value = vehicle.plate_number;
+        document.getElementById('year').value = vehicle.year || '';
+        document.getElementById('mileage').value = vehicle.mileage || 0;
+        document.getElementById('color').value = vehicle.color || '';
+        document.getElementById('notes').value = vehicle.notes || '';
+        
+        document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-pen"></i> Editar Vehículo';
+        document.getElementById('submitBtn').innerHTML = '<i class="fa-solid fa-save"></i> Actualizar Vehículo';
+        
+        selectedVehicleId = vehicleId;
+        renderVehiclesList();
+        
+        document.querySelector('.two-columns').scrollIntoView({ behavior: 'smooth' });
+    };
+
+    window.deleteVehicle = async function(vehicleId) {
+        const vehicle = vehicles.find(v => v.id == vehicleId);
+        if (!confirm(`¿Eliminar el vehículo ${vehicle.brand} ${vehicle.model} (${vehicle.plate_number})?`)) return;
+        
+        const result = await apiCall('delete_vehicle', { vehicle_id: vehicleId });
+        
+        if (result.success) {
+            showAlert('Vehículo eliminado correctamente', 'success');
+            if (document.getElementById('vehicleId').value == vehicleId) {
+                resetForm();
+            }
+            await loadVehicles();
+        } else {
+            showAlert(result.message || 'Error al eliminar', 'error');
+        }
+    };
+
+    function resetForm() {
+        document.getElementById('vehicleForm').reset();
+        document.getElementById('vehicleId').value = '';
+        document.getElementById('brand').value = '';
+        document.getElementById('model').value = '';
+        document.getElementById('plateNumber').value = '';
+        document.getElementById('year').value = '';
+        document.getElementById('mileage').value = '0';
+        document.getElementById('color').value = '';
+        document.getElementById('notes').value = '';
+        
+        document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-plus-circle"></i> Nuevo Vehículo';
+        document.getElementById('submitBtn').innerHTML = '<i class="fa-solid fa-save"></i> Guardar Vehículo';
+        
+        selectedVehicleId = null;
+        renderVehiclesList();
+    }
+
+    // ========== INICIALIZACIÓN ==========
+    document.addEventListener('DOMContentLoaded', async () => {
+        const isAuth = await checkAuth();
+        if (!isAuth) return;
+        
+        await loadVehicles();
+        
+        document.getElementById('vehicleForm').addEventListener('submit', saveVehicle);
+        document.getElementById('newVehicleBtn').addEventListener('click', resetForm);
+    });
+</script>
 </body>
 </html>

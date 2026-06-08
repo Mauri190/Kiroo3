@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Kiroo - Pequeños Problemas Mecánicos</title>
+    <title>Kiroo - Pérdidas de Refrigerante</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -274,53 +274,100 @@
             color: #ddd;
         }
 
-        /* Tips Cards */
-        .tips-container {
+        /* Section Cards */
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .section-header {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .section-header i {
+            color: var(--red);
+            margin-right: 10px;
+        }
+        .section-content {
+            padding: 1.5rem;
+        }
+
+        /* Signs Grid */
+        .signs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .sign-card {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .sign-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(217,67,67,0.3);
+        }
+        .sign-icon {
+            font-size: 2rem;
+            color: var(--warning);
+            margin-bottom: 10px;
+        }
+        .sign-card span {
+            font-size: 0.85rem;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* Tips List */
+        .tips-list {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 12px;
         }
-        .tip-card {
-            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
-            border: 1px solid rgba(217,67,67,0.2);
-            border-radius: 20px;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border-left: 4px solid var(--red);
-        }
-        .tip-card:hover {
-            transform: translateX(8px);
-            border-color: rgba(217,67,67,0.5);
-            box-shadow: 0 10px 25px rgba(217,67,67,0.15);
-        }
-        .tip-header {
+        .tip-item {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 12px;
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 15px 20px;
+            transition: transform 0.2s;
+            border-left: 3px solid var(--red);
+        }
+        .tip-item:hover {
+            transform: translateX(5px);
+            background: #222;
         }
         .tip-number {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             background: var(--red);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.4rem;
             font-weight: 800;
+            font-size: 1.1rem;
             flex-shrink: 0;
         }
-        .tip-header h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 0;
-        }
-        .tip-card p {
-            color: #ccc;
-            line-height: 1.6;
+        .tip-text {
+            flex: 1;
             font-size: 0.95rem;
-            margin-left: 65px;
+            line-height: 1.4;
+        }
+        .tip-icon {
+            font-size: 1.5rem;
+            color: var(--red);
+            flex-shrink: 0;
         }
 
         /* Warning Box */
@@ -329,7 +376,7 @@
             border: 1px solid rgba(244,67,54,0.3);
             border-radius: 16px;
             padding: 15px 20px;
-            margin-top: 30px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -350,7 +397,7 @@
             border: 1px solid rgba(217,67,67,0.3);
             border-radius: 20px;
             padding: 25px;
-            margin-top: 30px;
+            margin-top: 20px;
         }
         .kiroo-tip h3 {
             font-size: 1.3rem;
@@ -394,9 +441,9 @@
             }
             .nav-links { flex-wrap: wrap; justify-content: center; }
             .container-main { width: 95%; }
-            .tip-number { width: 40px; height: 40px; font-size: 1.1rem; }
-            .tip-header h2 { font-size: 1rem; }
-            .tip-card p { margin-left: 55px; font-size: 0.85rem; }
+            .signs-grid { grid-template-columns: repeat(2, 1fr); }
+            .tip-number { width: 32px; height: 32px; font-size: 0.9rem; }
+            .tip-text { font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -431,9 +478,6 @@
                 <a href="fallo_bateria.html"><i class="fa-solid fa-car-battery"></i> Fallo de batería</a>
                 <a href="frenos.html"><i class="fa-solid fa-brake-sign"></i> Sistema de frenos</a>
                 <a href="refrigerante.html"><i class="fa-solid fa-temperature-low"></i> Pérdidas de refrigerante</a>
-                <a href="revisar_aceite.html"><i class="fa-solid fa-oil-can"></i> Revisar el aceite</a>
-                <a href="Sobrecalentamiento.html"><i class="fa-solid fa-thermometer-full"></i> Sobrecalentamiento</a>
-                <a href="problemas.html"><i class="fa-solid fa-triangle-exclamation"></i> Problemas mecánicos</a>
             </div>
         </li>
     </ul>
@@ -471,72 +515,112 @@
         <a href="index_cliente.html" class="btn-outline-red">
             <i class="bi bi-arrow-left"></i> Volver al inicio
         </a>
-        <h1><i class="fas fa-triangle-exclamation"></i> Pequeños Problemas Mecánicos</h1>
+        <h1><i class="fas fa-temperature-low"></i> Pérdidas de Refrigerante</h1>
     </div>
 
     <div class="intro-text">
         <i class="fas fa-info-circle me-2" style="color: var(--red);"></i>
-        Muchas averías comienzan siendo pequeñas molestias. Ignorarlas durante
-        mucho tiempo puede generar reparaciones costosas y riesgos para la seguridad.
-        Conoce las consecuencias de no prestar atención a tiempo.
+        El sistema de refrigeración es fundamental para mantener el motor a una
+        temperatura segura. Detectar una fuga de refrigerante a tiempo puede evitar
+        sobrecalentamientos, reparaciones costosas e incluso daños permanentes en el motor.
     </div>
 
-    <div class="tips-container">
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">1</div>
-                <h2>Caer constantemente en hoyos</h2>
-            </div>
-            <p>Puede aflojar componentes de la suspensión, desalinear la dirección y provocar desgaste prematuro de neumáticos, amortiguadores y rótulas. Con el tiempo, esto afecta la estabilidad y seguridad del vehículo.</p>
+    <!-- ¿Cómo detectar una pérdida? -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-search"></i> ¿Cómo detectar una pérdida de refrigerante?
         </div>
-
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">2</div>
-                <h2>Ignorar la presión de las llantas</h2>
+        <div class="section-content">
+            <div class="signs-grid">
+                <div class="sign-card">
+                    <div class="sign-icon"><i class="fas fa-water"></i></div>
+                    <span>Charcos de colores debajo del vehículo</span>
+                </div>
+                <div class="sign-card">
+                    <div class="sign-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <span>Nivel de refrigerante constantemente bajo</span>
+                </div>
+                <div class="sign-card">
+                    <div class="sign-icon"><i class="fas fa-smog"></i></div>
+                    <span>Humo blanco del escape</span>
+                </div>
+                <div class="sign-card">
+                    <div class="sign-icon"><i class="fas fa-thermometer-full"></i></div>
+                    <span>Sobrecalentamiento del motor</span>
+                </div>
+                <div class="sign-card">
+                    <div class="sign-icon"><i class="fas fa-perfume"></i></div>
+                    <span>Olor dulce dentro o fuera del vehículo</span>
+                </div>
+                <div class="sign-card">
+                    <div class="sign-icon"><i class="fas fa-chart-line"></i></div>
+                    <span>El termómetro del tablero sube rápidamente</span>
+                </div>
             </div>
-            <p>Aumenta el consumo de combustible (hasta un 10%), reduce la vida útil de los neumáticos y afecta el manejo del vehículo. Una presión incorrecta también puede provocar reventones peligrosos.</p>
         </div>
+    </div>
 
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">3</div>
-                <h2>No prestar atención a ruidos extraños</h2>
-            </div>
-            <p>Un chirrido, golpeteo o silbido puede ser la señal temprana de una falla importante en frenos, suspensión, motor o transmisión. Ignorarlos puede convertir una reparación sencilla en una costosa avería.</p>
+    <!-- Consejos para prevenir fugas -->
+    <div class="section-card">
+        <div class="section-header">
+            <i class="fas fa-shield-alt"></i> Consejos para prevenir fugas
         </div>
-
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">4</div>
-                <h2>Retrasar el mantenimiento</h2>
+        <div class="section-content">
+            <div class="tips-list">
+                <div class="tip-item">
+                    <div class="tip-number">1</div>
+                    <div class="tip-text">Revisa periódicamente el nivel de refrigerante en el depósito de expansión.</div>
+                    <div class="tip-icon"><i class="fas fa-eye"></i></div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">2</div>
+                    <div class="tip-text">Inspecciona mangueras y abrazaderas en busca de grietas, desgaste o ablandamiento.</div>
+                    <div class="tip-icon"><i class="fas fa-tools"></i></div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">3</div>
+                    <div class="tip-text">Cambia el refrigerante según las recomendaciones del fabricante (cada 2-3 años).</div>
+                    <div class="tip-icon"><i class="fas fa-calendar-alt"></i></div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">4</div>
+                    <div class="tip-text">Nunca abras el radiador cuando el motor esté caliente — podrías sufrir quemaduras graves.</div>
+                    <div class="tip-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">5</div>
+                    <div class="tip-text">Utiliza siempre el tipo de refrigerante adecuado para tu vehículo (verde, rosa, azul, etc.).</div>
+                    <div class="tip-icon"><i class="fas fa-tint"></i></div>
+                </div>
+                <div class="tip-item">
+                    <div class="tip-number">6</div>
+                    <div class="tip-text">Repara cualquier fuga pequeña antes de que se convierta en un problema mayor.</div>
+                    <div class="tip-icon"><i class="fas fa-wrench"></i></div>
+                </div>
             </div>
-            <p>Los cambios de aceite, filtros y revisiones periódicas ayudan a prevenir daños mayores. Saltarse estos servicios acorta la vida útil del motor y puede causar fallas catastróficas.</p>
-        </div>
-
-        <div class="tip-card">
-            <div class="tip-header">
-                <div class="tip-number">5</div>
-                <h2>Mayor riesgo de accidentes</h2>
-            </div>
-            <p>Frenos desgastados, dirección inestable, llantas dañadas o luces fundidas pueden comprometer seriamente la seguridad del conductor, pasajeros y otros usuarios de la vía.</p>
         </div>
     </div>
 
     <!-- Advertencia -->
     <div class="warning-box">
         <i class="fas fa-exclamation-triangle"></i>
-        <p><strong>⚠️ DATO IMPORTANTE:</strong> Un mantenimiento preventivo cuesta mucho menos que una reparación mayor. Revisar tu vehículo regularmente puede ahorrarte dinero y mantenerte seguro.</p>
+        <p><strong>⚠️ PRECAUCIÓN:</strong> El refrigerante es tóxico. Mantén alejados a niños y mascotas. Si hay derrame, limpia inmediatamente. No permitas que el motor se sobrecaliente, ya que puede causar daños irreparables en la junta de la culata.</p>
     </div>
 
     <!-- Consejo Kiroo -->
     <div class="kiroo-tip">
         <h3><i class="fas fa-star"></i> Consejo Kiroo</h3>
         <p>
-            🔧 <strong>Mantenimiento preventivo:</strong> Realiza una inspección visual básica cada semana: revisa niveles de aceite, refrigerante, presión de neumáticos y busca fugas o daños visibles.
+            🔧 <strong>Método casero para encontrar fugas:</strong> Mezcla agua con jabón líquido y
+            aplica la solución sobre mangueras y conexiones sospechosas. Si aparecen
+            burbujas, probablemente exista una fuga. También puedes realizar una
+            inspección visual, escuchar silbidos o utilizar luz ultravioleta con un 
+            colorante especial para localizar pérdidas más difíciles de detectar.
         </p>
         <p class="mt-2">
-            💡 <strong>Tip adicional:</strong> Lleva un registro de mantenimiento en la app de Kiroo. Programa recordatorios para cambios de aceite, rotación de llantas y revisiones periódicas. ¡Un pequeño esfuerzo hoy puede evitar grandes dolores de cabeza mañana!
+            💡 <strong>Tip adicional:</strong> Si el nivel de refrigerante baja constantemente 
+            pero no ves fugas externas, podría tratarse de una fuga interna (empaque de culata dañado). 
+            En ese caso, lleva el vehículo a un taller mecánico de confianza.
         </p>
     </div>
 </div>

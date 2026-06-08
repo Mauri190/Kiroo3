@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador 3D de Conducción en Carretera</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #330000 100%); /* Fondo negro a rojo oscuro */
+            color: #e6e6e6;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff4d4d, #cc0000); /* Rojo vibrante a rojo oscuro */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .simulator-container {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            min-height: 0;
+        }
+
+        .canvas-wrapper {
+            flex: 1;
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            background: #1e0000; /* Fondo oscuro para el canvas wrapper */
+            min-height: 400px;
+        }
+
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .controls-panel {
+            width: 300px;
+            background: rgba(30, 0, 0, 0.95); /* Panel de control rojo oscuro semi-transparente */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .back-to-gamification-btn {
+            background: linear-gradient(135deg, #cc0000, #800000); /* Botón "Volver" rojo oscuro */
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .back-to-gamification-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(204, 0, 0, 0.4); /* Sombra de hover roja */
+        }
+
+        .gear-selector {
+            margin-top: 15px;
+        }
+
+        .gear-selector h3 {
+            margin-bottom: 15px;
+            color: #ff4d4d; /* Títulos de sección rojos */
+            font-size: 1.2rem;
+        }
+
+        .gear-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .gear-btn {
+            background: linear-gradient(135deg, #cc0000, #800000); /* Botones de marcha rojo oscuro */
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .gear-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(204, 0, 0, 0.4); /* Sombra de hover roja */
+        }
+
+        .gear-btn.active {
+            background: linear-gradient(135deg, #ff4d4d, #ff0000); /* Botón activo rojo vibrante */
+            box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4); /* Sombra de botón activo roja */
+        }
+
+        .stats-panel {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stats-panel h3 {
+            margin-bottom: 15px;
+            color: #ff4d4d; /* Títulos de sección rojos */
+            font-size: 1.2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: rgba(255,0,0,0.05); /* Fondo de estadísticas rojo muy tenue */
+            border-radius: 6px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #ff7f7f; /* Valores de estadísticas rojos */
+        }
+
+        .lane-controls {
+            margin-top: 15px;
+        }
+
+        .lane-controls h3 {
+            margin-bottom: 15px;
+            color: #ff4d4d; /* Títulos de sección rojos */
+            font-size: 1.2rem;
+        }
+
+        .lane-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .lane-btn {
+            background: linear-gradient(135deg, #cc0000, #800000); /* Botones de carril rojo oscuro */
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .lane-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(204, 0, 0, 0.4); /* Sombra de hover roja */
+        }
+
+        .mobile-controls {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .control-stick {
+            width: 120px;
+            height: 120px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .stick-handle {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #cc0000, #800000); /* Handle del stick rojo oscuro */
+            border-radius: 50%;
+            position: absolute;
+            top: 35px;
+            left: 35px;
+            cursor: move;
+            touch-action: none;
+        }
+
+        .action-buttons {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ff4d4d, #ff0000); /* Botones de acción rojo vibrante */
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4); /* Sombra de botón de acción roja */
+        }
+
+        .instructions {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            max-width: 250px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .instructions h4 {
+            margin-bottom: 10px;
+            color: #ff7f7f; /* Títulos de instrucciones rojos */
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+            opacity: 0.9;
+        }
+
+        /* Botón de pantalla completa */
+        .fullscreen-btn {
+            display: none; /* Ocultar por defecto */
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #cc0000, #800000);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-weight: 500;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        .fullscreen-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(204, 0, 0, 0.4);
+        }
+
+        @media (max-width: 1024px) {
+            .simulator-container {
+                flex-direction: column;
+            }
+            
+            .controls-panel {
+                width: 100%;
+                order: 2;
+            }
+            
+            .canvas-wrapper {
+                order: 1;
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-controls {
+                display: block;
+            }
+            
+            .controls-panel {
+                display: none;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .instructions {
+                display: none;
+            }
+
+            .fullscreen-btn {
+                display: block; /* Mostrar en móvil */
+            }
+        }
+
+        /* Nuevas reglas para mostrar controles móviles en pantalla completa */
+        .canvas-wrapper:-webkit-full-screen .mobile-controls,
+        .canvas-wrapper:-moz-full-screen .mobile-controls,
+        .canvas-wrapper:-ms-fullscreen .mobile-controls,
+        .canvas-wrapper:fullscreen .mobile-controls {
+            display: block;
+        }
+
+        .canvas-wrapper:-webkit-full-screen .controls-panel,
+        .canvas-wrapper:-moz-full-screen .controls-panel,
+        .canvas-wrapper:-ms-fullscreen .controls-panel,
+        .canvas-wrapper:fullscreen .controls-panel {
+            display: none; /* Asegurarse de que el panel de control de escritorio esté oculto */
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000; /* Pantalla de carga negra */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.1);
+            border-top: 5px solid #cc0000; /* Loader rojo */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            color: #e6e6e6;
+        }
+
+        .canvas-wrapper {
+            cursor: grab;
+        }
+
+        .canvas-wrapper:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen">
+        <div class="loader"></div>
+        <div class="loading-text">Cargando Simulador de Conducción 3D...</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Simulador 3D de Conducción en Carretera</h1>
+            <p>Conduce en una carretera realista con tráfico, cambios de carril y velocidades</p>
+        </div>
+
+        <div class="simulator-container">
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <canvas id="renderCanvas"></canvas>
+                <div class="instructions">
+                    <h4>Controles:</h4>
+                    <ul>
+                        <li>W - Acelerar</li>
+                        <li>S - Frenar/Reversa</li>
+                        <li>A/D - Volante izquierda/derecha</li>
+                        <li>Flechas - Cambiar carril</li>
+                        <li>Espacio - Freno de mano</li>
+                        <li>1-5 - Cambiar marcha</li>
+                        <li>R - Reiniciar vehículo</li>
+                        <li>Ratón: Arrastra para rotar vista</li>
+                    </ul>
+                </div>
+                <button class="fullscreen-btn" id="fullscreenBtn">Pantalla Completa</button>
+            </div>
+
+            <div class="controls-panel">
+                <a href="gamificacion.php" class="back-to-gamification-btn">Volver a Gamificación</a>
+
+                <div class="gear-selector">
+                    <h3>Cambio de Marchas</h3>
+                    <div class="gear-buttons">
+                        <button class="gear-btn" data-gear="R">R</button>
+                        <button class="gear-btn" data-gear="N">N</button>
+                        <button class="gear-btn active" data-gear="1">1</button>
+                        <button class="gear-btn" data-gear="2">2</button>
+                        <button class="gear-btn" data-gear="3">3</button>
+                        <button class="gear-btn" data-gear="4">4</button>
+                        <button class="gear-btn" data-gear="5">5</button>
+                    </div>
+                </div>
+
+                <div class="lane-controls">
+                    <h3>Cambio de Carril</h3>
+                    <div class="lane-buttons">
+                        <button class="lane-btn" id="leftLaneBtn">Carril Izquierdo</button>
+                        <button class="lane-btn" id="rightLaneBtn">Carril Derecho</button>
+                    </div>
+                </div>
+
+                <div class="stats-panel">
+                    <h3>Estadísticas de Conducción</h3>
+                    <div class="stat-item">
+                        <span>Velocidad:</span>
+                        <span class="stat-value" id="speed">0 km/h</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Marcha:</span>
+                        <span class="stat-value" id="gear">1</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Carril:</span>
+                        <span class="stat-value" id="lane">Central</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Distancia:</span>
+                        <span class="stat-value" id="distance">0.0 km</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Colisiones:</span>
+                        <span class="stat-value" id="collisions">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-controls">
+        <div class="control-stick" id="steeringStick">
+            <div class="stick-handle"></div>
+        </div>
+        <div class="action-buttons">
+            <button class="action-btn" id="brakeBtn">F</button>
+            <button class="action-btn" id="handbrakeBtn">M</button>
+            <button class="action-btn" id="gearUpBtn">↑</button>
+            <button class="action-btn" id="gearDownBtn">↓</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Main application
+        class DrivingSimulator {
+            constructor() {
+                this.scene = new THREE.Scene();
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('renderCanvas'), antialias: true });
+                this.clock = new THREE.Clock();
+                
+                this.vehicle = null;
+                this.trafficCars = [];
+                this.road = null;
+                this.laneMarkers = [];
+                
+                // Sistema de carriles (3 carriles: izquierdo, central, derecho)
+                this.lanes = {
+                    left: { position: -3.5, name: "Izquierdo" },
+                    center: { position: 0, name: "Central" },
+                    right: { position: 3.5, name: "Derecho" }
+                };
+                this.currentLane = 'center';
+                this.targetLanePosition = this.lanes.center.position;
+                this.isChangingLane = false;
+                
+                // Sistema de marchas
+                this.gears = {
+                    'R': { maxSpeed: 20, acceleration: 0.5 },  // Reversa
+                    'N': { maxSpeed: 0, acceleration: 0 },    // Neutral
+                    '1': { maxSpeed: 40, acceleration: 1.2 }, // Primera
+                    '2': { maxSpeed: 70, acceleration: 1.0 }, // Segunda
+                    '3': { maxSpeed: 100, acceleration: 0.8 }, // Tercera
+                    '4': { maxSpeed: 130, acceleration: 0.6 }, // Cuarta
+                    '5': { maxSpeed: 180, acceleration: 0.4 }  // Quinta
+                };
+                this.currentGear = '1';
+                
+                // Estado del vehículo
+                this.vehicleState = {
+                    speed: 0,
+                    acceleration: 0,
+                    steering: 0,
+                    isBraking: false
+                };
+                
+                this.isMobile = window.innerWidth <= 768;
+                this.controls = {
+                    forward: false,
+                    backward: false,
+                    left: false,
+                    right: false,
+                    handbrake: false,
+                    changeLaneLeft: false,
+                    changeLaneRight: false
+                };
+                
+                this.stats = {
+                    distance: 0,
+                    collisions: 0
+                };
+
+                // Controles de cámara manuales
+                this.mouse = { x: 0, y: 0 };
+                this.isMouseDown = false;
+                this.cameraAngle = { horizontal: 0, vertical: Math.PI / 4 };
+                this.cameraDistance = 15;
+                this.cameraTarget = new THREE.Vector3(0, 0.5, 0);
+
+                // Para controles táctiles de cámara
+                this.touch = { x: 0, y: 0, prevX: 0, prevY: 0, distance: 0, prevDistance: 0 };
+                this.isPinching = false;
+                
+                this.init();
+            }
+
+            init() {
+                this.setupRenderer();
+                this.setupCamera();
+                this.setupLighting();
+                this.setupScene();
+                this.setupEventListeners();
+                this.setupMobileControls();
+                this.spawnTraffic();
+                this.animate();
+                
+                // Hide loading screen
+                setTimeout(() => {
+                    document.querySelector('.loading-screen').style.opacity = '0';
+                    setTimeout(() => {
+                        document.querySelector('.loading-screen').style.display = 'none';
+                    }, 500);
+                }, 2000);
+            }
+
+            setupRenderer() {
+                const canvas = document.getElementById('renderCanvas');
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+                this.renderer.setPixelRatio(window.devicePixelRatio);
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            }
+
+            setupCamera() {
+                this.updateCameraPosition();
+            }
+
+            updateCameraPosition() {
+                const radius = this.cameraDistance;
+                const theta = this.cameraAngle.horizontal;
+                const phi = this.cameraAngle.vertical;
+
+                this.cameraAngle.vertical = Math.max(0.1, Math.min(Math.PI - 0.1, this.cameraAngle.vertical));
+
+                this.camera.position.x = this.cameraTarget.x + radius * Math.sin(phi) * Math.sin(theta);
+                this.camera.position.y = this.cameraTarget.y + radius * Math.cos(phi);
+                this.camera.position.z = this.cameraTarget.z + radius * Math.sin(phi) * Math.cos(theta);
+
+                this.camera.lookAt(this.cameraTarget);
+            }
+
+            setupLighting() {
+                // Ambient light
+                const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+                this.scene.add(ambientLight);
+
+                // Directional light (sun)
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(50, 50, 50);
+                directionalLight.castShadow = true;
+                directionalLight.shadow.mapSize.width = 2048;
+                directionalLight.shadow.mapSize.height = 2048;
+                directionalLight.shadow.camera.near = 0.5;
+                directionalLight.shadow.camera.far = 500;
+                this.scene.add(directionalLight);
+            }
+
+            setupScene() {
+                // Create sky
+                const skyGeometry = new THREE.SphereGeometry(500, 32, 32);
+                const skyMaterial = new THREE.MeshBasicMaterial({
+                    color: 0x666666, // Cielo gris oscuro
+                    side: THREE.BackSide
+                });
+                const sky = new THREE.Mesh(skyGeometry, skyMaterial);
+                this.scene.add(sky);
+
+                // Create road
+                this.createRoad();
+
+                // Create roadside elements
+                this.createEnvironment();
+
+                // Create vehicle
+                this.createVehicle();
+            }
+
+            createRoad() {
+                // Carretera principal
+                const roadGeometry = new THREE.PlaneGeometry(30, 1000);
+                const roadMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x333333, // Carretera gris muy oscuro
+                    roughness: 0.8,
+                    metalness: 0.2
+                });
+                this.road = new THREE.Mesh(roadGeometry, roadMaterial);
+                this.road.rotation.x = -Math.PI / 2;
+                this.road.position.z = -500;
+                this.road.receiveShadow = true;
+                this.scene.add(this.road);
+
+                // Marcas de carril
+                this.createLaneMarkers();
+            }
+
+            createLaneMarkers() {
+                const markerMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x007bff, // Marcas de carril azules
+                    emissive: 0x007bff,
+                    emissiveIntensity: 0.3
+                });
+                
+                // Crear marcas discontinuas en los carriles
+                for (let z = -490; z < 500; z += 10) {
+                    // Línea central discontinua
+                    if (z % 20 < 10) { // Patrón de líneas discontinuas
+                        const markerGeometry = new THREE.BoxGeometry(0.5, 0.05, 2);
+                        const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+                        marker.position.set(0, 0.02, z);
+                        marker.receiveShadow = true;
+                        this.scene.add(marker);
+                        this.laneMarkers.push(marker);
+                    }
+                    
+                    // Líneas laterales continuas
+                    const leftLineGeometry = new THREE.BoxGeometry(0.3, 0.05, 10);
+                    const leftLine = new THREE.Mesh(leftLineGeometry, markerMaterial);
+                    leftLine.position.set(-4.75, 0.02, z);
+                    leftLine.receiveShadow = true;
+                    this.scene.add(leftLine);
+                    this.laneMarkers.push(leftLine);
+                    
+                    const rightLineGeometry = new THREE.BoxGeometry(0.3, 0.05, 10);
+                    const rightLine = new THREE.Mesh(rightLineGeometry, markerMaterial);
+                    rightLine.position.set(4.75, 0.02, z);
+                    rightLine.receiveShadow = true;
+                    this.scene.add(rightLine);
+                    this.laneMarkers.push(rightLine);
+                }
+            }
+
+            createEnvironment() {
+                // Crear elementos del entorno (árboles, edificios, etc.)
+                const treeGeometry = new THREE.ConeGeometry(3, 8, 8);
+                const treeTrunkGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 8);
+                const treeMaterial = new THREE.MeshStandardMaterial({ color: 0x0f3460 }); // Copas de árboles azul oscuro
+                const trunkMaterial = new THREE.MeshStandardMaterial({ color: 0x2c3e50 }); // Troncos azul grisáceo
+                
+                // Añadir árboles a los lados de la carretera
+                for (let z = -400; z < 400; z += 50) {
+                    // Árboles lado izquierdo
+                    const treeLeft = new THREE.Group();
+                    const treeTopLeft = new THREE.Mesh(treeGeometry, treeMaterial);
+                    const trunkLeft = new THREE.Mesh(treeTrunkGeometry, trunkMaterial);
+                    treeTopLeft.position.y = 5;
+                    trunkLeft.position.y = 1.5;
+                    treeLeft.add(treeTopLeft);
+                    treeLeft.add(trunkLeft);
+                    treeLeft.position.set(-15, 0, z);
+                    this.scene.add(treeLeft);
+                    
+                    // Árboles lado derecho
+                    const treeRight = new THREE.Group();
+                    const treeTopRight = new THREE.Mesh(treeGeometry, treeMaterial);
+                    const trunkRight = new THREE.Mesh(treeTrunkGeometry, trunkMaterial);
+                    treeTopRight.position.y = 5;
+                    trunkRight.position.y = 1.5;
+                    treeRight.add(treeTopRight);
+                    treeRight.add(trunkRight);
+                    treeRight.position.set(15, 0, z);
+                    this.scene.add(treeRight);
+                }
+            }
+
+            createVehicle() {
+                const group = new THREE.Group();
+
+                // Car body
+                const bodyGeometry = new THREE.BoxGeometry(2, 0.8, 4);
+                const bodyMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0xcc0000, // Coche rojo
+                    roughness: 0.7,
+                    metalness: 0.3
+                });
+                const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+                body.castShadow = true;
+                body.receiveShadow = true;
+                body.position.y = 0.4;
+                group.add(body);
+
+                // Car roof
+                const roofGeometry = new THREE.BoxGeometry(1.6, 0.4, 1.8);
+                const roofMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x800000, // Techo rojo oscuro
+                    roughness: 0.6,
+                    metalness: 0.4
+                });
+                const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+                roof.castShadow = true;
+                roof.receiveShadow = true;
+                roof.position.y = 1.0;
+                roof.position.z = -0.3;
+                group.add(roof);
+
+                // Windows
+                const windowGeometry = new THREE.PlaneGeometry(1.4, 0.6);
+                const windowMaterial = new THREE.MeshStandardMaterial({
+                    color: 0x666666, // Ventanas gris oscuro
+                    transparent: true,
+                    opacity: 0.6
+                });
+                
+                const frontWindow = new THREE.Mesh(windowGeometry, windowMaterial);
+                frontWindow.position.set(0, 1.0, 0.6);
+                frontWindow.rotation.x = Math.PI / 2;
+                group.add(frontWindow);
+                
+                const rearWindow = new THREE.Mesh(windowGeometry, windowMaterial);
+                rearWindow.position.set(0, 1.0, -1.2);
+                rearWindow.rotation.x = Math.PI / 2;
+                group.add(rearWindow);
+
+                // Wheels
+                const wheelGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.2, 16);
+                const wheelMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x1a1a1a,
+                    roughness: 0.9,
+                    metalness: 0.1
+                });
+
+                const positions = [
+                    [0.8, 0.3, 1.5],   // Front left
+                    [-0.8, 0.3, 1.5],  // Front right
+                    [0.8, 0.3, -1.5],  // Rear left
+                    [-0.8, 0.3, -1.5]  // Rear right
+                ];
+
+                positions.forEach((pos) => {
+                    const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+                    wheel.rotation.x = Math.PI / 2;
+                    wheel.position.set(pos[0], pos[1], pos[2]);
+                    wheel.castShadow = true;
+                    group.add(wheel);
+                });
+
+                group.position.set(0, 0.5, 0);
+                this.scene.add(group);
+                this.vehicle = group;
+            }
+
+            spawnTraffic() {
+                // Crear vehículos de tráfico en diferentes carriles
+                const carColors = [0x007bff, 0x4361ee, 0x666666, 0x444444]; // Colores de tráfico: azul, azul medio, gris, gris oscuro
+                
+                // Vehículos en carril izquierdo
+                for (let z = -300; z < 300; z += 70) {
+                    this.createTrafficCar(this.lanes.left.position, z, carColors[Math.floor(Math.random() * carColors.length)]);
+                }
+                
+                // Vehículos en carril central
+                for (let z = -250; z < 250; z += 80) {
+                    if (Math.random() > 0.5) { // Aleatorizar posición
+                        this.createTrafficCar(this.lanes.center.position, z, carColors[Math.floor(Math.random() * carColors.length)]);
+                    }
+                }
+                
+                // Vehículos en carril derecho
+                for (let z = -200; z < 200; z += 60) {
+                    this.createTrafficCar(this.lanes.right.position, z, carColors[Math.floor(Math.random() * carColors.length)]);
+                }
+            }
+
+            createTrafficCar(x, z, color) {
+                const group = new THREE.Group();
+
+                const bodyGeometry = new THREE.BoxGeometry(1.8, 0.7, 3.5);
+                const bodyMaterial = new THREE.MeshStandardMaterial({ 
+                    color: color,
+                    roughness: 0.7
+                });
+                const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+                body.castShadow = true;
+                body.position.y = 0.35;
+                group.add(body);
+
+                const wheelGeometry = new THREE.CylinderGeometry(0.25, 0.25, 0.18, 16);
+                const wheelMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x1a1a1a,
+                    roughness: 0.9
+                });
+
+                const positions = [
+                    [0.7, 0.25, 1.2],   // Front left
+                    [-0.7, 0.25, 1.2],  // Front right
+                    [0.7, 0.25, -1.2],  // Rear left
+                    [-0.7, 0.25, -1.2]  // Rear right
+                ];
+
+                positions.forEach((pos) => {
+                    const wheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+                    wheel.rotation.x = Math.PI / 2;
+                    wheel.position.set(pos[0], pos[1], pos[2]);
+                    wheel.castShadow = true;
+                    group.add(wheel);
+                });
+
+                group.position.set(x, 0.5, z);
+                
+                // Asignar velocidad aleatoria
+                const speed = 40 + Math.random() * 40; // Entre 40 y 80 km/h
+                group.userData = { speed: speed, lane: this.getLaneFromPosition(x) };
+                
+                this.scene.add(group);
+                this.trafficCars.push(group);
+            }
+
+            getLaneFromPosition(x) {
+                if (Math.abs(x - this.lanes.left.position) < 1) return 'left';
+                if (Math.abs(x - this.lanes.center.position) < 1) return 'center';
+                if (Math.abs(x - this.lanes.right.position) < 1) return 'right';
+                return 'center';
+            }
+
+            setupEventListeners() {
+                // Keyboard controls
+                window.addEventListener('keydown', (e) => {
+                    switch(e.key.toLowerCase()) {
+                        case 'w': this.controls.forward = true; break;
+                        case 's': this.controls.backward = true; break;
+                        case 'a': this.controls.left = true; break;
+                        case 'd': this.controls.right = true; break;
+                        case ' ': this.controls.handbrake = true; break;
+                        case 'arrowleft': this.changeLaneLeft(); break;
+                        case 'arrowright': this.changeLaneRight(); break;
+                        case 'r': this.resetVehicle(); break;
+                        
+                        // Cambios de marcha con teclado numérico
+                        case '0': this.changeGear('R'); break;
+                        case '1': this.changeGear('1'); break;
+                        case '2': this.changeGear('2'); break;
+                        case '3': this.changeGear('3'); break;
+                        case '4': this.changeGear('4'); break;
+                        case '5': this.changeGear('5'); break;
+                    }
+                });
+
+                window.addEventListener('keyup', (e) => {
+                    switch(e.key.toLowerCase()) {
+                        case 'w': this.controls.forward = false; break;
+                        case 's': this.controls.backward = false; break;
+                        case 'a': this.controls.left = false; break;
+                        case 'd': this.controls.right = false; break;
+                        case ' ': this.controls.handbrake = false; break;
+                    }
+                });
+
+                // Mouse controls for camera
+                const canvasWrapper = document.getElementById('canvasWrapper');
+                canvasWrapper.addEventListener('mousedown', (e) => {
+                    if (e.button === 0) {
+                        this.isMouseDown = true;
+                        this.mouse.x = e.clientX;
+                        this.mouse.y = e.clientY;
+                        canvasWrapper.style.cursor = 'grabbing';
+                    }
+                });
+
+                canvasWrapper.addEventListener('mousemove', (e) => {
+                    if (this.isMouseDown) {
+                        const deltaX = e.clientX - this.mouse.x;
+                        const deltaY = e.clientY - this.mouse.y;
+
+                        this.cameraAngle.horizontal -= deltaX * 0.005;
+                        this.cameraAngle.vertical -= deltaY * 0.005;
+
+                        this.mouse.x = e.clientX;
+                        this.mouse.y = e.clientY;
+                        this.updateCameraPosition();
+                    }
+                });
+
+                canvasWrapper.addEventListener('mouseup', (e) => {
+                    if (e.button === 0) {
+                        this.isMouseDown = false;
+                        canvasWrapper.style.cursor = 'grab';
+                    }
+                });
+
+                canvasWrapper.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    this.cameraDistance += e.deltaY * 0.01;
+                    this.cameraDistance = Math.max(5, Math.min(50, this.cameraDistance));
+                    this.updateCameraPosition();
+                });
+
+                // Touch controls for camera (rotation and pinch-zoom)
+                canvasWrapper.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) {
+                        this.touch.prevX = e.touches[0].clientX;
+                        this.touch.prevY = e.touches[0].clientY;
+                        this.isMouseDown = true; // Usar isMouseDown para la rotación con un dedo
+                    } else if (e.touches.length === 2) {
+                        this.touch.prevDistance = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        this.isPinching = true;
+                        this.isMouseDown = false; // Desactivar rotación si hay pinch
+                    }
+                });
+
+                canvasWrapper.addEventListener('touchmove', (e) => {
+                    if (this.isMouseDown && e.touches.length === 1) { // Rotación con un dedo
+                        const deltaX = e.touches[0].clientX - this.touch.prevX;
+                        const deltaY = e.touches[0].clientY - this.touch.prevY;
+
+                        this.cameraAngle.horizontal -= deltaX * 0.005;
+                        this.cameraAngle.vertical -= deltaY * 0.005;
+
+                        this.touch.prevX = e.touches[0].clientX;
+                        this.touch.prevY = e.touches[0].clientY;
+                        this.updateCameraPosition();
+                    } else if (this.isPinching && e.touches.length === 2) { // Zoom con dos dedos
+                        this.touch.distance = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        const deltaDistance = this.touch.distance - this.touch.prevDistance;
+                        this.cameraDistance -= deltaDistance * 0.1; // Ajustar sensibilidad del zoom
+                        this.cameraDistance = Math.max(5, Math.min(50, this.cameraDistance));
+                        this.touch.prevDistance = this.touch.distance;
+                        this.updateCameraPosition();
+                    }
+                });
+
+                canvasWrapper.addEventListener('touchend', (e) => {
+                    this.isMouseDown = false;
+                    this.isPinching = false;
+                });
+
+                // Gear buttons
+                document.querySelectorAll('.gear-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.changeGear(btn.dataset.gear);
+                    });
+                });
+
+                // Lane change buttons
+                document.getElementById('leftLaneBtn').addEventListener('click', () => {
+                    this.changeLaneLeft();
+                });
+
+                document.getElementById('rightLaneBtn').addEventListener('click', () => {
+                    this.changeLaneRight();
+                });
+
+                // Fullscreen button
+                document.getElementById('fullscreenBtn').addEventListener('click', () => {
+                    const elem = document.getElementById('canvasWrapper');
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    } else if (elem.mozRequestFullScreen) { /* Firefox */
+                        elem.mozRequestFullScreen();
+                    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                        elem.msRequestFullscreen();
+                    }
+                });
+
+                // Window resize
+                window.addEventListener('resize', () => {
+                    this.camera.aspect = window.innerWidth / window.innerHeight;
+                    this.camera.updateProjectionMatrix();
+                    this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    
+                    const newIsMobile = window.innerWidth <= 768;
+                    if (newIsMobile !== this.isMobile) {
+                        this.isMobile = newIsMobile;
+                    }
+                });
+            }
+
+            setupMobileControls() {
+                const stick = document.getElementById('steeringStick');
+                const handle = stick.querySelector('.stick-handle');
+                const brakeBtn = document.getElementById('brakeBtn');
+                const handbrakeBtn = document.getElementById('handbrakeBtn');
+                const gearUpBtn = document.getElementById('gearUpBtn');
+                const gearDownBtn = document.getElementById('gearDownBtn');
+
+                let isDragging = false;
+
+                // Touch events for steering
+                stick.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    isDragging = true;
+                    this.updateSteering(e.touches[0]);
+                });
+
+                stick.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    if (isDragging) {
+                        this.updateSteering(e.touches[0]);
+                    }
+                });
+
+                stick.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    isDragging = false;
+                    handle.style.transform = 'translate(0, 0)';
+                    this.controls.left = false;
+                    this.controls.right = false;
+                    this.controls.forward = false;
+                    this.controls.backward = false;
+                });
+
+                // Button events
+                brakeBtn.addEventListener('touchstart', () => this.controls.backward = true);
+                brakeBtn.addEventListener('touchend', () => this.controls.backward = false);
+                handbrakeBtn.addEventListener('touchstart', () => this.controls.handbrake = true);
+                handbrakeBtn.addEventListener('touchend', () => this.controls.handbrake = false);
+                
+                gearUpBtn.addEventListener('touchstart', () => this.shiftGearUp());
+                gearDownBtn.addEventListener('touchstart', () => this.shiftGearDown());
+            }
+
+            updateSteering(touch) {
+                const stickRect = document.getElementById('steeringStick').getBoundingClientRect();
+                const centerX = stickRect.left + stickRect.width / 2;
+                const centerY = stickRect.top + stickRect.height / 2;
+                
+                const deltaX = touch.clientX - centerX;
+                const deltaY = touch.clientY - centerY;
+                
+                const maxDistance = stickRect.width / 3;
+                const distance = Math.min(Math.sqrt(deltaX * deltaX + deltaY * deltaY), maxDistance);
+                
+                const angle = Math.atan2(deltaY, deltaX);
+                const moveX = Math.cos(angle) * distance;
+                const moveY = Math.sin(angle) * distance;
+                
+                document.querySelector('.stick-handle').style.transform = `translate(${moveX}px, ${moveY}px)`;
+                
+                this.controls.left = deltaX < -10;
+                this.controls.right = deltaX > 10;
+                this.controls.forward = deltaY < -10;
+                this.controls.backward = deltaY > 10;
+            }
+
+            changeGear(gear) {
+                if (this.gears[gear]) {
+                    this.currentGear = gear;
+                    
+                    // Actualizar botones de marcha
+                    document.querySelectorAll('.gear-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                        if (btn.dataset.gear === gear) {
+                            btn.classList.add('active');
+                        }
+                    });
+                    
+                    // Actualizar display
+                    document.getElementById('gear').textContent = gear;
+                    
+                    // Si es marcha atrás, ajustar comportamiento
+                    if (gear === 'R') {
+                        this.vehicleState.acceleration = -1;
+                    }
+                }
+            }
+
+            shiftGearUp() {
+                const gearOrder = ['R', 'N', '1', '2', '3', '4', '5'];
+                const currentIndex = gearOrder.indexOf(this.currentGear);
+                if (currentIndex < gearOrder.length - 1) {
+                    this.changeGear(gearOrder[currentIndex + 1]);
+                }
+            }
+
+            shiftGearDown() {
+                const gearOrder = ['R', 'N', '1', '2', '3', '4', '5'];
+                const currentIndex = gearOrder.indexOf(this.currentGear);
+                if (currentIndex > 0) {
+                    this.changeGear(gearOrder[currentIndex - 1]);
+                }
+            }
+
+            changeLaneLeft() {
+                if (this.isChangingLane) return;
+                
+                if (this.currentLane === 'right') {
+                    this.currentLane = 'center';
+                } else if (this.currentLane === 'center') {
+                    this.currentLane = 'left';
+                }
+                
+                this.targetLanePosition = this.lanes[this.currentLane].position;
+                this.isChangingLane = true;
+                
+                // Actualizar display
+                document.getElementById('lane').textContent = this.lanes[this.currentLane].name;
+            }
+
+            changeLaneRight() {
+                if (this.isChangingLane) return;
+                
+                if (this.currentLane === 'left') {
+                    this.currentLane = 'center';
+                } else if (this.currentLane === 'center') {
+                    this.currentLane = 'right';
+                }
+                
+                this.targetLanePosition = this.lanes[this.currentLane].position;
+                this.isChangingLane = true;
+                
+                // Actualizar display
+                document.getElementById('lane').textContent = this.lanes[this.currentLane].name;
+            }
+
+            updateVehicle() {
+                const delta = this.clock.getDelta();
+                const currentGear = this.gears[this.currentGear];
+                
+                // Aceleración y frenado
+                if (this.controls.forward && this.currentGear !== 'R' && this.currentGear !== 'N') {
+                    this.vehicleState.acceleration = Math.min(this.vehicleState.acceleration + currentGear.acceleration * delta, 1);
+                } else if (this.controls.backward) {
+                    this.vehicleState.acceleration = Math.max(this.vehicleState.acceleration - 1.5 * delta, -1);
+                } else {
+                    // Desaceleración natural
+                    if (this.vehicleState.acceleration > 0) {
+                        this.vehicleState.acceleration = Math.max(this.vehicleState.acceleration - 0.5 * delta, 0);
+                    } else if (this.vehicleState.acceleration < 0) {
+                        this.vehicleState.acceleration = Math.min(this.vehicleState.acceleration + 0.5 * delta, 0);
+                    }
+                }
+                
+                // Aplicar freno de mano
+                if (this.controls.handbrake) {
+                    this.vehicleState.acceleration *= 0.7; // Reducir aceleración más rápido
+                }
+                
+                // Calcular velocidad (km/h)
+                const speedChange = this.vehicleState.acceleration * currentGear.acceleration * 20 * delta;
+                if (this.currentGear === 'R') {
+                    this.vehicleState.speed = Math.max(Math.min(this.vehicleState.speed + speedChange, currentGear.maxSpeed), -currentGear.maxSpeed);
+                } else if (this.currentGear === 'N') {
+                    this.vehicleState.speed *= 0.95; // Desaceleración en punto muerto
+                } else {
+                    this.vehicleState.speed = Math.min(Math.max(this.vehicleState.speed + speedChange, 0), currentGear.maxSpeed);
+                }
+                
+                // Dirección
+                if (this.controls.left) {
+                    this.vehicleState.steering = Math.min(this.vehicleState.steering + 2 * delta, 0.5);
+                } else if (this.controls.right) {
+                    this.vehicleState.steering = Math.max(this.vehicleState.steering - 2 * delta, -0.5);
+                } else {
+                    // Centrar volante gradualmente
+                    if (this.vehicleState.steering > 0) {
+                        this.vehicleState.steering = Math.max(this.vehicleState.steering - 3 * delta, 0);
+                    } else if (this.vehicleState.steering < 0) {
+                        this.vehicleState.steering = Math.min(this.vehicleState.steering + 3 * delta, 0);
+                    }
+                }
+                
+                // Aplicar movimiento de cambio de carril
+                if (this.isChangingLane) {
+                    const currentX = this.vehicle.position.x;
+                    const diff = this.targetLanePosition - currentX;
+                    
+                    if (Math.abs(diff) < 0.1) {
+                        this.vehicle.position.x = this.targetLanePosition;
+                        this.isChangingLane = false;
+                    } else {
+                        this.vehicle.position.x += diff * 3 * delta;
+                    }
+                }
+                
+                // Rotación basada en la dirección y velocidad
+                const turnFactor = this.vehicleState.steering * (this.vehicleState.speed / 100) * delta;
+                this.vehicle.rotation.y += turnFactor;
+                
+                // Movimiento hacia adelante/atrás basado en la rotación
+                const moveDistance = (this.vehicleState.speed / 3.6) * delta; // Convertir km/h a m/s
+                const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(this.vehicle.quaternion);
+                this.vehicle.position.add(direction.multiplyScalar(moveDistance));
+                
+                // Mover toda la carretera y el entorno para simular movimiento
+                this.road.position.z += moveDistance;
+                this.laneMarkers.forEach(marker => {
+                    marker.position.z += moveDistance;
+                    
+                    // Reposicionar marcadores que se salen de la vista
+                    if (marker.position.z > 500) {
+                        marker.position.z -= 1000;
+                    }
+                });
+                
+                // Mover vehículos de tráfico
+                this.updateTraffic(delta);
+                
+                // Actualizar el objetivo de la cámara
+                this.cameraTarget.copy(this.vehicle.position);
+                this.updateCameraPosition();
+                
+                // Actualizar estadísticas
+                this.stats.distance += Math.abs(moveDistance) / 1000; // en km
+                this.updateStatsDisplay();
+                
+                // Verificar colisiones
+                this.checkCollisions();
+            }
+
+            updateTraffic(delta) {
+                this.trafficCars.forEach(car => {
+                    // Mover vehículos de tráfico
+                    const trafficSpeed = (car.userData.speed / 3.6) * delta;
+                    car.position.z += trafficSpeed;
+                    
+                    // Reposicionar vehículos que se salen de la vista
+                    if (car.position.z > 500) {
+                        car.position.z = -500;
+                        
+                        // Cambiar carril aleatoriamente a veces
+                        if (Math.random() < 0.3) {
+                            const lanes = ['left', 'center', 'right'];
+                            const currentLaneIndex = lanes.indexOf(car.userData.lane);
+                            let newLaneIndex;
+                            
+                            // Decidir cambiar a izquierda o derecha
+                            if (Math.random() < 0.5 && currentLaneIndex > 0) {
+                                newLaneIndex = currentLaneIndex - 1;
+                            } else if (currentLaneIndex < 2) {
+                                newLaneIndex = currentLaneIndex + 1;
+                            } else {
+                                newLaneIndex = currentLaneIndex - 1;
+                            }
+                            
+                            car.userData.lane = lanes[newLaneIndex];
+                            car.userData.targetX = this.lanes[car.userData.lane].position;
+                        }
+                    }
+                    
+                    // Cambio de carril suave para vehículos de tráfico
+                    if (car.userData.targetX !== undefined) {
+                        const diff = car.userData.targetX - car.position.x;
+                        if (Math.abs(diff) < 0.1) {
+                            car.position.x = car.userData.targetX;
+                            delete car.userData.targetX;
+                        } else {
+                            car.position.x += diff * 2 * delta;
+                        }
+                    }
+                });
+            }
+
+            checkCollisions() {
+                const playerBox = new THREE.Box3().setFromObject(this.vehicle);
+                
+                this.trafficCars.forEach(car => {
+                    const carBox = new THREE.Box3().setFromObject(car);
+                    
+                    if (playerBox.intersectsBox(carBox)) {
+                        // Colisión detectada
+                        this.stats.collisions++;
+                        this.updateStatsDisplay();
+                        
+                        // Aplicar efecto de colisión (empujar vehículos)
+                        const collisionVector = new THREE.Vector3()
+                            .subVectors(this.vehicle.position, car.position)
+                            .normalize()
+                            .multiplyScalar(0.1);
+                        
+                        this.vehicle.position.add(collisionVector);
+                        car.position.sub(collisionVector);
+                        
+                        // Reducir velocidad por colisión
+                        this.vehicleState.speed *= 0.7;
+                    }
+                });
+            }
+
+            updateStatsDisplay() {
+                document.getElementById('speed').textContent = Math.abs(Math.round(this.vehicleState.speed)) + ' km/h';
+                document.getElementById('distance').textContent = this.stats.distance.toFixed(1) + ' km';
+                document.getElementById('collisions').textContent = this.stats.collisions;
+            }
+
+            resetVehicle() {
+                this.vehicle.position.set(0, 0.5, 0);
+                this.vehicle.rotation.set(0, 0, 0);
+                this.vehicleState.speed = 0;
+                this.vehicleState.acceleration = 0;
+                this.vehicleState.steering = 0;
+                this.currentLane = 'center';
+                this.targetLanePosition = this.lanes.center.position;
+                this.changeGear('1');
+                this.stats.distance = 0;
+                this.stats.collisions = 0;
+                
+                // Reposicionar la carretera
+                this.road.position.z = -500;
+                this.laneMarkers.forEach(marker => {
+                    marker.position.z = marker.position.z % 1000 - 500;
+                });
+                
+                // Reposicionar vehículos de tráfico
+                this.trafficCars.forEach(car => {
+                    car.position.z = -500 + Math.random() * 1000;
+                });
+                
+                this.updateStatsDisplay();
+            }
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                this.updateVehicle();
+                this.renderer.render(this.scene, this.camera);
+            }
+        }
+
+        // Initialize the simulator when the page loads
+        window.addEventListener('load', () => {
+            new DrivingSimulator();
+        });
+    </script>
+</body>
+</html>

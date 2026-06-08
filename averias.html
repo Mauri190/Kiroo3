@@ -1,91 +1,200 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>5 averías que pueden destruir tu coche</title>
-  <link rel="stylesheet" href="css/stilos.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Kiroo - 5 averías que pueden destruir tu coche</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/averias.css">
 </head>
-
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
+<!-- ===================== NAVBAR ===================== -->
+<nav class="navbar">
+    <a class="logo" href="index_cliente.html">KI<span>R</span>OO</a>
 
-    <div class="logo">
-      KI<span>ROO</span>
+    <ul class="nav-links">
+        <li><a href="index_cliente.html">HOME</a></li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">GESTIONA ▾</button>
+            <div class="dropdown-content">
+                <a href="dashboard_cliente.html"><i class="fa-solid fa-gauge-high"></i> Panel Cliente</a>
+                <a href="vehiculos_cliente.html"><i class="fa-solid fa-car"></i> Registro Vehículos</a>
+                <a href="agenda_cliente.html"><i class="fa-solid fa-calendar-days"></i> Agenda tus citas</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">HERRAMIENTAS ▾</button>
+            <div class="dropdown-content">
+                <a href="scaner.html"><i class="fa-solid fa-magnifying-glass"></i> Escáner de Señales</a>
+                <a href="gamificacion.html"><i class="fa-solid fa-gamepad"></i> Gamificación</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">AYUDA ▾</button>
+            <div class="dropdown-content">
+                <a href="emergencias_cliente.html"><i class="fa-solid fa-phone-volume"></i> Números de Emergencia</a>
+                <a href="cambio_llanta.html"><i class="fa-solid fa-tire"></i> Cambio de llanta</a>
+                <a href="fallo_bateria.html"><i class="fa-solid fa-car-battery"></i> Fallo de batería</a>
+                <a href="frenos.html"><i class="fa-solid fa-brake-sign"></i> Sistema de frenos</a>
+                <a href="refrigerante.html"><i class="fa-solid fa-temperature-low"></i> Pérdidas de refrigerante</a>
+                <a href="revisar_aceite.html"><i class="fa-solid fa-oil-can"></i> Revisar el aceite</a>
+                <a href="Sobrecalentamiento.html"><i class="fa-solid fa-thermometer-full"></i> Sobrecalentamiento</a>
+                <a href="problemas.html"><i class="fa-solid fa-triangle-exclamation"></i> Problemas mecánicos</a>
+                <a href="potencia.html"><i class="fa-solid fa-tachometer-alt"></i> Pérdida de potencia</a>
+                <a href="llanta.html"><i class="fa-solid fa-tire"></i> Llanta reventada</a>
+                <a href="averias.html"><i class="fa-solid fa-engine"></i> Averías comunes</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- USER BADGE -->
+    <div class="profile" id="userMenuWrapper" onclick="toggleUserMenu(event)">
+        <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+        <img src="" alt="" class="header-avatar" id="headerAvatarImg">
+        <span class="user-name-header" id="headerUserName">Cargando...</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.55rem; opacity:0.7;"></i>
+
+        <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
+            <div class="dd-header">
+                <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg">
+                <div class="dd-info">
+                    <div class="dd-name" id="ddName">...</div>
+                    <div class="dd-role">Cliente</div>
+                    <div class="dd-user" id="ddUsername">@...</div>
+                </div>
+            </div>
+            <a href="perfil_cliente.html" class="dd-item"><i class="fa-solid fa-user-circle"></i> Mi Perfil</a>
+            <a href="dashboard_cliente.html" class="dd-item"><i class="fa-solid fa-tachometer-alt"></i> Panel Cliente</a>
+            <a href="dashboard_cliente.html?tab=appointments" class="dd-item"><i class="fa-solid fa-calendar-check"></i> Mis Citas</a>
+            <div class="dd-sep"></div>
+            <button class="dd-item logout" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión</button>
+        </div>
+    </div>
+</nav>
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<div class="container-main">
+    
+    <div class="page-header">
+        <a href="index_cliente.html" class="btn-outline-red">
+            <i class="bi bi-arrow-left"></i> Volver al inicio
+        </a>
+        <h1><i class="fas fa-engine"></i> 5 averías que pueden destruir tu coche</h1>
     </div>
 
-    <div class="nav-links">
-      <a href="tarjetaas.html">HOME</a>
-      <a href="#">GESTIONA</a>
-      <a href="#">HERRAMIENTAS</a>
-      <a href="#">AYUDA</a>
+    <div class="intro-text">
+        <i class="fas fa-info-circle me-2" style="color: var(--red);"></i>
+        Algunos problemas mecánicos parecen pequeños, pero ignorarlos puede provocar 
+        daños graves y reparaciones costosas. Conoce las 5 averías más peligrosas 
+        que pueden afectar seriamente la vida útil de tu vehículo.
     </div>
 
-    <div class="profile">
-      👤 Mauricio
+    <div class="tips-container">
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">1</div>
+                <h2>Sobrecalentamiento del motor</h2>
+            </div>
+            <p>Cuando el motor se calienta demasiado, puede dañar piezas internas importantes como la junta de culata, los anillos del pistón y hasta provocar que el motor se funda. Las reparaciones pueden superar los miles de dólares.</p>
+            <p><strong>⚠️ Prevención:</strong> Revisa el nivel de refrigerante regularmente y atiende cualquier fuga de inmediato.</p>
+        </div>
+
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">2</div>
+                <h2>Falta de aceite o aceite sucio</h2>
+            </div>
+            <p>El aceite lubrica las partes internas del motor. Si el nivel es bajo o el aceite está muy sucio, el desgaste aumenta rápidamente, provocando fricción excesiva, sobrecalentamiento y eventualmente el gripado del motor.</p>
+            <p><strong>⚠️ Prevención:</strong> Cambia el aceite cada 5,000-10,000 km según el fabricante y revisa el nivel cada 15 días.</p>
+        </div>
+
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">3</div>
+                <h2>Frenos desgastados</h2>
+            </div>
+            <p>Un sistema de frenos en mal estado puede aumentar drásticamente el riesgo de accidentes. Las pastillas desgastadas dañan los discos, y si fallan por completo, perderás la capacidad de detener el vehículo.</p>
+            <p><strong>⚠️ Prevención:</strong> Presta atención a chillidos, vibraciones o pedales esponjosos. Revisa los frenos cada 10,000 km.</p>
+        </div>
+
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">4</div>
+                <h2>Problemas en la batería</h2>
+            </div>
+            <p>Una batería dañada puede impedir que el vehículo encienda correctamente y, en casos graves, puede dañar el alternador y el sistema eléctrico del coche.</p>
+            <p><strong>⚠️ Prevención:</strong> Mantén los terminales limpios, revisa la carga periódicamente y cambia la batería cada 3-5 años.</p>
+        </div>
+
+        <div class="tip-card">
+            <div class="tip-header">
+                <div class="tip-number">5</div>
+                <h2>Correa de distribución dañada</h2>
+            </div>
+            <p>Si esta correa se rompe mientras el motor está en funcionamiento, puede causar daños catastróficos: válvulas dobladas, pistones perforados y, en muchos casos, la necesidad de reemplazar todo el motor.</p>
+            <p><strong>⚠️ Prevención:</strong> Cambia la correa de distribución según el intervalo recomendado por el fabricante (generalmente entre 60,000 y 100,000 km).</p>
+        </div>
     </div>
 
-  </nav>
-
-  <!-- CONTENIDO -->
-  <div class="info-page">
-
-    <h1>5 averías que pueden destruir tu coche</h1>
-
-    <p class="intro">
-      Algunos problemas mecánicos parecen pequeños,
-      pero ignorarlos puede provocar daños graves y
-      reparaciones costosas.
-    </p>
-
-    <div class="tip">
-      <h2>1. Sobrecalentamiento del motor</h2>
-
-      <p>
-        Cuando el motor se calienta demasiado,
-        puede dañar piezas internas importantes
-        y afectar el rendimiento del vehículo.
-      </p>
+    <!-- Advertencia -->
+    <div class="warning-box">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p><strong>⚠️ DATO IMPORTANTE:</strong> La mayoría de estas averías graves se pueden prevenir con un mantenimiento básico y oportuno. No ignores las señales de advertencia de tu vehículo.</p>
     </div>
 
-    <div class="tip">
-      <h2>2. Falta de aceite</h2>
-
-      <p>
-        El aceite lubrica las partes internas del motor.
-        Si el nivel es bajo, el desgaste aumenta rápidamente.
-      </p>
+    <!-- Consejo Kiroo -->
+    <div class="kiroo-tip">
+        <h3><i class="fas fa-star"></i> Consejo Kiroo</h3>
+        <p>
+            🔧 <strong>Mantenimiento preventivo:</strong> La mejor manera de evitar estas averías es seguir el plan de mantenimiento recomendado por el fabricante. Un pequeño gasto en mantenimiento hoy puede ahorrarte miles de dólares en reparaciones mañana.
+        </p>
+        <p class="mt-2">
+            💡 <strong>Tip adicional:</strong> Usa la app de Kiroo para registrar el mantenimiento de tu vehículo y recibir recordatorios de cambios de aceite, revisión de frenos y cambio de correa de distribución. ¡Tu coche te lo agradecerá!
+        </p>
     </div>
+</div>
 
-    <div class="tip">
-      <h2>3. Frenos desgastados</h2>
-
-      <p>
-        Un sistema de frenos en mal estado puede
-        aumentar el riesgo de accidentes.
-      </p>
+<footer class="footer-kiroo">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-5">
+                <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
+                <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
+                <div class="d-flex gap-3 mt-2">
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <h5>Explorar</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="vehiculos.html"><i class="fa-regular fa-circle-right me-2"></i>Registro vehicular</a></li>
+                    <li class="mb-2"><a href="agenda.html"><i class="fa-regular fa-circle-right me-2"></i>Agenda de servicios</a></li>
+                    <li class="mb-2"><a href="gamificacion.html"><i class="fa-regular fa-circle-right me-2"></i>Gamificación</a></li>
+                    <li class="mb-2"><a href="emergencias.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contacto</h5>
+                <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
+                <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
+                <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
+            </div>
+        </div>
+        <hr class="mt-4 opacity-25">
+        <div class="text-center pt-2">
+            <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
+        </div>
     </div>
+</footer>
 
-    <div class="tip">
-      <h2>4. Problemas en la batería</h2>
-
-      <p>
-        Una batería dañada puede impedir
-        que el vehículo encienda correctamente.
-      </p>
-    </div>
-
-    <div class="tip">
-      <h2>5. Correa de distribución dañada</h2>
-
-      <p>
-        Si esta correa se rompe,
-        puede causar daños muy graves en el motor.
-      </p>
-    </div>
-  </div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/cartas.js"></script>
 </body>
 </html>

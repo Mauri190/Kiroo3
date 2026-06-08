@@ -3,54 +3,585 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emergencias - Kiroo</title>
+    <title>Kiroo - Números de Emergencia</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/emergencias.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* =============================================
+           RESET & BASE — Mismo estilo que index_mecanico
+        ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red: #d94343;
+            --red-dark: #a51313;
+            --red-glow: rgba(255, 61, 61, 0.3);
+            --bg: #0d0000;
+            --bg-grad: linear-gradient(135deg, #140000 0%, #3a0000 100%);
+            --nav-bg: #250000;
+            --card-bg: #111;
+            --card-border: rgba(255,255,255,0.08);
+            --text-muted: #bdbdbd;
+        }
+
+        body {
+            background: var(--bg-grad);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* =============================================
+           NAVBAR — Mismo estilo que index_mecanico
+        ============================================= */
+        .navbar {
+            width: 100%;
+            height: 80px;
+            background: var(--nav-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: white;
+            text-decoration: none;
+        }
+        .logo span { color: #ff3d3d; }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links > li > a,
+        .nav-links > li > button.dropbtn {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background 0.25s, color 0.25s;
+        }
+        .nav-links > li > a:hover,
+        .nav-links > li > button.dropbtn:hover {
+            background: rgba(217, 67, 67, 0.25);
+            color: #ff6b6b;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background: #1a0000;
+            min-width: 220px;
+            border-radius: 12px;
+            border: 1px solid rgba(217,67,67,0.35);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            overflow: hidden;
+            z-index: 9999;
+        }
+        .dropdown-content.open { display: block; animation: ddFadeIn 0.2s ease; }
+
+        @keyframes ddFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-content a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 13px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.18s, color 0.18s;
+        }
+        .dropdown-content a:last-child { border-bottom: none; }
+        .dropdown-content a:hover { background: rgba(217,67,67,0.2); color: #ff6b6b; }
+
+        /* Profile badge */
+        .profile {
+            background: var(--red);
+            padding: 8px 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: background 0.2s;
+        }
+        .profile:hover { background: #c03636; }
+
+        .header-avatar-icon {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: rgba(0,0,0,0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.78rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
+        }
+        .header-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            object-fit: cover; border: 2px solid rgba(255,255,255,0.4);
+            display: none;
+        }
+        .user-name-header {
+            font-size: 0.82rem; font-weight: 600;
+            max-width: 120px; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap;
+        }
+
+        /* User dropdown */
+        .user-dropdown {
+            position: absolute; top: calc(100% + 14px); right: 0;
+            background: #140000;
+            border: 1px solid rgba(217,67,67,0.3);
+            border-radius: 16px; min-width: 240px;
+            box-shadow: 0 16px 50px rgba(0,0,0,0.7);
+            z-index: 9999; overflow: hidden;
+            opacity: 0; pointer-events: none;
+            transform: translateY(-8px);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .user-dropdown.open { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        .dd-header {
+            padding: 18px;
+            background: linear-gradient(135deg, #1e0000, #300000);
+            display: flex; align-items: center; gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .dd-avatar-icon-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            background: linear-gradient(135deg, #a51313, #d94343);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; font-weight: 700; color: white;
+            border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0;
+        }
+        .dd-avatar-lg {
+            width: 48px; height: 48px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #d94343; flex-shrink: 0;
+            display: none;
+        }
+        .dd-info .dd-name { font-weight: 700; font-size: 0.92rem; color: white; }
+        .dd-info .dd-role { font-size: 0.68rem; color: #ff6b6b; font-weight: 600; text-transform: uppercase; }
+        .dd-info .dd-user { font-size: 0.72rem; color: #666; margin-top: 2px; }
+
+        .dd-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 18px; color: #ccc; text-decoration: none;
+            font-size: 0.83rem; font-weight: 500;
+            transition: background 0.15s, color 0.15s;
+            cursor: pointer; border: none; background: none;
+            width: 100%; text-align: left;
+        }
+        .dd-item:hover { background: rgba(255,255,255,0.05); color: white; }
+        .dd-item i { width: 18px; text-align: center; color: #666; }
+        .dd-item:hover i { color: var(--red); }
+        .dd-sep { height: 1px; background: rgba(255,255,255,0.06); margin: 4px 0; }
+        .dd-item.logout { color: #ff5252; }
+        .dd-item.logout i { color: #ff5252; }
+        .dd-item.logout:hover { background: rgba(255,82,82,0.08); }
+
+        /* =============================================
+           ESTILOS DE EMERGENCIAS
+        ============================================= */
+        .container-main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto 60px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .page-header h1 span {
+            color: var(--red);
+        }
+        .page-header p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Grid de emergencias */
+        .emergencies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* Tarjeta de emergencia */
+        .emergency-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: 0.3s;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .emergency-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 0 30px rgba(217,67,67,0.3);
+            border-color: rgba(217,67,67,0.4);
+        }
+        .emergency-icon {
+            font-size: 3rem;
+            color: var(--red);
+            margin-bottom: 20px;
+        }
+        .emergency-card h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .emergency-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--red);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        .call-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--red);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .call-button:hover {
+            background: var(--red-dark);
+            transform: scale(1.05);
+            color: white;
+        }
+
+        /* Footer */
+        .footer-kiroo {
+            background: #0a0000;
+            border-top: 1px solid #2c0000;
+            padding: 3rem 0 1.5rem;
+            margin-top: 2rem;
+        }
+        .footer-kiroo a {
+            color: #aaa;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-kiroo a:hover { color: #ff4a4a; }
+        .footer-kiroo h5 { font-weight: 700; margin-bottom: 1rem; }
+
+        @media (max-width: 768px) {
+            .navbar {
+                height: auto;
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+            .nav-links { flex-wrap: wrap; justify-content: center; }
+            .container-main { width: 95%; }
+            .emergency-number { font-size: 1.4rem; }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <a href="index_mecanico.html" class="btn-back">
-            <i class="fa-solid fa-arrow-left"></i> Volver al inicio
-        </a>
-        <div class="brand">KIROO</div>
+<!-- ===================== NAVBAR (MISMO ESTILO QUE INDEX_MECANICO) ===================== -->
+<nav class="navbar">
+    <a class="logo" href="index_mecanico.html">KI<span>R</span>OO</a>
+
+    <ul class="nav-links">
+        <li><a href="index_mecanico.html">HOME</a></li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">GESTIONA ▾</button>
+            <div class="dropdown-content">
+                <a href="dashboard_mecanico.html"><i class="fa-solid fa-gauge-high"></i> Panel Mecánico</a>
+                <a href="agenda_mecanico.html"><i class="fa-solid fa-calendar-alt"></i> Mi Agenda</a>
+                <a href="vehiculos_mecanico.html"><i class="fa-solid fa-car"></i> Mis Vehículos</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown(this)">AYUDA ▾</button>
+            <div class="dropdown-content">
+                <a href="emergencias_mecanico.html"><i class="fa-solid fa-phone-volume"></i> Números de Emergencia</a>
+            </div>
+        </li>
+    </ul>
+
+    <!-- USER BADGE -->
+    <div class="profile" id="userMenuWrapper" onclick="toggleUserMenu(event)">
+        <div class="header-avatar-icon" id="headerAvatarIcon"><span id="headerInitials">?</span></div>
+        <img src="" alt="" class="header-avatar" id="headerAvatarImg">
+        <span class="user-name-header" id="headerUserName">Cargando...</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.55rem; opacity:0.7;"></i>
+
+        <div class="user-dropdown" id="userDropdown" onclick="event.stopPropagation()">
+            <div class="dd-header">
+                <div class="dd-avatar-icon-lg" id="ddAvatarIcon"><span id="ddInitials">?</span></div>
+                <img src="" alt="" class="dd-avatar-lg" id="ddAvatarImg">
+                <div class="dd-info">
+                    <div class="dd-name" id="ddName">...</div>
+                    <div class="dd-role">Mecánico</div>
+                    <div class="dd-user" id="ddUsername">@...</div>
+                </div>
+            </div>
+            <a href="perfil_mecanico.html" class="dd-item"><i class="fa-solid fa-user-circle"></i> Mi Perfil</a>
+            <a href="dashboard_mecanico.html" class="dd-item"><i class="fa-solid fa-tachometer-alt"></i> Panel Mecánico</a>
+            <a href="agenda_mecanico.html" class="dd-item"><i class="fa-solid fa-calendar-alt"></i> Mi Agenda</a>
+            <a href="vehiculos_mecanico.html" class="dd-item"><i class="fa-solid fa-car"></i> Mis Vehículos</a>
+            <div class="dd-sep"></div>
+            <button class="dd-item logout" onclick="logout()"><i class="fa-solid fa-sign-out-alt"></i> Cerrar Sesión</button>
+        </div>
+    </div>
+</nav>
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<div class="container-main">
+    <div class="page-header">
+        <h1>Números de <span>Emergencia</span></h1>
+        <p>Contactos de emergencia disponibles 24/7</p>
     </div>
 
-    <h1>Emergencias</h1>
-
-    <div class="grid-container">
-        <div class="card">
-            <h2>Policia Nacional civil</h2>
-            <div class="number">911</div>
+    <div class="emergencies-grid">
+        <!-- Policía -->
+        <div class="emergency-card">
+            <div class="emergency-icon">
+                <i class="fa-solid fa-shield-haltered"></i>
+            </div>
+            <h2>Policía Nacional Civil</h2>
+            <div class="emergency-number">911</div>
             <a href="tel:911" class="call-button">
-                <i class="icon-phone"></i> Llamar
+                <i class="fa-solid fa-phone"></i> Llamar ahora
             </a>
         </div>
 
-        <div class="card">
+        <!-- Emergencias Médicas -->
+        <div class="emergency-card">
+            <div class="emergency-icon">
+                <i class="fa-solid fa-truck-medical"></i>
+            </div>
             <h2>Sistemas de Emergencias Médicas</h2>
-            <div class="number">132</div>
+            <div class="emergency-number">132</div>
             <a href="tel:132" class="call-button">
-                <i class="icon-phone"></i> Llamar
+                <i class="fa-solid fa-phone"></i> Llamar ahora
             </a>
         </div>
 
-        <div class="card">
-            <h2>Cruz verde Salvadoreña</h2>
-            <div class="number">2288-5792</div>
+        <!-- Cruz Verde -->
+        <div class="emergency-card">
+            <div class="emergency-icon">
+                <i class="fa-solid fa-hospital-user"></i>
+            </div>
+            <h2>Cruz Verde Salvadoreña</h2>
+            <div class="emergency-number">2288-5792</div>
             <a href="tel:22885792" class="call-button">
-                <i class="icon-phone"></i> Llamar
+                <i class="fa-solid fa-phone"></i> Llamar ahora
             </a>
         </div>
 
-        <div class="card">
+        <!-- Grúa -->
+        <div class="emergency-card">
+            <div class="emergency-icon">
+                <i class="fa-solid fa-truck"></i>
+            </div>
             <h2>Grúa de emergencia</h2>
-            <div class="number">2510-0199</div>
+            <div class="emergency-number">2510-0199</div>
             <a href="tel:25100199" class="call-button">
-                <i class="icon-phone"></i> Llamar
+                <i class="fa-solid fa-phone"></i> Llamar ahora
             </a>
         </div>
     </div>
+</div>
 
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer-kiroo">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-md-5">
+                <h5><i class="fa-solid fa-car"></i> Kiroo</h5>
+                <p>La plataforma integral para conductores responsables. Seguridad, gamificación y gestión vehicular en un solo lugar.</p>
+                <div class="d-flex gap-3 mt-2">
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                    <a href="#" class="text-white-50"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <h5>Explorar</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="vehiculos_mecanico.html"><i class="fa-regular fa-circle-right me-2"></i>Mis Vehículos</a></li>
+                    <li class="mb-2"><a href="agenda_mecanico.html"><i class="fa-regular fa-circle-right me-2"></i>Mi Agenda</a></li>
+                    <li class="mb-2"><a href="dashboard_mecanico.html"><i class="fa-regular fa-circle-right me-2"></i>Panel Mecánico</a></li>
+                    <li class="mb-2"><a href="emergencias_mecanico.html"><i class="fa-regular fa-circle-right me-2"></i>Emergencias</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Contacto</h5>
+                <p><i class="fa-regular fa-envelope me-2"></i> soporte@kiroo.com</p>
+                <p><i class="fa-solid fa-phone me-2"></i> +34 900 123 456</p>
+                <p><small class="text-white-50">Asistencia disponible 24/7 para emergencias viales</small></p>
+            </div>
+        </div>
+        <hr class="mt-4 opacity-25">
+        <div class="text-center pt-2">
+            <p class="mb-0 small">&copy; 2025 Kiroo - Your copilot, your safety. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ========== VARIABLES GLOBALES ==========
+    let CURRENT_USER_ID = null;
+    let CURRENT_USER_ROLE = null;
+
+    // ========== USER AUTH & MENU ==========
+    function setAvatarFromUrl(url) {
+        ['headerAvatarImg', 'ddAvatarImg'].forEach(id => {
+            const img = document.getElementById(id);
+            if (img) { img.src = url; img.style.display = 'block'; }
+        });
+        ['headerAvatarIcon', 'ddAvatarIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
+
+    function applyUserUI(name, username, avatarUrl, role) {
+        const firstName = (name || 'Mecánico').split(' ')[0];
+        const initials = (name || 'M').charAt(0).toUpperCase();
+
+        document.getElementById('headerUserName').textContent = firstName;
+        document.getElementById('headerInitials').textContent = initials;
+        document.getElementById('ddName').textContent = name || 'Mecánico';
+        document.getElementById('ddInitials').textContent = initials;
+        document.getElementById('ddUsername').textContent = username ? '@' + username : '';
+
+        if (avatarUrl) setAvatarFromUrl(avatarUrl);
+    }
+
+    async function checkAuth() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'check_auth');
+            const res = await fetch('auth.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            
+            if (data.authenticated) {
+                CURRENT_USER_ID = data.user_id;
+                CURRENT_USER_ROLE = data.user_type;
+                
+                const isMechanic = (CURRENT_USER_ROLE === 'mecanico');
+                
+                if (!isMechanic) {
+                    window.location.href = 'dashboard_cliente.html';
+                    return false;
+                }
+                
+                applyUserUI(data.full_name || data.username, data.username, null, CURRENT_USER_ROLE);
+                await loadProfilePicture();
+                return true;
+            } else {
+                window.location.href = 'login.html';
+                return false;
+            }
+        } catch(e) {
+            console.error('Auth error:', e);
+            window.location.href = 'login.html';
+            return false;
+        }
+    }
+
+    async function loadProfilePicture() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'get_profile');
+            const res = await fetch('api.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success && data.profile && data.profile.profile_picture) {
+                setAvatarFromUrl(data.profile.profile_picture);
+            }
+        } catch(e) { }
+    }
+
+    function toggleDropdown(btn) {
+        const panel = btn.nextElementSibling;
+        const isOpen = panel.classList.contains('open');
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        if (!isOpen) panel.classList.add('open');
+    }
+
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        document.getElementById('userDropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        }
+        if (!e.target.closest('#userMenuWrapper')) {
+            document.getElementById('userDropdown')?.classList.remove('open');
+        }
+    });
+
+    async function logout() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'logout');
+            await fetch('auth.php', { method: 'POST', body: fd });
+        } catch(e) {}
+        window.location.href = 'login.html';
+    }
+
+    // ========== INICIALIZACIÓN ==========
+    document.addEventListener('DOMContentLoaded', () => {
+        checkAuth();
+    });
+</script>
 </body>
 </html>
