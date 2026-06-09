@@ -1,264 +1,470 @@
-     // Palabras a encontrar (todas en mayúsculas)
-        const wordsList = ['MOTOR', 'FRENOS', 'ACEITE', 'RUEDA', 'BATERIA', 'RADIADOR', 'FILTRO', 'VOLANTE'];
-        
-        let wsGrid = [];
-        let foundWs = [];
-        let wsTimer = null;
-        let wsTimeLeft = 300;
-        let wsSelecting = false;
-        let wsSelectedCells = [];
+    // ===== USER AUTH & MENU =====
+    let CURRENT_USER_ID = null;
 
-        // Tamaño de la cuadrícula
-        const GRID_SIZE = 10;
+    function setAvatarFromUrl(url) {
+        ['headerAvatarImg', 'ddAvatarImg'].forEach(id => {
+            const img = document.getElementById(id);
+            if (img) { img.src = url; img.style.display = 'block'; }
+        });
+        ['headerAvatarIcon', 'ddAvatarIcon'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+    }
 
-        function resetWordSearch() { 
-            if (wsTimer) clearInterval(wsTimer); 
-            foundWs = []; 
-            wsTimeLeft = 300; 
-            wsSelectedCells = [];
-            wsSelecting = false;
+    function applyUserUI(name, username, avatarUrl) {
+        const firstName = (name || 'Cliente').split(' ')[0];
+        const initials = (name || '?').charAt(0).toUpperCase();
+
+        document.getElementById('headerUserName').textContent = firstName;
+        document.getElementById('headerInitials').textContent = initials;
+        document.getElementById('ddName').textContent = name || 'Cliente';
+        document.getElementById('ddInitials').textContent = initials;
+        document.getElementById('ddUsername').textContent = username ? '@' + username : '';
+
+        if (avatarUrl) setAvatarFromUrl(avatarUrl);
+    }
+
+    async function checkAuth() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'check_auth');
+            const res = await fetch('auth.php', { method: 'POST', body: fd });
+            const data = await res.json();
             
-            document.getElementById('wordsFound').innerText = '0'; 
-            document.getElementById('totalWords').innerText = wordsList.length; 
-            document.getElementById('wordsearchTimer').innerText = '05:00'; 
-            document.getElementById('wordsearchContainer').style.display = 'block'; 
-            document.getElementById('wordsearchResults').style.display = 'none'; 
-            
-            generateWordsearch(); 
-            renderWordsearchGrid(); 
-            startWsTimer(); 
+            if (data.authenticated) {
+                CURRENT_USER_ID = data.id;
+                applyUserUI(data.full_name || data.username, data.username, null);
+                await loadProfilePicture();
+                return true;
+            } else {
+                window.location.href = 'login.html';
+                return false;
+            }
+        } catch(e) {
+            window.location.href = 'login.html';
+            return false;
         }
+    }
 
-        function generateWordsearch() { 
-            // Inicializar cuadrícula vacía
-            wsGrid = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(''));
-            
-            // Para cada palabra, intentar colocarla
-            for (let word of wordsList) {
-                let placed = false;
-                let attempts = 0;
-                const maxAttempts = 200;
+    async function loadProfilePicture() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'get_profile');
+            const res = await fetch('api.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.success && data.profile && data.profile.profile_picture) {
+                setAvatarFromUrl(data.profile.profile_picture);
+            }
+        } catch(e) {}
+    }
+
+    function toggleDropdown(btn) {
+        const panel = btn.nextElementSibling;
+        const isOpen = panel.classList.contains('open');
+        document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        if (!isOpen) panel.classList.add('open');
+    }
+
+    function toggleUserMenu(e) {
+        e.stopPropagation();
+        document.getElementById('userDropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.dropdown')) {
+            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('open'));
+        }
+        if (!e.target.closest('#userMenuWrapper')) {
+            document.getElementById('userDropdown')?.classList.remove('open');
+        }
+    });
+
+    async function logout() {
+        try {
+            const fd = new FormData();
+            fd.append('action', 'logout');
+            await fetch('auth.php', { method: 'POST', body: fd });
+        } catch(e) {}
+        window.location.href = 'login.html';
+    }
+
+    // ===== WORD SEARCH GAME =====
+    const words = [
+        { word: "MOTOR", found: false },
+        { word: "FRENO", found: false },
+        { word: "ACEITE", found: false },
+        { word: "BATERIA", found: false },
+        { word: "RUEDA", found: false },
+        { word: "RADIADOR", found: false },
+        { word: "VOLANTE", found: false }
+    ];
+
+    let grid = [];
+    let gridSize = 12;
+    let selectionStart = null;
+    let currentSelection = [];
+    let isDragging = false;
+    let timerInterval = null;
+    let timeSeconds = 300; // 5 minutos
+
+    function generateGrid() {
+        // Inicializar grid vacío
+        grid = Array(gridSize).fill().map(() => Array(gridSize).fill(''));
+        
+        // Colocar palabras
+        for (const w of words) {
+            if (w.found) continue;
+            let placed = false;
+            let attempts = 0;
+            while (!placed && attempts < 100) {
+                const direction = Math.floor(Math.random() * 8); // 0-7: horizontal, vertical, diagonal
+                const row = Math.floor(Math.random() * gridSize);
+                const col = Math.floor(Math.random() * gridSize);
                 
-                while (!placed && attempts < maxAttempts) {
-                    const direction = Math.floor(Math.random() * 3); // 0: horizontal, 1: vertical, 2: diagonal
-                    const row = Math.floor(Math.random() * GRID_SIZE);
-                    const col = Math.floor(Math.random() * GRID_SIZE);
+                let canPlace = true;
+                const wordLen = w.word.length;
+                
+                for (let i = 0; i < wordLen; i++) {
+                    let newRow = row, newCol = col;
+                    if (direction === 0) newCol = col + i; // derecha
+                    else if (direction === 1) newCol = col - i; // izquierda
+                    else if (direction === 2) newRow = row + i; // abajo
+                    else if (direction === 3) newRow = row - i; // arriba
+                    else if (direction === 4) { newRow = row + i; newCol = col + i; } // diagonal abajo-derecha
+                    else if (direction === 5) { newRow = row + i; newCol = col - i; } // diagonal abajo-izquierda
+                    else if (direction === 6) { newRow = row - i; newCol = col + i; } // diagonal arriba-derecha
+                    else if (direction === 7) { newRow = row - i; newCol = col - i; } // diagonal arriba-izquierda
                     
-                    if (canPlaceWord(word, row, col, direction)) {
-                        placeWord(word, row, col, direction);
-                        placed = true;
+                    if (newRow < 0 || newRow >= gridSize || newCol < 0 || newCol >= gridSize) {
+                        canPlace = false;
+                        break;
                     }
-                    attempts++;
+                    if (grid[newRow][newCol] !== '' && grid[newRow][newCol] !== w.word[i]) {
+                        canPlace = false;
+                        break;
+                    }
                 }
                 
-                // Si no se pudo colocar, intentar con otra dirección o posición
-                if (!placed) {
-                    for (let dir = 0; dir < 3; dir++) {
-                        for (let r = 0; r < GRID_SIZE && !placed; r++) {
-                            for (let c = 0; c < GRID_SIZE && !placed; c++) {
-                                if (canPlaceWord(word, r, c, dir)) {
-                                    placeWord(word, r, c, dir);
-                                    placed = true;
-                                }
-                            }
+                if (canPlace) {
+                    for (let i = 0; i < wordLen; i++) {
+                        let newRow = row, newCol = col;
+                        if (direction === 0) newCol = col + i;
+                        else if (direction === 1) newCol = col - i;
+                        else if (direction === 2) newRow = row + i;
+                        else if (direction === 3) newRow = row - i;
+                        else if (direction === 4) { newRow = row + i; newCol = col + i; }
+                        else if (direction === 5) { newRow = row + i; newCol = col - i; }
+                        else if (direction === 6) { newRow = row - i; newCol = col + i; }
+                        else if (direction === 7) { newRow = row - i; newCol = col - i; }
+                        grid[newRow][newCol] = w.word[i];
+                    }
+                    placed = true;
+                }
+                attempts++;
+            }
+            if (!placed) {
+                // Fallback: colocar en posición aleatoria
+                for (let i = 0; i < w.word.length; i++) {
+                    let placed2 = false;
+                    while (!placed2) {
+                        const row = Math.floor(Math.random() * gridSize);
+                        const col = Math.floor(Math.random() * gridSize);
+                        if (grid[row][col] === '') {
+                            grid[row][col] = w.word[i];
+                            placed2 = true;
                         }
                     }
                 }
             }
-            
-            // Rellenar espacios vacíos con letras aleatorias
-            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            for (let i = 0; i < GRID_SIZE; i++) {
-                for (let j = 0; j < GRID_SIZE; j++) {
-                    if (wsGrid[i][j] === '') {
-                        wsGrid[i][j] = letters[Math.floor(Math.random() * letters.length)];
-                    }
+        }
+        
+        // Rellenar espacios vacíos con letras aleatorias
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        for (let i = 0; i < gridSize; i++) {
+            for (let j = 0; j < gridSize; j++) {
+                if (grid[i][j] === '') {
+                    grid[i][j] = letters[Math.floor(Math.random() * letters.length)];
                 }
             }
         }
+    }
 
-        function canPlaceWord(word, row, col, direction) { 
-            const len = word.length; 
-            
-            // Verificar límites
-            if (direction === 0 && col + len > GRID_SIZE) return false; 
-            if (direction === 1 && row + len > GRID_SIZE) return false; 
-            if (direction === 2 && (row + len > GRID_SIZE || col + len > GRID_SIZE)) return false; 
-            
-            // Verificar que no haya conflicto con otras palabras
-            for (let i = 0; i < len; i++) { 
-                let r = row, c = col; 
-                if (direction === 0) c = col + i; 
-                else if (direction === 1) r = row + i; 
-                else if (direction === 2) { r = row + i; c = col + i; } 
+    function renderGrid() {
+        const container = document.getElementById('wordsearchGrid');
+        container.style.gridTemplateColumns = `repeat(${gridSize}, minmax(35px, 60px))`;
+        container.innerHTML = '';
+        
+        for (let i = 0; i < gridSize; i++) {
+            for (let j = 0; j < gridSize; j++) {
+                const cell = document.createElement('div');
+                cell.className = 'wordsearch-cell';
+                cell.textContent = grid[i][j];
+                cell.dataset.row = i;
+                cell.dataset.col = j;
                 
-                if (wsGrid[r][c] !== '' && wsGrid[r][c] !== word[i]) return false; 
-            } 
-            return true; 
-        }
-
-        function placeWord(word, row, col, direction) { 
-            for (let i = 0; i < word.length; i++) { 
-                let r = row, c = col; 
-                if (direction === 0) c = col + i; 
-                else if (direction === 1) r = row + i; 
-                else if (direction === 2) { r = row + i; c = col + i; } 
-                wsGrid[r][c] = word[i]; 
-            } 
-        }
-
-        function renderWordsearchGrid() {
-            const container = document.getElementById('wordsearchGrid'); 
-            container.innerHTML = '';
-            
-            for (let i = 0; i < GRID_SIZE; i++) { 
-                for (let j = 0; j < GRID_SIZE; j++) { 
-                    const cell = document.createElement('div'); 
-                    cell.className = 'wordsearch-cell'; 
-                    cell.textContent = wsGrid[i][j]; 
-                    cell.dataset.row = i; 
-                    cell.dataset.col = j; 
-                    
-                    cell.addEventListener('mousedown', (e) => {
-                        e.preventDefault();
-                        startWsSelect(i, j);
-                    });
-                    cell.addEventListener('mouseenter', () => continueWsSelect(i, j));
-                    cell.addEventListener('mouseup', () => endWsSelect());
-                    
-                    // Soporte para touch
-                    cell.addEventListener('touchstart', (e) => {
-                        e.preventDefault();
-                        startWsSelect(i, j);
-                    });
-                    cell.addEventListener('touchmove', (e) => {
-                        e.preventDefault();
-                        const touch = e.touches[0];
-                        const element = document.elementFromPoint(touch.clientX, touch.clientY);
-                        if (element && element.classList && element.classList.contains('wordsearch-cell')) {
-                            const row = parseInt(element.dataset.row);
-                            const col = parseInt(element.dataset.col);
-                            continueWsSelect(row, col);
-                        }
-                    });
-                    cell.addEventListener('touchend', () => endWsSelect());
-                    
-                    container.appendChild(cell); 
-                } 
-            }
-            
-            // Renderizar lista de palabras
-            const wordsDiv = document.getElementById('wordsearchWords'); 
-            wordsDiv.innerHTML = '';
-            wordsList.forEach(word => { 
-                const div = document.createElement('div'); 
-                div.className = 'wordsearch-word'; 
-                div.innerHTML = `<i class="bi bi-search"></i> ${word}`; 
-                div.dataset.word = word; 
-                wordsDiv.appendChild(div); 
-            });
-        }
-
-        function startWsSelect(r, c) { 
-            wsSelecting = true; 
-            wsSelectedCells = [{row: r, col: c}]; 
-            updateWsSelection(); 
-        }
-        
-        function continueWsSelect(r, c) { 
-            if (!wsSelecting) return; 
-            if (!wsSelectedCells.some(cell => cell.row === r && cell.col === c)) {
-                wsSelectedCells.push({row: r, col: c}); 
-            }
-            updateWsSelection(); 
-        }
-        
-        function endWsSelect() { 
-            wsSelecting = false; 
-            checkWsWord(); 
-        }
-        
-        function updateWsSelection() { 
-            document.querySelectorAll('.wordsearch-cell').forEach(cell => cell.classList.remove('selected')); 
-            wsSelectedCells.forEach(cell => { 
-                const el = document.querySelector(`.wordsearch-cell[data-row='${cell.row}'][data-col='${cell.col}']`); 
-                if (el) el.classList.add('selected'); 
-            }); 
-        }
-        
-        function checkWsWord() { 
-            if (wsSelectedCells.length < 3) { 
-                clearWsSelection(); 
-                return; 
-            } 
-            
-            // Obtener la palabra formada
-            const word = wsSelectedCells.map(cell => wsGrid[cell.row][cell.col]).join(''); 
-            const reversed = word.split('').reverse().join(''); 
-            
-            let foundWord = null; 
-            if (wordsList.includes(word) && !foundWs.includes(word)) foundWord = word; 
-            else if (wordsList.includes(reversed) && !foundWs.includes(reversed)) foundWord = reversed; 
-            
-            if (foundWord) { 
-                foundWs.push(foundWord); 
+                // Verificar si la celda pertenece a una palabra encontrada
+                const isFound = isCellInFoundWord(i, j);
+                if (isFound) {
+                    cell.classList.add('found');
+                }
                 
-                // Marcar celdas como encontradas
-                wsSelectedCells.forEach(cell => { 
-                    const el = document.querySelector(`.wordsearch-cell[data-row='${cell.row}'][data-col='${cell.col}']`); 
-                    if (el) {
-                        el.classList.add('found');
-                        el.classList.remove('selected');
+                // Eventos para ratón
+                cell.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    startSelection(i, j);
+                });
+                cell.addEventListener('mouseenter', () => {
+                    if (isDragging && selectionStart) {
+                        continueSelection(i, j);
                     }
-                }); 
+                });
+                cell.addEventListener('mouseup', () => endSelection());
                 
-                // Marcar palabra en la lista
-                const wordEl = document.querySelector(`.wordsearch-word[data-word='${foundWord}']`); 
-                if (wordEl) wordEl.classList.add('found'); 
+                // Eventos táctiles para móvil
+                cell.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (target && target.classList.contains('wordsearch-cell')) {
+                        const row = parseInt(target.dataset.row);
+                        const col = parseInt(target.dataset.col);
+                        startSelection(row, col);
+                    }
+                });
+                cell.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+                    if (target && target.classList.contains('wordsearch-cell') && isDragging && selectionStart) {
+                        const row = parseInt(target.dataset.row);
+                        const col = parseInt(target.dataset.col);
+                        continueSelection(row, col);
+                    }
+                });
+                cell.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    endSelection();
+                });
                 
-                document.getElementById('wordsFound').innerText = foundWs.length; 
-                
-                if (foundWs.length === wordsList.length) { 
-                    clearInterval(wsTimer); 
-                    document.getElementById('wordsearchContainer').style.display = 'none'; 
-                    document.getElementById('wordsearchResults').style.display = 'block'; 
-                } 
-                wsSelectedCells = []; 
-            } else { 
-                setTimeout(clearWsSelection, 300); 
-            } 
+                container.appendChild(cell);
+            }
         }
-
-        function clearWsSelection() { 
-            wsSelectedCells.forEach(cell => { 
-                const el = document.querySelector(`.wordsearch-cell[data-row='${cell.row}'][data-col='${cell.col}']`); 
-                if (el && !el.classList.contains('found')) el.classList.remove('selected'); 
-            }); 
-            wsSelectedCells = []; 
+    }
+    
+    function isCellInFoundWord(row, col) {
+        for (const word of words) {
+            if (word.found && word.positions) {
+                for (const pos of word.positions) {
+                    if (pos.row === row && pos.col === col) return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    function startSelection(row, col) {
+        const cell = document.querySelector(`.wordsearch-cell[data-row='${row}'][data-col='${col}']`);
+        if (cell.classList.contains('found')) return;
+        
+        selectionStart = { row, col };
+        currentSelection = [{ row, col }];
+        isDragging = true;
+        updateSelectionHighlight();
+    }
+    
+    function continueSelection(row, col) {
+        if (!selectionStart) return;
+        
+        const cell = document.querySelector(`.wordsearch-cell[data-row='${row}'][data-col='${col}']`);
+        if (cell.classList.contains('found')) return;
+        
+        // Calcular dirección
+        const deltaRow = Math.sign(row - selectionStart.row);
+        const deltaCol = Math.sign(col - selectionStart.col);
+        
+        // Si es el mismo punto
+        if (deltaRow === 0 && deltaCol === 0) {
+            currentSelection = [{ row: selectionStart.row, col: selectionStart.col }];
+        } else {
+            // Seleccionar en línea recta
+            currentSelection = [];
+            let currentRow = selectionStart.row;
+            let currentCol = selectionStart.col;
+            
+            while (true) {
+                currentSelection.push({ row: currentRow, col: currentCol });
+                if (currentRow === row && currentCol === col) break;
+                currentRow += deltaRow;
+                currentCol += deltaCol;
+                if (currentRow < 0 || currentRow >= gridSize || currentCol < 0 || currentCol >= gridSize) break;
+            }
         }
         
-        function startWsTimer() { 
-            wsTimer = setInterval(() => { 
-                wsTimeLeft--; 
-                const mins = Math.floor(wsTimeLeft / 60); 
-                const secs = wsTimeLeft % 60; 
-                document.getElementById('wordsearchTimer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`; 
-                if (wsTimeLeft <= 0) { 
-                    clearInterval(wsTimer); 
-                    alert('⏰ Tiempo agotado. ¡Inténtalo de nuevo!'); 
-                    resetWordSearch(); 
-                } 
-            }, 1000); 
+        updateSelectionHighlight();
+    }
+    
+    function updateSelectionHighlight() {
+        // Limpiar selección anterior
+        document.querySelectorAll('.wordsearch-cell.selected').forEach(cell => {
+            cell.classList.remove('selected');
+        });
+        
+        // Marcar nueva selección
+        for (const pos of currentSelection) {
+            const cell = document.querySelector(`.wordsearch-cell[data-row='${pos.row}'][data-col='${pos.col}']`);
+            if (cell && !cell.classList.contains('found')) {
+                cell.classList.add('selected');
+            }
+        }
+    }
+    
+    function endSelection() {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        if (currentSelection.length > 0) {
+            checkWord();
         }
         
-        function showWordsearchHint() { 
-            const remaining = wordsList.filter(w => !foundWs.includes(w)); 
-            if (remaining.length) {
-                alert(`🔍 Busca la palabra: "${remaining[0]}"\nPuede estar en horizontal, vertical o diagonal.`);
-            } else { 
-                alert('🎉 ¡Ya encontraste todas las palabras!'); 
-            } 
+        // Limpiar selección visual
+        document.querySelectorAll('.wordsearch-cell.selected').forEach(cell => {
+            cell.classList.remove('selected');
+        });
+        selectionStart = null;
+        currentSelection = [];
+    }
+    
+    function checkWord() {
+        const selectedWord = currentSelection.map(pos => grid[pos.row][pos.col]).join('');
+        const selectedWordReverse = selectedWord.split('').reverse().join('');
+        
+        let foundWord = null;
+        for (const word of words) {
+            if (!word.found && (word.word === selectedWord || word.word === selectedWordReverse)) {
+                foundWord = word;
+                break;
+            }
         }
-
-        // Iniciar el juego
+        
+        if (foundWord) {
+            foundWord.found = true;
+            foundWord.positions = [...currentSelection];
+            
+            // Marcar celdas como encontradas
+            for (const pos of currentSelection) {
+                const cell = document.querySelector(`.wordsearch-cell[data-row='${pos.row}'][data-col='${pos.col}']`);
+                if (cell) {
+                    cell.classList.add('found');
+                    cell.classList.remove('selected');
+                }
+            }
+            
+            updateWordsList();
+            
+            const foundCount = words.filter(w => w.found).length;
+            document.getElementById('wordsFound').textContent = foundCount;
+            
+            if (foundCount === words.length) {
+                finishGame();
+            } else {
+                showToast(`✅ ¡Correcto! Encontraste "${foundWord.word}"`, false);
+            }
+        } else {
+            if (currentSelection.length > 1) {
+                showToast('❌ No es una palabra válida. Sigue buscando.', true);
+            }
+        }
+    }
+    
+    function updateWordsList() {
+        const container = document.getElementById('wordsearchWords');
+        container.innerHTML = words.map(w => 
+            `<div class="word-badge ${w.found ? 'found' : ''}">
+                <i class="bi ${w.found ? 'bi-check-circle-fill' : 'bi-circle'}"></i> ${w.word}
+            </div>`
+        ).join('');
+    }
+    
+    function showWordsearchHint() {
+        // Buscar primera palabra no encontrada
+        const pendingWord = words.find(w => !w.found);
+        if (pendingWord) {
+            showToast(`💡 Busca la palabra: "${pendingWord.word}"`, false);
+        } else {
+            showToast('🎉 Ya encontraste todas las palabras', false);
+        }
+    }
+    
+    function startTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (timeSeconds <= 0) {
+                clearInterval(timerInterval);
+                showToast('⏰ Se acabó el tiempo. Reinicia el juego.', true);
+            } else {
+                timeSeconds--;
+                const minutes = Math.floor(timeSeconds / 60);
+                const seconds = timeSeconds % 60;
+                document.getElementById('wordsearchTimer').textContent = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+    
+    function finishGame() {
+        if (timerInterval) clearInterval(timerInterval);
+        document.getElementById('wordsearchContainer').style.display = 'none';
+        document.getElementById('wordsearchResults').style.display = 'block';
+        showToast('🎉 ¡Felicidades! Completaste la sopa de letras', false);
+    }
+    
+    function resetWordSearch() {
+        if (timerInterval) clearInterval(timerInterval);
+        
+        // Resetear palabras
+        for (const w of words) {
+            w.found = false;
+            delete w.positions;
+        }
+        
+        timeSeconds = 300;
+        document.getElementById('wordsearchTimer').textContent = '05:00';
+        document.getElementById('wordsFound').textContent = '0';
+        document.getElementById('totalWords').textContent = words.length;
+        document.getElementById('wordsearchContainer').style.display = 'block';
+        document.getElementById('wordsearchResults').style.display = 'none';
+        
+        selectionStart = null;
+        currentSelection = [];
+        isDragging = false;
+        
+        generateGrid();
+        renderGrid();
+        updateWordsList();
+        startTimer();
+    }
+    
+    function showToast(message, isError = false) {
+        const toast = document.createElement('div');
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.right = '20px';
+        toast.style.zIndex = '9999';
+        toast.style.backgroundColor = isError ? '#dc3545' : '#28a745';
+        toast.style.color = 'white';
+        toast.style.padding = '12px 20px';
+        toast.style.borderRadius = '30px';
+        toast.style.fontSize = '0.85rem';
+        toast.style.fontWeight = '500';
+        toast.innerHTML = `<i class="bi ${isError ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill'} me-2"></i>${message}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+    
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (!await checkAuth()) return;
+        document.getElementById('totalWords').textContent = words.length;
         resetWordSearch();
+    });

@@ -16,6 +16,10 @@
             --text-muted: #bdbdbd;
             --success: #4caf50;
             --warning: #ffc107;
+            --danger: #f44336;
+            --high: #f44336;
+            --medium: #ff9800;
+            --low: #4caf50;
         }
 
         body {
@@ -239,134 +243,149 @@
             background-color: var(--red);
             color: white;
         }
-        .page-header h2 {
+        .page-header h1 {
             font-size: 1.8rem;
             font-weight: 700;
             margin: 0;
         }
-        .page-header h2 i {
+        .page-header h1 i {
             color: var(--red);
             margin-right: 10px;
         }
 
-        /* Content Card */
-        .content-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            overflow: hidden;
-            margin-bottom: 25px;
-        }
-        .card-header-custom {
+        .intro-text {
             background: rgba(0,0,0,0.3);
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .btn-red {
-            background-color: var(--red);
-            border: none;
-            color: white;
-            border-radius: 30px;
-            padding: 10px 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-        .btn-red:hover {
-            background-color: var(--red-dark);
-            transform: scale(1.02);
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--red);
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ddd;
         }
 
-        /* Quiz Styles */
-        .progress {
-            background: #2a2a2a;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            transition: width 0.3s ease;
-        }
-        .quiz-question {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-        .quiz-options {
+        /* Tips Cards */
+        .tips-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 20px;
         }
-        .quiz-option {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 16px;
-            padding: 15px 20px;
-            cursor: pointer;
-            transition: all 0.2s;
+        .tip-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            border: 1px solid rgba(217,67,67,0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 4px solid var(--red);
+        }
+        .tip-card:hover {
+            transform: translateX(8px);
+            border-color: rgba(217,67,67,0.5);
+            box-shadow: 0 10px 25px rgba(217,67,67,0.15);
+        }
+        .tip-header {
             display: flex;
             align-items: center;
             gap: 15px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
-        .quiz-option:hover {
-            background: #252525;
-            border-color: var(--red);
-            transform: translateX(5px);
-        }
-        .quiz-option.selected {
-            background: rgba(217,67,67,0.2);
-            border-color: var(--red);
-        }
-        .quiz-option.correct {
-            background: rgba(76,175,80,0.2);
-            border-color: var(--success);
-        }
-        .quiz-option.incorrect {
-            background: rgba(244,67,54,0.2);
-            border-color: #f44336;
-        }
-        .option-letter {
-            width: 35px;
-            height: 35px;
-            background: #2a2a2a;
+        .tip-number {
+            width: 50px;
+            height: 50px;
+            background: var(--red);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .tip-header h2 {
+            font-size: 1.3rem;
             font-weight: 700;
-            color: var(--red);
-        }
-        .quiz-option.selected .option-letter {
-            background: var(--red);
-            color: white;
-        }
-        .option-text {
+            margin: 0;
             flex: 1;
-            font-size: 0.9rem;
         }
-        .result-icon {
-            font-size: 1.2rem;
+        .urgency-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
         }
-        .quiz-feedback {
-            background: rgba(0,0,0,0.3);
-            border-radius: 16px;
-            padding: 15px;
-            margin-top: 15px;
+        .urgency-high {
+            background: rgba(244,67,54,0.2);
+            color: #f44336;
+            border: 1px solid rgba(244,67,54,0.3);
         }
-        .trophy-icon {
-            font-size: 3rem;
+        .urgency-medium {
+            background: rgba(255,152,0,0.2);
+            color: #ff9800;
+            border: 1px solid rgba(255,152,0,0.3);
+        }
+        .urgency-low {
+            background: rgba(76,175,80,0.2);
+            color: #4caf50;
+            border: 1px solid rgba(76,175,80,0.3);
+        }
+        .tip-card p {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-left: 65px;
+            margin-top: 8px;
+        }
+        .tip-card strong {
             color: var(--warning);
         }
-        .score-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--red);
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(244,67,54,0.1);
+            border: 1px solid rgba(244,67,54,0.3);
+            border-radius: 16px;
+            padding: 15px 20px;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .warning-box i {
+            font-size: 1.8rem;
+            color: #f44336;
+        }
+        .warning-box p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #ffaaaa;
+        }
+
+        /* Kiroo Tip */
+        .kiroo-tip {
+            background: linear-gradient(135deg, rgba(217,67,67,0.15), rgba(165,19,19,0.05));
+            border: 1px solid rgba(217,67,67,0.3);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        .kiroo-tip h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .kiroo-tip h3 i {
+            color: var(--warning);
+            font-size: 1.5rem;
+        }
+        .kiroo-tip p {
+            color: #ccc;
+            line-height: 1.6;
+            font-size: 0.95rem;
         }
 
         /* Footer */
@@ -393,6 +412,8 @@
             }
             .nav-links { flex-wrap: wrap; justify-content: center; }
             .container-main { width: 95%; }
-            .quiz-question { font-size: 1rem; }
-            .quiz-option { padding: 12px 15px; }
+            .tip-number { width: 40px; height: 40px; font-size: 1.1rem; }
+            .tip-header h2 { font-size: 1rem; }
+            .tip-card p { margin-left: 55px; font-size: 0.85rem; }
+            .urgency-badge { font-size: 0.6rem; }
         }
